@@ -138,7 +138,7 @@ strong {
   SECTION               
 -----------------------------------------*/
 .section-padding {
-  padding-top: 100px;
+  padding-top: 5ex;
   padding-bottom: 100px;
 }
 
@@ -489,14 +489,18 @@ strong {
   background-image: linear-gradient(15deg, #13547a 0%, #80d0c7 100%);
   position: relative;
   overflow: hidden;
-  padding-top: 150px;
-  padding-bottom: 150px;
+  padding-top: 15ex;
+  padding-bottom: 5ex;
 }
 
 .hero-section .input-group {
   background-color: var(--white-color);
   border-radius: var(--border-radius-large);
   padding: 10px 15px;
+  margin-bottom: 1em;
+  width: 50%;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .hero-section .input-group-text {
@@ -509,6 +513,7 @@ strong {
   box-shadow: none;
   margin-bottom: 0;
   padding-left: 0;
+  text-align: center;
 }
 
 .hero-section button[type="submit"] {
@@ -1150,6 +1155,14 @@ blockquote {
 
   h5 {
     font-size: 20px;
+  }
+  .hero-section .input-group {
+    width: 100%;
+  }
+}
+@media screen and (max-width: 800px) {
+  .hero-section .input-group {
+    width: 100%;
   }
 }
 
