@@ -19,8 +19,21 @@ jobs:
     - uses: actions/checkout@v3
     - name: Copy .env
       run: php -r "file_exists('.env') || copy('.env.example', '.env');"
-    - name: Install Dependencies
-      run: ls -lah; composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+    - name: Validate composer.json and composer.lock
+      run: composer validate --strict
+
+    - name: Cache Composer packages
+      id: composer-cache
+      uses: actions/cache@v3
+      with:
+        path: vendor
+        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+        restore-keys: |
+          ${{ runner.os }}-php-
+
+    - name: Install dependencies
+      run: ls -lah; composer install --prefer-dist --no-progress
+
     - name: Generate key
       run: php artisan key:generate
     - name: Directory Permissions
