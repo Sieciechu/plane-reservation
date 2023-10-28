@@ -1,0 +1,27 @@
+parameters:
+    ignoreErrors:
+        -
+            message: "#^Parameter \\#1 \\$title of static method Illuminate\\\\Support\\\\Str\\:\\:slug\\(\\) expects string, mixed given\\.$#"
+            count: 1
+            path: config/cache.php
+
+        -
+            message: "#^Parameter \\#1 \\$title of static method Illuminate\\\\Support\\\\Str\\:\\:slug\\(\\) expects string, mixed given\\.$#"
+            count: 1
+            path: config/database.php
+
+        -
+            message: "#^Parameter \\#1 \\$title of static method Illuminate\\\\Support\\\\Str\\:\\:slug\\(\\) expects string, mixed given\\.$#"
+            count: 1
+            path: config/session.php
+
+        -
+            message: "#^Cannot call method send\\(\\) on mixed\\.$#"
+            count: 1
+            path: public/index.php
+
+        -
+            message: "#^Parameter \\#1 \\$string of function urldecode expects string, string\\|false\\|null given\\.$#"
+            count: 1
+            path: server.php
+

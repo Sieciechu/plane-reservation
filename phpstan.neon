@@ -1,0 +1,20 @@
+parameters:
+	level: 9
+	reportUnmatchedIgnoredErrors: false
+	checkMissingIterableValueType: false
+	checkGenericClassInNonGenericObjectType: false
+	parallel:
+		processTimeout: 900.0
+		maximumNumberOfProcesses: 4
+	paths:
+		- .
+	excludePaths:
+		analyse:
+			- vendor
+			- tests
+			- database
+			- storage
+			- routes/console.php
+includes:
+	- phpstan-laravel.neon
+
