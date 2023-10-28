@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
             $table->foreignId('plane_id')->constrained()->onUpdate('cascade')->onDelete('cascade');
-            $table->date('starts_at_day')->nullable(false);
-            $table->date('ends_at_day')->nullable(false);
+            $table->date('starts_at_date')->nullable(false);
+            $table->date('ends_at_date')->nullable(false);
             $table->time('starts_at_time')->nullable(false);
             $table->time('ends_at_time')->nullable(false);
             $table->timestamp('confirmed_at')->nullable(true);
@@ -24,7 +24,7 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
             
-            $table->index(['plane_id', 'starts_at_day']);
+            $table->index(['plane_id', 'starts_at_date']);
             $table->foreign('confirmed_by')->references('id')->on('users')->onUpdate('cascade')->restrictOnDelete();
         });
     }
