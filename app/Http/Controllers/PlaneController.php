@@ -31,7 +31,13 @@ class PlaneController extends Controller
      */
     public function store(StorePlaneRequest $request)
     {
-        //
+        // $this->authorize('create', $request->user());
+        $validated = $request->validated();
+        $plane = Plane::create($validated);
+        
+        return response()->json([
+            'data' => $plane,
+        ]);
     }
 
     /**

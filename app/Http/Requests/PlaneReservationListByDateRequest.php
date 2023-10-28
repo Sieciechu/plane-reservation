@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StorePlaneRequest extends FormRequest
+class PlaneReservationMakeRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,8 +22,8 @@ class StorePlaneRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'registration' => 'required|unique:planes',
-            'name' => 'required',
+            'plane_registration' => 'required|exists:planes,registration',
+            'date' => 'required|date|format:Y-m-d',
         ];
     }
 }

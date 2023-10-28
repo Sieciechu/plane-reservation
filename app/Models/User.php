@@ -48,4 +48,13 @@ class User extends Authenticatable
         'password' => 'hashed',
         'role'=> UserRole::class,
     ];
+
+    // write toArray method here
+    public function toArray(): array
+    {
+        $arr = parent::toArray();
+        $arr['deleted_at'] = $this->deleted_at;
+        $arr['email_verified_at'] = $this->email_verified_at;
+        return $arr;
+    }
 }

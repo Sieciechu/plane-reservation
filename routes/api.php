@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\PlaneController;
+use App\Http\Controllers\PlaneReservationController;
+use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -22,3 +24,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
  
 Route::get('/plane/', [PlaneController::class, 'index']);
 Route::get('/plane/{planeRegistration}', [PlaneController::class, 'show']);
+Route::post('/plane/', [PlaneController::class, 'store']);
+
+Route::get('/user/', [UserController::class, 'index']);
+Route::post('/user/', [UserController::class, 'register']);
+
+Route::get('/plane/{planeRegistration}/reservation/{date}', [PlaneReservationController::class, 'listByDate']);
+Route::post('/plane/{planeRegistration}/reservation', [PlaneReservationController::class, 'make']);

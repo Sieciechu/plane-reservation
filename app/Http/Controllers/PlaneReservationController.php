@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StorePlaneReservationRequest;
+use App\Http\Requests\PlaneReservationMakeRequest;
 use App\Http\Requests\UpdatePlaneReservationRequest;
 use App\Models\PlaneReservation;
 
@@ -11,9 +11,15 @@ class PlaneReservationController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function listByDate(PlaneReservationListByDateRequest $request)
     {
-        //
+       $validated = $request->validated();
+
+        $planeReservations = PlaneReservation::where('date_from', $request->date)->get();
+
+        return response()->json([
+            'data' => $planeReservations,
+        ]);
     }
 
     /**
@@ -27,9 +33,13 @@ class PlaneReservationController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StorePlaneReservationRequest $request)
+    public function make(PlaneReservationMakeRequest $request)
     {
-        //
+        $validated = $request->validated();
+
+        $planeReservation = PlaneReservation::create($validated);
+
+        return response()->json([], 201);
     }
 
     /**

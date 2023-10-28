@@ -11,7 +11,7 @@ class Plane extends Model
     use HasFactory, SoftDeletes;
 
     protected $dates = ['deleted_at'];
-    
+
     /**
      * The attributes that are mass assignable.
      *
@@ -21,4 +21,11 @@ class Plane extends Model
         'name',
         'registration',
     ];
+
+    public function toArray(): array
+    {
+        $arr = parent::toArray();
+        $arr['deleted_at'] = $this->deleted_at;
+        return $arr;
+    }
 }
