@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\PlaneReservationListByDateRequest;
 use App\Http\Requests\PlaneReservationMakeRequest;
+use App\Models\Plane;
 use App\Models\PlaneReservation;
 use Illuminate\Http\JsonResponse;
 
@@ -31,6 +32,14 @@ class PlaneReservationController extends Controller
     {
         /** @var array<string, mixed> $validated */
         $validated = $request->validated();
+
+        /** @var string $planeRegistration */
+        $planeRegistration = $validated['plane_registration'];
+        $plane = Plane::where('registration', $planeRegistration)->firstOrFail();
+
+        unset($validated['plane_registration']);
+        $validated['plane_id'] = $plane->id;
+        $validated['ends_at_date'] = $validated['starts_at_date'];
 
         $planeReservation = PlaneReservation::create($validated);
 

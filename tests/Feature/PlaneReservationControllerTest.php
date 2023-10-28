@@ -42,7 +42,7 @@ class PlaneReservationControllerTest extends TestCase
         // when
         $response = $this->get('/api/plane/SP-KYS/reservation/2023-10-29');
 
-        // assert
+        // then
         $response->assertStatus(200);
         $response->assertJson([
             'data' => [
@@ -75,7 +75,7 @@ class PlaneReservationControllerTest extends TestCase
             'registration' => 'SP-KYS',
         ]);
 
-        // when I post plane reservation for this plane and date 2023-10-29
+        // when
         $response = $this->post('/api/plane/SP-KYS/reservation/2023-10-29', [
             'user_id' => $user->id,
             'starts_at_time' => '10:00',
