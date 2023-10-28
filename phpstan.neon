@@ -1,3 +1,6 @@
+includes:
+    - ./vendor/nunomaduro/larastan/extension.neon
+
 parameters:
 	level: 9
 	reportUnmatchedIgnoredErrors: false
@@ -7,14 +10,4 @@ parameters:
 		processTimeout: 900.0
 		maximumNumberOfProcesses: 4
 	paths:
-		- .
-	excludePaths:
-		analyse:
-			- vendor
-			- tests
-			- database
-			- storage
-			- routes/console.php
-includes:
-	- phpstan-laravel.neon
-
+		- app/
