@@ -37,10 +37,10 @@ class PlaneController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $planeRegistration): JsonResponse
+    public function show(string $plane_registration): JsonResponse
     {
         return response()->json([
-            'data' => Plane::where('registration', $planeRegistration)->firstOrFail(),
+            'data' => Plane::where('registration', $plane_registration)->firstOrFail(),
         ]);
     }
 }

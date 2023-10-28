@@ -23,11 +23,11 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 
  
 Route::get('/plane/', [PlaneController::class, 'index']);
-Route::get('/plane/{planeRegistration}', [PlaneController::class, 'show']);
+Route::get('/plane/{plane_registration}', [PlaneController::class, 'show']);
 Route::post('/plane/', [PlaneController::class, 'store']);
 
 Route::get('/user/', [UserController::class, 'index']);
 Route::post('/user/', [UserController::class, 'register']);
 
-Route::get('/plane/{planeRegistration}/reservation/{date}', [PlaneReservationController::class, 'listByDate']);
-Route::post('/plane/{planeRegistration}/reservation', [PlaneReservationController::class, 'make']);
+Route::get('/plane/{plane_registration}/reservation/{starts_at_date}', [PlaneReservationController::class, 'listByDate']);
+Route::post('/plane/{plane_registration}/reservation/{starts_at_date}', [PlaneReservationController::class, 'make']);

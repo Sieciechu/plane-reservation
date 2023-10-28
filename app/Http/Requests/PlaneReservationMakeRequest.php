@@ -22,12 +22,21 @@ class PlaneReservationMakeRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'plane_id' => 'required|exists:planes,id',
+            'plane_registration' => 'required|exists:planes,registration',
             'user_id' => 'required|exists:users,id',
-            'date_from' => 'required|date',
-            'date_to' => 'required|date|after:from',
+            'starts_at_date' => 'required|date',
             'time_from' => 'required|date_format:H:i',
             'time_to' => 'required|date_format:H:i|after:time_from',
         ];
     }
+
+    public function all($keys = null)
+	{
+	  $request = parent::all($keys);
+
+	  $request['plane_registration'] = $this->route('plane_registration');
+	  $request['starts_at_date'] = $this->route('starts_at_date');
+
+	  return $request;
+	}
 }

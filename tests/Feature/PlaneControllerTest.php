@@ -2,7 +2,6 @@
 
 namespace Tests\Feature;
 
-// use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -41,7 +40,7 @@ class PlaneControllerTest extends TestCase
     {
         // given
         \App\Models\Plane::factory()->create([
-            'name' => 'Cessna 172',
+            'name' => 'PZL Koliber 150',
             'registration' => 'SP-KYS',
         ]);
 
@@ -62,7 +61,7 @@ class PlaneControllerTest extends TestCase
         ]);
         $response->assertJson([
             'data' => [
-                'name' => 'Cessna 172',
+                'name' => 'PZL Koliber 150',
                 'registration' => 'SP-KYS',
             ],
         ]);
@@ -72,7 +71,7 @@ class PlaneControllerTest extends TestCase
     {
         // given
         \App\Models\Plane::factory()->create([
-            'name' => 'Cessna 172',
+            'name' => 'PZL Koliber 150',
             'registration' => 'SP-KYS',
         ]);
 
@@ -87,7 +86,7 @@ class PlaneControllerTest extends TestCase
     {
         // given
         $data = [
-            'name' => 'Cessna 172',
+            'name' => 'PZL Koliber 150',
             'registration' => 'SP-KYS',
         ];
 
