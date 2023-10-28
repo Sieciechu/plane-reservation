@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\PlaneReservationListByDateRequest;
 use App\Http\Requests\PlaneReservationMakeRequest;
 use App\Http\Requests\UpdatePlaneReservationRequest;
 use App\Models\PlaneReservation;

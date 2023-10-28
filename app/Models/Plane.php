@@ -10,6 +10,7 @@ class Plane extends Model
 {
     use HasFactory, SoftDeletes;
 
+    /** @var array<string> */
     protected $dates = ['deleted_at'];
 
     /**

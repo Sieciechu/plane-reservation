@@ -14,7 +14,7 @@ class User extends Authenticatable
     use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
 
 
-
+    /** @var array<string> */
     protected $dates = ['deleted_at'];
     /**
      * The attributes that are mass assignable.

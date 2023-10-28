@@ -5,13 +5,14 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StorePlaneRequest;
 use App\Http\Requests\UpdatePlaneRequest;
 use App\Models\Plane;
+use Illuminate\Http\JsonResponse;
 
 class PlaneController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(): JsonResponse
     {
         return response()->json([
             'data' => Plane::all(),
@@ -29,7 +30,7 @@ class PlaneController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StorePlaneRequest $request)
+    public function store(StorePlaneRequest $request): JsonResponse
     {
         // $this->authorize('create', $request->user());
         $validated = $request->validated();
@@ -43,7 +44,7 @@ class PlaneController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $planeRegistration)
+    public function show(string $planeRegistration): JsonResponse
     {
         return response()->json([
             'data' => Plane::where('registration', $planeRegistration)->firstOrFail(),
