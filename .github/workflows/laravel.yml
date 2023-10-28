@@ -12,6 +12,7 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    # see https://github.com/shivammathur/setup-php for more information
     steps:
     - uses: shivammathur/setup-php@15c43e89cdef867065b0213be354c2841860869e
       with:
@@ -32,7 +33,7 @@ jobs:
           ${{ runner.os }}-php-
 
     - name: Install dependencies
-      run: ls -lah; composer install --prefer-dist --no-progress
+      run: composer install --prefer-dist --no-progress --no-interaction
 
     - name: Generate key
       run: php artisan key:generate
