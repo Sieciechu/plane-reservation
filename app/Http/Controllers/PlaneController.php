@@ -20,19 +20,12 @@ class PlaneController extends Controller
     }
 
     /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        
-    }
-
-    /**
      * Store a newly created resource in storage.
      */
     public function store(StorePlaneRequest $request): JsonResponse
     {
         // $this->authorize('create', $request->user());
+        /** @var array<string, mixed> $validated */
         $validated = $request->validated();
         $plane = Plane::create($validated);
         
@@ -49,29 +42,5 @@ class PlaneController extends Controller
         return response()->json([
             'data' => Plane::where('registration', $planeRegistration)->firstOrFail(),
         ]);
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Plane $plane)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdatePlaneRequest $request, Plane $plane)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Plane $plane)
-    {
-        //
     }
 }
