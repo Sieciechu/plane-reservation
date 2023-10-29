@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('planes', function (Blueprint $table) {
-            $table->id();
+            $table->uuid('id')->primary();
             $table->string('name')->nullable(false);
             $table->string('registration')->unique()->nullable(false);
             $table->timestamps();

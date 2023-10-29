@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Plane extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasFactory, SoftDeletes, HasUuids;
 
     /** @var array<string> */
     protected $dates = ['deleted_at'];
@@ -19,6 +20,7 @@ class Plane extends Model
      * @var array<int, string>
      */
     protected $fillable = [
+        'id',
         'name',
         'registration',
     ];

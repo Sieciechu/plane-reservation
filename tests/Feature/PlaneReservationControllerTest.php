@@ -47,7 +47,6 @@ class PlaneReservationControllerTest extends TestCase
         $response->assertJson([
             'data' => [
                 [
-                    'id' => 1,
                     'user_id' => $user->id,
                     'plane_id' => $plane->id,
                     'starts_at_date' => '2023-10-29',
