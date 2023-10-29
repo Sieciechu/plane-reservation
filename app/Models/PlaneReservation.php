@@ -27,6 +27,7 @@ class PlaneReservation extends Model
         'ends_at_date',
         'starts_at_time',
         'ends_at_time',
+        'time',
         'confirmed_at',
         'confirmed_by',
     ];
