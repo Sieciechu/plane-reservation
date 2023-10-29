@@ -37,7 +37,6 @@ class UserControllerTest extends TestCase
         $this->assertDatabaseCount('users', 3);
     }
 
-    // test when I send post to register new user he should be created
     public function test_post_the_user_returns_the_user(): void
     {
         // when
@@ -70,5 +69,71 @@ class UserControllerTest extends TestCase
         ]);
 
         $this->assertDatabaseCount('users', 1);
+    }
+
+    public function test_it_should_be_possible_to_login(): void
+    {
+        // given
+
+        // user is created
+        $this->post('/api/user/', [
+            'name' => 'John Doe',
+            'email' => 'some.email@post.com',
+            'password' => 'somepassword',
+            'password_confirmation' => 'somepassword',
+        ]);
+        $this->assertDatabaseCount('personal_access_tokens', 0);
+
+        // when
+        $response = $this->post('/api/user/login', [
+            'email' => 'some.email@post.com',
+            'password' => 'somepassword',
+        ]);
+
+        // then
+        $response->assertStatus(200);
+        $response->assertJsonStructure(['auth_token']);
+        $this->assertDatabaseCount('personal_access_tokens', 1);
+    }
+
+    /**
+     * @dataProvider credentialsProvider
+     */
+    public function test_when_login_email_is_invalid_it_should_be_impossible_to_login(string $email, string $password): void
+    {
+        // given
+
+        // user is created
+        $this->post('/api/user/', [
+            'name' => 'John Doe',
+            'email' => 'some.email@post.com',
+            'password' => 'somepassword',
+            'password_confirmation' => 'somepassword',
+        ]);
+
+        // when
+        $response = $this->post('/api/user/login', [
+            'email' => $email,
+            'password' => $password,
+        ]);
+
+        // then
+        $response->assertStatus(401);
+        $response->assertJson([
+            'error' => 'Invalid login or password',
+        ]);
+        $response->assertJsonMissing(['auth_token']);
+    }
+
+    public static function credentialsProvider(): iterable
+    {
+        yield 'invalid email' => [
+            'email' => 'someTypo@email.com',
+            'password' => 'somepassword',
+        ];
+        yield 'invalid password' => [
+            'email' => 'some.email@post.com',
+            'password' => 'some-wrong-password',
+        ];
     }
 }

@@ -31,3 +31,5 @@ Route::post('/user/', [UserController::class, 'register']);
 
 Route::get('/plane/{plane_registration}/reservation/{starts_at_date}', [PlaneReservationController::class, 'listByDate']);
 Route::post('/plane/{plane_registration}/reservation/{starts_at_date}', [PlaneReservationController::class, 'make']);
+
+Route::post('/user/login', [UserController::class, 'login']);
