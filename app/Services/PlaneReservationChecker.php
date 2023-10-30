@@ -52,14 +52,14 @@ class PlaneReservationChecker extends ServiceProvider
             return;
         }
 
-        $now = CarbonImmutable::now();
-        $diffInDaysNowAndReservationStart = $now->diffInDays($startDate);
-        $diffInDaysNowAndReservationEnd = $now->diffInDays($endDate);
+        $now = CarbonImmutable::now()->startOfDay();
+        $diffInDaysNowAndReservationStart = $now->diffInDays($startDate->startOfDay());
+        $diffInDaysNowAndReservationEnd = $now->diffInDays($endDate->startOfDay());
 
         if ($diffInDaysNowAndReservationStart > $this->maxReservationDaysAhead 
             || $diffInDaysNowAndReservationEnd > $this->maxReservationDaysAhead
         ) {
-            throw new \Exception("you can reserve plane for max {$this->maxReservationDaysAhead} days");
+            throw new \Exception("you can reserve plane for max {$this->maxReservationDaysAhead} days ahead");
         }
     }
 
