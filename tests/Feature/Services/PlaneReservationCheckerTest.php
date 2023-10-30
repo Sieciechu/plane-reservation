@@ -2,11 +2,17 @@
 
 namespace Tests\Unit;
 
+use App\Models\Plane;
+use App\Models\PlaneReservation;
 use App\Models\User;
 use App\Models\UserRole;
 use App\Services\PlaneReservationChecker;
 use Carbon\CarbonImmutable;
-use PHPUnit\Framework\TestCase;
+use Exception;
+use Ramsey\Uuid\Rfc4122\UuidV4;
+use Symfony\Component\Uid\Factory\UlidFactory;
+use Symfony\Component\Uid\Ulid;
+use Tests\TestCase;
 
 class PlaneReservationCheckerTest extends TestCase
 {
@@ -167,4 +173,105 @@ class PlaneReservationCheckerTest extends TestCase
         $this->assertTrue(true);
     }
 
+    public function adminShouldBeAbleToReserveDailyWithoutLimit(): void
+    {
+        // given
+        $admin = new User(['role' => UserRole::Admin]);
+        $startDate = CarbonImmutable::parse('2021-01-01 10:00');
+        $endDate = CarbonImmutable::parse('2021-01-01 18:00');
+        // when
+        $this->service->checkDailyTimeLimit($startDate, $endDate, $admin, "some plane id");
+    }
+
+    /** @test */
+    public function userShouldBeAbleToReserveDailyUpTo120MinutesWithOneGo(): void
+    {
+        // given
+        Plane::factory()->create(['id' => Ulid::fromString('01F9ZJZJZJZJZJZJZJZJZJZJZJ')]);
+
+        $user = new User(['role' => UserRole::User]);
+        $startDate = CarbonImmutable::parse('2021-01-01 10:00');
+        $endDate = CarbonImmutable::parse('2021-01-01 12:00');
+        
+        // when
+        $this->service->checkDailyTimeLimit($startDate, $endDate, $user, '01F9ZJZJZJZJZJZJZJZJZJZJZJ');
+        $this->assertTrue(true);
+    }
+
+    /** @test */
+    public function userShouldBeAbleToReserveDailyUpTo120MinutesInTotal(): void
+    {
+        // given
+        $user = new User([
+            'id' => Ulid::fromString('01HE1F50RYFHQS5HCTYWHDWYKY'),
+            'role' => UserRole::User
+        ]);
+
+        Plane::factory()->create(['id' => Ulid::fromString('01HE1FBZEPC8SRGM7VQDQV4K9X')]);
+        PlaneReservation::factory()->create([
+            'plane_id' => Ulid::fromString('01HE1FBZEPC8SRGM7VQDQV4K9X'),
+            'user_id' => Ulid::fromString('01HE1F50RYFHQS5HCTYWHDWYKY'),
+            'starts_at_date' => '2021-01-01',
+            'starts_at_time' => '10:00',
+            'ends_at_date' => '2021-01-01',
+            'ends_at_time' => '11:00',
+            'time' => 60,
+        ]);
+
+        $startDate = CarbonImmutable::parse('2021-01-01 13:00');
+        $endDate = CarbonImmutable::parse('2021-01-01 14:00');
+        
+        // when
+        $this->service->checkDailyTimeLimit($startDate, $endDate, $user, '01HE1FBZEPC8SRGM7VQDQV4K9X');
+        $this->assertTrue(true);
+    }
+
+    /** @test */
+    public function whenUserExceedsDailyLimitWithOneGoThenCheckShouldFail(): void
+    {
+        // assert
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('you can reserve plane for max 2 hours daily');
+
+        // given
+        Plane::factory()->create(['id' => Ulid::fromString('01HE1FN3P71S3V242YXJ9XMQVT')]);
+
+        $user = new User(['role' => UserRole::User]);
+        $startDate = CarbonImmutable::parse('2021-01-01 10:00');
+        $endDate = CarbonImmutable::parse('2021-01-01 12:01');
+        
+        // when
+        $this->service->checkDailyTimeLimit($startDate, $endDate, $user, '01HE1FN3P71S3V242YXJ9XMQVT');
+    }
+
+    /** @test */
+    public function whenUserExceedsDailyLimitInTotalThenCheckShouldFail(): void
+    {
+        // assert
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('you can reserve plane for max 2 hours daily');
+        
+        // given
+        $user = new User([
+            'id' => Ulid::fromString('01HE1F50RYFHQS5HCTYWHDWYKY'),
+            'role' => UserRole::User
+        ]);
+
+        Plane::factory()->create(['id' => Ulid::fromString('01HE1FNZZX6XPBTDFTN8A66Y69')]);
+        PlaneReservation::factory()->create([
+            'plane_id' => Ulid::fromString('01HE1FNZZX6XPBTDFTN8A66Y69'),
+            'user_id' => Ulid::fromString('01HE1F50RYFHQS5HCTYWHDWYKY'),
+            'starts_at_date' => '2021-01-01',
+            'starts_at_time' => '10:00',
+            'ends_at_date' => '2021-01-01',
+            'ends_at_time' => '11:00',
+            'time' => 60,
+        ]);
+
+        $startDate = CarbonImmutable::parse('2021-01-01 13:00');
+        $endDate = CarbonImmutable::parse('2021-01-01 14:01');
+        
+        // when
+        $this->service->checkDailyTimeLimit($startDate, $endDate, $user, '01HE1FNZZX6XPBTDFTN8A66Y69');
+    }
 }
