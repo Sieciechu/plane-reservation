@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\Plane;
 use App\Models\PlaneReservation;
 use App\Models\User;
+use App\Models\UserRole;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -16,10 +17,10 @@ class PlaneReservationControllerTest extends TestCase
     {
         // given
         $user = User::factory()->create([
-            'role' => \App\Models\UserRole::User,
+            'role' => UserRole::User,
         ]);
         $admin = User::factory()->create([
-            'role' => \App\Models\UserRole::Admin,
+            'role' => UserRole::Admin,
         ]);
 
         
@@ -35,6 +36,7 @@ class PlaneReservationControllerTest extends TestCase
             'ends_at_date' => '2023-10-29',
             'starts_at_time' => '10:00',
             'ends_at_time' => '11:59',
+            'time' => 119,
             'confirmed_at' => '2023-10-28 12:13:14',
             'confirmed_by' => $admin->id,
         ]);
@@ -53,6 +55,7 @@ class PlaneReservationControllerTest extends TestCase
                     'ends_at_date' => '2023-10-29',
                     'starts_at_time' => '10:00:00',
                     'ends_at_time' => '11:59:00',
+                    'time' => 119,
                     'confirmed_at' => '2023-10-28 12:13:14',
                     'confirmed_by' => $admin->id,
                     'deleted_at' => null,
@@ -91,6 +94,7 @@ class PlaneReservationControllerTest extends TestCase
             'ends_at_date' => '2023-10-29',
             'starts_at_time' => '10:00',
             'ends_at_time' => '11:59',
+            'time' => 119,
             'confirmed_at' => null,
             'confirmed_by' => null,
             'deleted_at' => null,
