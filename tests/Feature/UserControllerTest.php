@@ -44,6 +44,7 @@ class UserControllerTest extends TestCase
             'name' => 'John Doe',
             'email' => 'email@post.com',
             'password' => 'somepassword',
+            'password_confirmation' => 'somepassword',
         ]);
 
         // then
