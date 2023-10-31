@@ -9,6 +9,7 @@ use App\Models\UserRole;
 use App\Services\PlaneReservationChecker;
 use Carbon\CarbonImmutable;
 use Exception;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Ramsey\Uuid\Rfc4122\UuidV4;
 use Symfony\Component\Uid\Factory\UlidFactory;
 use Symfony\Component\Uid\Ulid;
@@ -16,6 +17,8 @@ use Tests\TestCase;
 
 class PlaneReservationCheckerTest extends TestCase
 {
+    use RefreshDatabase;
+
     private PlaneReservationChecker $service;
 
     public function setUp(): void
@@ -184,7 +187,7 @@ class PlaneReservationCheckerTest extends TestCase
     }
 
     /** @test */
-    public function userShouldBeAbleToReserveDailyUpTo120MinutesWithOneGo(): void
+    public function userShouldBeAbleToReserveDailyUpToDailyLimitWithOneGo(): void
     {
         // given
         Plane::factory()->create(['id' => Ulid::fromString('01F9ZJZJZJZJZJZJZJZJZJZJZJ')]);
@@ -199,7 +202,7 @@ class PlaneReservationCheckerTest extends TestCase
     }
 
     /** @test */
-    public function userShouldBeAbleToReserveDailyUpTo120MinutesInTotal(): void
+    public function userShouldBeAbleToReserveDailyUpToDailyLimitInTotal(): void
     {
         // given
         $user = new User([
@@ -218,11 +221,19 @@ class PlaneReservationCheckerTest extends TestCase
             'time' => 60,
         ]);
 
-        $startDate = CarbonImmutable::parse('2021-01-01 13:00');
-        $endDate = CarbonImmutable::parse('2021-01-01 14:00');
-        
         // when
-        $this->service->checkDailyTimeLimit($startDate, $endDate, $user, '01HE1FBZEPC8SRGM7VQDQV4K9X');
+        $this->service->checkDailyTimeLimit(
+            CarbonImmutable::parse('2021-01-01 13:00'),
+            CarbonImmutable::parse('2021-01-01 14:00'),
+            $user,
+            '01HE1FBZEPC8SRGM7VQDQV4K9X'
+        );
+        $this->service->checkDailyTimeLimit(
+            CarbonImmutable::parse('2021-02-01 12:00'),
+            CarbonImmutable::parse('2021-02-01 14:00'),
+            $user,
+            '01HE1FBZEPC8SRGM7VQDQV4K9X'
+        );
         $this->assertTrue(true);
     }
 
@@ -273,5 +284,119 @@ class PlaneReservationCheckerTest extends TestCase
         
         // when
         $this->service->checkDailyTimeLimit($startDate, $endDate, $user, '01HE1FNZZX6XPBTDFTN8A66Y69');
+    }
+
+    public function adminShouldBeAbleToReserveWithoutMonthlyLimit(): void
+    {
+        // given
+        $admin = new User(['role' => UserRole::Admin]);
+        $startDate = CarbonImmutable::parse('2021-01-01 10:00');
+        $endDate = CarbonImmutable::parse('2021-03-01 18:00');
+        // when
+        $this->service->checkDailyTimeLimit($startDate, $endDate, $admin, "some plane id");
+        $this->assertTrue(true);
+    }
+
+    /** @test */
+    public function userShouldBeAbleToReserveUpToMonthlyLimit(): void
+    {
+        // given
+        $user = new User([
+            'id' => Ulid::fromString('01HE1F50RYFHQS5HCTYWHDWYKY'),
+            'role' => UserRole::User
+        ]);
+
+        Plane::factory()->create(['id' => Ulid::fromString('01HE1G3R4YDG9H3WRGQPQ8FKV9')]);
+        Plane::factory()->create(['id' => Ulid::fromString('01HE1GCNTM44CKBFPMRX33WZ1D')]);
+
+        PlaneReservation::factory()->create([
+            'plane_id' => Ulid::fromString('01HE1G3R4YDG9H3WRGQPQ8FKV9'),
+            'user_id' => Ulid::fromString('01HE1F50RYFHQS5HCTYWHDWYKY'),
+            'starts_at_date' => '2021-01-01',
+            'starts_at_time' => '10:00',
+            'ends_at_date' => '2021-01-01',
+            'ends_at_time' => '11:00',
+            'time' => 60,
+        ]);
+        PlaneReservation::factory()->create([
+            'plane_id' => Ulid::fromString('01HE1G3R4YDG9H3WRGQPQ8FKV9'),
+            'user_id' => Ulid::fromString('01HE1F50RYFHQS5HCTYWHDWYKY'),
+            'starts_at_date' => '2021-01-16',
+            'starts_at_time' => '15:00',
+            'ends_at_date' => '2021-01-16',
+            'ends_at_time' => '16:00',
+            'time' => 60,
+        ]);
+        // this is different plane, monthly it should also count
+        PlaneReservation::factory()->create([
+            'plane_id' => Ulid::fromString('01HE1GCNTM44CKBFPMRX33WZ1D'),
+            'user_id' => Ulid::fromString('01HE1F50RYFHQS5HCTYWHDWYKY'),
+            'starts_at_date' => '2021-01-21',
+            'starts_at_time' => '12:00',
+            'ends_at_date' => '2021-01-21',
+            'ends_at_time' => '15:00',
+            'time' => 60,
+        ]);
+
+        
+        // when
+        $this->service->checkUserMonthlyTimeLimit(
+            CarbonImmutable::parse('2021-01-10 13:00'),
+            CarbonImmutable::parse('2021-01-10 14:00'),
+            $user,
+        );
+        $this->assertTrue(true);
+    }
+
+    /** @test */
+    public function userShouldNotBeAbleToReserveMoreThanMonthlyLimit(): void
+    {
+        // given
+        $user = new User([
+            'id' => Ulid::fromString('01HE1F50RYFHQS5HCTYWHDWYKY'),
+            'role' => UserRole::User
+        ]);
+
+        Plane::factory()->create(['id' => Ulid::fromString('01HE1GB7NJSMF037F76BVR1D1M')]);
+        Plane::factory()->create(['id' => Ulid::fromString('01HE1GRM0B8RQTEX4KYFT7Q7TR')]);
+        PlaneReservation::factory()->create([
+            'plane_id' => Ulid::fromString('01HE1GB7NJSMF037F76BVR1D1M'),
+            'user_id' => Ulid::fromString('01HE1F50RYFHQS5HCTYWHDWYKY'),
+            'starts_at_date' => '2021-01-01',
+            'starts_at_time' => '10:00',
+            'ends_at_date' => '2021-01-01',
+            'ends_at_time' => '11:00',
+            'time' => 60,
+        ]);
+        PlaneReservation::factory()->create([
+            'plane_id' => Ulid::fromString('01HE1GB7NJSMF037F76BVR1D1M'),
+            'user_id' => Ulid::fromString('01HE1F50RYFHQS5HCTYWHDWYKY'),
+            'starts_at_date' => '2021-01-16',
+            'starts_at_time' => '15:00',
+            'ends_at_date' => '2021-01-16',
+            'ends_at_time' => '16:00',
+            'time' => 60,
+        ]);
+        // this is different plane, monthly it should also count
+        PlaneReservation::factory()->create([
+            'plane_id' => Ulid::fromString('01HE1GRM0B8RQTEX4KYFT7Q7TR'),
+            'user_id' => Ulid::fromString('01HE1F50RYFHQS5HCTYWHDWYKY'),
+            'starts_at_date' => '2021-01-21',
+            'starts_at_time' => '12:00',
+            'ends_at_date' => '2021-01-21',
+            'ends_at_time' => '15:00',
+            'time' => 60,
+        ]);
+
+        // assert
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('you can reserve planes for max 4 hours monthly');
+        
+        // when
+        $this->service->checkUserMonthlyTimeLimit(
+            CarbonImmutable::parse('2021-01-10 13:00'),
+            CarbonImmutable::parse('2021-01-10 14:01'),
+            $user,
+        );
     }
 }

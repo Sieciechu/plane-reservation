@@ -1,4 +1,5 @@
 <?php
+declare(strict_types=1);
 
 namespace App\Services;
 
@@ -13,9 +14,9 @@ use Illuminate\Support\ServiceProvider;
 class PlaneReservationChecker extends ServiceProvider
 {
     public function __construct(
-        private string $monthlyTimeLimitInMinutes,
-        private string $dailyTimeLimitInMinutes,
-        private string $maxReservationDaysAhead,
+        private int $monthlyTimeLimitInMinutes,
+        private int $dailyTimeLimitInMinutes,
+        private int $maxReservationDaysAhead,
     ){}
     /**
      * @param $params array {
@@ -28,7 +29,9 @@ class PlaneReservationChecker extends ServiceProvider
      */
     public function checkAll(array $params): void
     {
+        /** @var User $user */
         $user = User::findOrFail($params['user_id']);
+        /** @var Plane $plane */
         $plane = Plane::findOrFail($params['plane_id']);
         
         $startDate = CarbonImmutable::parse($params['start_date']);
@@ -96,7 +99,7 @@ class PlaneReservationChecker extends ServiceProvider
             ->whereMonth('starts_at_date', $startDate->format('m'))
             ->sum('time') ?? 0;
         
-
+        
         $monthlyTime = $monthlyUsedTime + $reservationTime;
 
         if ($monthlyTime > $this->monthlyTimeLimitInMinutes) {
