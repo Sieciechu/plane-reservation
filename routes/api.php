@@ -31,6 +31,7 @@ Route::post('/user/', [UserController::class, 'register']);
 
 Route::get('/plane/{plane_registration}/reservation/{starts_at_date}', [PlaneReservationController::class, 'listByDate']);
 Route::post('/plane/{plane_registration}/reservation/{starts_at_date}', [PlaneReservationController::class, 'make']);
-Route::delete('/plane/{plane_registration}/reservation', [PlaneReservationController::class, 'removeReservation']);
+Route::delete('/plane/reservation', [PlaneReservationController::class, 'removeReservation']);
+Route::post('/plane/reservation/confirm', [PlaneReservationController::class, 'confirmReservation']);
 
 Route::post('/user/login', [UserController::class, 'login']);

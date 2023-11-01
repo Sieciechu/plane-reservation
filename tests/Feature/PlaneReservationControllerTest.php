@@ -7,6 +7,7 @@ use App\Models\PlaneReservation;
 use App\Models\User;
 use App\Models\UserRole;
 use Carbon\Carbon;
+use Carbon\CarbonImmutable;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -116,8 +117,6 @@ class PlaneReservationControllerTest extends TestCase
     public function test_remove_reservation(): void
     {
         // given
-        Carbon::setTestNow('2023-10-28 12:13:14');
-
         $user = User::factory()->create([
             'role' => UserRole::User,
         ]);
@@ -140,11 +139,13 @@ class PlaneReservationControllerTest extends TestCase
         ]);
 
         // when
-        $response = $this->delete('/api/plane/SP-KYS/reservation/', [
+        Carbon::setTestNow('2023-10-28 12:13:14');
+
+        $response = $this->delete('/api/plane/reservation/', [
             'reservation_id' => '01HE68JBYDRR96FVYZYK7D7JS2',
         ]);
         // when
-        $response = $this->delete('/api/plane/SP-KYS/reservation/', [
+        $response = $this->delete('/api/plane/reservation/', [
             'reservation_id' => '01HE68JBYDRR96FVYZYK7D7JS2',
         ]);
         
@@ -192,7 +193,7 @@ class PlaneReservationControllerTest extends TestCase
         ]);
 
         // when
-        $response = $this->delete('/api/plane/SP-KYS/reservation/', [
+        $response = $this->delete('/api/plane/reservation/', [
             'reservation_id' => '01HE68XAY50PSC2WKAFS2M7NXP',
         ]);
         
@@ -211,5 +212,94 @@ class PlaneReservationControllerTest extends TestCase
 
         $reponse = $this->get('/api/plane/SP-KYS/reservation/2023-10-29');
         $this->assertNotEmpty($reponse->json()['data']);
+    }
+
+    public function test_confirm_reservation(): void
+    {
+        // given
+        $user = User::factory()->create([
+            'role' => UserRole::User,
+        ]);
+
+        /** @var Plane $plane */
+        $plane = Plane::factory()->create([
+            'name' => 'PZL Koliber 150',
+            'registration' => 'SP-KYS',
+        ]);
+
+        PlaneReservation::factory()->create([
+            'id' => '01HE68JBYDRR96FVYZYK7D7JS2',
+            'user_id' => $user->id,
+            'plane_id' => $plane->id,
+            'starts_at' => '2023-10-29 10:00:00',
+            'ends_at' => '2023-10-29 11:59:00',
+            'time' => 119,
+            'confirmed_at' => null,
+            'confirmed_by' => null,
+            'deleted_at' => null,
+        ]);
+
+        // when
+        Carbon::setTestNow('2023-10-28 12:13:14');
+        CarbonImmutable::setTestNow('2023-10-28 12:13:14');
+
+        $response = $this->post('/api/plane/reservation/confirm', [
+            'reservation_id' => '01HE68JBYDRR96FVYZYK7D7JS2',
+        ]);
+        
+        // then
+        $response->assertStatus(200);
+
+        $this->assertDatabaseCount('plane_reservations', 1);
+        $this->assertDatabaseHas('plane_reservations', [
+            'plane_id' => $plane->id,
+            'starts_at' => '2023-10-29 10:00:00',
+            'ends_at' => '2023-10-29 11:59:00',
+            'time' => 119,
+            'confirmed_at' => '2023-10-28 12:13:14',
+            'confirmed_by' => '01HE69WJM5FNFEFPV321F9240Y',
+            'deleted_at' => null,
+        ]);
+    }
+
+    public function test_it_should_be_impossible_to_confirm_non_existant_or_removed_reservation(): void
+    {
+        // given
+        $user = User::factory()->create([
+            'role' => UserRole::User,
+        ]);
+
+        /** @var Plane $plane */
+        $plane = Plane::factory()->create([
+            'name' => 'PZL Koliber 150',
+            'registration' => 'SP-KYS',
+        ]);
+
+        PlaneReservation::factory()->create([
+            'id' => '01HE68JBYDRR96FVYZYK7D7JS2',
+            'user_id' => $user->id,
+            'plane_id' => $plane->id,
+            'starts_at' => '2023-10-29 10:00:00',
+            'ends_at' => '2023-10-29 11:59:00',
+            'time' => 119,
+            'confirmed_at' => null,
+            'confirmed_by' => null,
+            'deleted_at' => '2023-10-30 11:59:00',
+        ]);
+
+        // when
+        Carbon::setTestNow('2023-10-28 12:13:14');
+        CarbonImmutable::setTestNow('2023-10-28 12:13:14');
+        
+        $response1 = $this->post('/api/plane/reservation/confirm', [
+            'reservation_id' => '01HE68JBYDRR96FVYZYK7D7JS2',
+        ]);
+        $response2 = $this->post('/api/plane/reservation/confirm', [
+            'reservation_id' => '01HE6AE4K6D2YYDE5GWHCK13GG',
+        ]);
+        
+        // then
+        $response1->assertStatus(404);
+        $response2->assertStatus(404);
     }
 }

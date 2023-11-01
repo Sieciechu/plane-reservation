@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\PlaneReservationConfirmRequest;
 use App\Http\Requests\PlaneReservationListByDateRequest;
 use App\Http\Requests\PlaneReservationMakeRequest;
 use App\Http\Requests\PlaneReservationRemoveRequest;
@@ -81,6 +82,20 @@ class PlaneReservationController extends Controller
 
         $planeReservation = PlaneReservation::withTrashed()->where('id', $validated['reservation_id'])->firstOrFail();
         $planeReservation->delete();
+
+        return response()->json([], 200);
+    }
+
+    public function confirmReservation(PlaneReservationConfirmRequest $request): JsonResponse
+    {
+        /** @var array<string, string> $validated */
+        $validated = $request->validated();
+        // TODO if user is admin
+
+        $planeReservation = PlaneReservation::where('id', $validated['reservation_id'])->firstOrFail();
+        $planeReservation->confirmed_at = CarbonImmutable::now();
+        $planeReservation->confirmed_by = '01HE69WJM5FNFEFPV321F9240Y'; // admin stub
+        $planeReservation->save();
 
         return response()->json([], 200);
     }
