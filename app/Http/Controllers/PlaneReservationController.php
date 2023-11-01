@@ -5,12 +5,22 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\PlaneReservationListByDateRequest;
 use App\Http\Requests\PlaneReservationMakeRequest;
+use App\Http\Requests\PlaneReservationRemoveRequest;
+use App\Http\Requests\PlaneReservationUpdateRequest;
 use App\Models\Plane;
 use App\Models\PlaneReservation;
+use App\Models\User;
+use App\Models\UserReservationLimit;
+use Carbon\CarbonImmutable;
 use Illuminate\Http\JsonResponse;
 
 class PlaneReservationController extends Controller
 {
+    public function __construct(
+         private \App\Services\PlaneReservationChecker $reservationChecker,
+    ) {
+    }
+
     /**
      * Display a listing of the resource.
      */
@@ -50,7 +60,7 @@ class PlaneReservationController extends Controller
         $endsAt = $startsAt->setTimeFromTimeString($endsAt->toTimeString());
         $validated['time'] = $startsAt->diffInMinutes($endsAt);
 
-        // $this->reservationChecker->checkAll($validated);
+        $this->reservationChecker->checkAll($validated);
 
         $planeReservation = PlaneReservation::create($validated);
 
@@ -60,5 +70,15 @@ class PlaneReservationController extends Controller
 
 
         return response()->json([], 201);
+    }
+
+    public function removeReservation(PlaneReservationRemoveRequest $request): JsonResponse
+    {
+        $validated = $request->validated();
+        // TODO if user is admin or owner of reservation
+        $planeReservation = PlaneReservation::where('id', $validated['reservation_id'])->firstOrFail();
+        $planeReservation->delete();
+
+        return response()->json([], 200);
     }
 }

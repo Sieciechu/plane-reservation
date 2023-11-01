@@ -83,8 +83,6 @@ class PlaneReservationChecker extends ServiceProvider
         $usedTime = PlaneReservation::where('user_id', $user->id)
             ->where('plane_id', $planeId)
             ->whereDate('starts_at', $startsAt->format('Y-m-d'))
-            // ->whereMonth('starts_at', $startsAt->format('m'))
-            // ->whereDay('starts_at', $startsAt->format('d'))
             ->sum('time');
 
         $dailyTime = $usedTime + $reservationTime;
