@@ -11,13 +11,14 @@ use App\Models\Plane;
 use App\Models\PlaneReservation;
 use App\Models\User;
 use App\Models\UserReservationLimit;
+use App\Services\PlaneReservationChecker;
 use Carbon\CarbonImmutable;
 use Illuminate\Http\JsonResponse;
 
 class PlaneReservationController extends Controller
 {
     public function __construct(
-         private \App\Services\PlaneReservationChecker $reservationChecker,
+         private PlaneReservationChecker $reservationChecker,
     ) {
     }
 
@@ -74,9 +75,11 @@ class PlaneReservationController extends Controller
 
     public function removeReservation(PlaneReservationRemoveRequest $request): JsonResponse
     {
+        /** @var array<string, string> $validated */
         $validated = $request->validated();
         // TODO if user is admin or owner of reservation
-        $planeReservation = PlaneReservation::where('id', $validated['reservation_id'])->firstOrFail();
+
+        $planeReservation = PlaneReservation::withTrashed()->where('id', $validated['reservation_id'])->firstOrFail();
         $planeReservation->delete();
 
         return response()->json([], 200);

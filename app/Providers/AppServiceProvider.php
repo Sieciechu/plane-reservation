@@ -14,15 +14,24 @@ class AppServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->app->bind(PlaneReservationChecker::class, function() {
+            /** @var int $monthlyLimit */
+            $monthlyLimit = config('planereservation.monthlyTimeLimitInMinutes');
+            /** @var int $dailyLimit */
+            $dailyLimit = config('planereservation.dailyTimeLimitInMinutes');
+            /** @var int $daysAheadLimit */
+            $daysAheadLimit = config('planereservation.maxReservationDaysAhead');
+            
             return new PlaneReservationChecker(
-                monthlyTimeLimitInMinutes: config('planereservation.monthlyTimeLimitInMinutes'),
-                dailyTimeLimitInMinutes: config('planereservation.dailyTimeLimitInMinutes'),
-                maxReservationDaysAhead: config('planereservation.maxReservationDaysAhead'),
+                monthlyTimeLimitInMinutes: $monthlyLimit,
+                dailyTimeLimitInMinutes: $dailyLimit,
+                maxReservationDaysAhead: $daysAheadLimit,
             );
         });
         $this->app->bind(PlaneReservationController::class, function() {
+            /** @var PlaneReservationChecker $checker */
+            $checker = $this->app->get(PlaneReservationChecker::class);
             return new PlaneReservationController(
-                reservationChecker: $this->app->get(PlaneReservationChecker::class),
+                reservationChecker: $checker,
             );
         });
     }

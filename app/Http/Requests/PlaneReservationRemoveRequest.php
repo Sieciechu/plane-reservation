@@ -22,7 +22,7 @@ class PlaneReservationRemoveRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'reservation_id' => 'required|exists:plane_reservations,id',
+            'reservation_id' => 'required|string',
         ];
     }
 }

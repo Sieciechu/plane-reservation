@@ -128,6 +128,7 @@ class PlaneReservationControllerTest extends TestCase
             'registration' => 'SP-KYS',
         ]);
         PlaneReservation::factory()->create([
+            'id' => '01HE68JBYDRR96FVYZYK7D7JS2',
             'user_id' => $user->id,
             'plane_id' => $plane->id,
             'starts_at' => '2023-10-29 10:00:00',
@@ -138,12 +139,13 @@ class PlaneReservationControllerTest extends TestCase
             'deleted_at' => null,
         ]);
 
-        $reponse = $this->get('/api/plane/SP-KYS/reservation/2023-10-29');
-        $reservationId = $reponse->json()['data'][0]['id'];
-
         // when
         $response = $this->delete('/api/plane/SP-KYS/reservation/', [
-            'reservation_id' => $reservationId,
+            'reservation_id' => '01HE68JBYDRR96FVYZYK7D7JS2',
+        ]);
+        // when
+        $response = $this->delete('/api/plane/SP-KYS/reservation/', [
+            'reservation_id' => '01HE68JBYDRR96FVYZYK7D7JS2',
         ]);
         
         // then
@@ -161,5 +163,53 @@ class PlaneReservationControllerTest extends TestCase
 
         $reponse = $this->get('/api/plane/SP-KYS/reservation/2023-10-29');
         $this->assertEmpty($reponse->json()['data']);
+    }
+
+    public function test_it_should_be_impossible_to_remove_non_existing_reservation(): void
+    {
+        // given
+        Carbon::setTestNow('2023-10-28 12:13:14');
+
+        $user = User::factory()->create([
+            'role' => UserRole::User,
+        ]);
+
+        /** @var Plane $plane */
+        $plane = Plane::factory()->create([
+            'name' => 'PZL Koliber 150',
+            'registration' => 'SP-KYS',
+        ]);
+        PlaneReservation::factory()->create([
+            'id' => '01HE68JBYDRR96FVYZYK7D7JS2',
+            'user_id' => $user->id,
+            'plane_id' => $plane->id,
+            'starts_at' => '2023-10-29 10:00:00',
+            'ends_at' => '2023-10-29 11:59:00',
+            'time' => 119,
+            'confirmed_at' => null,
+            'confirmed_by' => null,
+            'deleted_at' => null,
+        ]);
+
+        // when
+        $response = $this->delete('/api/plane/SP-KYS/reservation/', [
+            'reservation_id' => '01HE68XAY50PSC2WKAFS2M7NXP',
+        ]);
+        
+        // then
+        $response->assertStatus(404);
+        $this->assertDatabaseCount('plane_reservations', 1);
+        $this->assertDatabaseHas('plane_reservations', [
+            'plane_id' => $plane->id,
+            'starts_at' => '2023-10-29 10:00:00',
+            'ends_at' => '2023-10-29 11:59:00',
+            'time' => 119,
+            'confirmed_at' => null,
+            'confirmed_by' => null,
+            'deleted_at' => null,
+        ]);
+
+        $reponse = $this->get('/api/plane/SP-KYS/reservation/2023-10-29');
+        $this->assertNotEmpty($reponse->json()['data']);
     }
 }
