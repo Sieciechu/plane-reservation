@@ -10,7 +10,17 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
+use \DateTimeInterface;
 
+/**
+ * @property string $id
+ * @property string $name
+ * @property string $email
+ * @property string $password
+ * @property UserRole $role
+ * @property string $remember_token
+ * @property DateTimeInterface $email_verified_at
+ */
 class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable, SoftDeletes, HasUuids;
@@ -29,6 +39,7 @@ class User extends Authenticatable
         'email',
         'password',
         'role',
+        'deleted_at',
     ];
 
     /**
@@ -56,6 +67,7 @@ class User extends Authenticatable
     public function toArray(): array
     {
         $arr = parent::toArray();
+        unset($arr['password']);
         $arr['deleted_at'] = $this->deleted_at;
         $arr['email_verified_at'] = $this->email_verified_at;
         return $arr;

@@ -2,7 +2,10 @@
 
 namespace Tests\Feature;
 
+use App\Models\User;
+use App\Models\UserRole;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
 class UserControllerTest extends TestCase
@@ -12,14 +15,19 @@ class UserControllerTest extends TestCase
     public function test_get_the_users_returns_the_list(): void
     {
         // given
-        \App\Models\User::factory(3)->create();
+        $user = User::factory()->create([
+            'role' => UserRole::User,
+        ]);
+        Sanctum::actingAs($user, ['*']);
+
+        User::factory(3)->create();
 
         // when
         $response = $this->get('/api/user/');
 
         // then
         $response->assertStatus(200);
-        $response->assertJsonCount(3, 'data');
+        $response->assertJsonCount(4, 'data');
         $response->assertJsonStructure([
             'data' => [
                 '*' => [
@@ -34,10 +42,10 @@ class UserControllerTest extends TestCase
             ],
         ]);
 
-        $this->assertDatabaseCount('users', 3);
+        $this->assertDatabaseCount('users', 4);
     }
 
-    public function test_post_the_user_returns_the_user(): void
+    public function test_it_should_be_possible_to_register_the_user(): void
     {
         // when
         $response = $this->post('/api/user/', [

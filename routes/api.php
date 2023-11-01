@@ -21,17 +21,19 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
- 
-Route::get('/plane/', [PlaneController::class, 'index']);
-Route::get('/plane/{plane_registration}', [PlaneController::class, 'show']);
-Route::post('/plane/', [PlaneController::class, 'store']);
-
-Route::get('/user/', [UserController::class, 'index']);
+Route::post('/user/login', [UserController::class, 'login']);
 Route::post('/user/', [UserController::class, 'register']);
 
-Route::get('/plane/{plane_registration}/reservation/{starts_at_date}', [PlaneReservationController::class, 'listByDate']);
-Route::post('/plane/{plane_registration}/reservation/{starts_at_date}', [PlaneReservationController::class, 'make']);
-Route::delete('/plane/reservation', [PlaneReservationController::class, 'removeReservation']);
-Route::post('/plane/reservation/confirm', [PlaneReservationController::class, 'confirmReservation']);
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/plane/', [PlaneController::class, 'index']);
+    Route::get('/plane/{plane_registration}', [PlaneController::class, 'show']);
+    Route::post('/plane/', [PlaneController::class, 'store']);
 
-Route::post('/user/login', [UserController::class, 'login']);
+    Route::get('/user/', [UserController::class, 'index']);
+    
+    Route::get('/plane/{plane_registration}/reservation/{starts_at_date}', [PlaneReservationController::class, 'listByDate']);
+    Route::post('/plane/{plane_registration}/reservation/{starts_at_date}', [PlaneReservationController::class, 'make']);
+    Route::delete('/plane/reservation', [PlaneReservationController::class, 'removeReservation']);
+    Route::post('/plane/reservation/confirm', [PlaneReservationController::class, 'confirmReservation']);
+
+});

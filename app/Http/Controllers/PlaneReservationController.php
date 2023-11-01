@@ -12,6 +12,7 @@ use App\Models\Plane;
 use App\Models\PlaneReservation;
 use App\Models\User;
 use App\Models\UserReservationLimit;
+use App\Models\UserRole;
 use App\Services\PlaneReservationChecker;
 use Carbon\CarbonImmutable;
 use Illuminate\Http\JsonResponse;
@@ -49,6 +50,8 @@ class PlaneReservationController extends Controller
     {
         /** @var array<string, mixed> $validated */
         $validated = $request->validated();
+        
+        $user = $request->user();
 
         /** @var string $planeRegistration */
         $planeRegistration = $validated['plane_registration'];
@@ -78,9 +81,12 @@ class PlaneReservationController extends Controller
     {
         /** @var array<string, string> $validated */
         $validated = $request->validated();
-        // TODO if user is admin or owner of reservation
-
+        
+        $user = $request->user();
         $planeReservation = PlaneReservation::withTrashed()->where('id', $validated['reservation_id'])->firstOrFail();
+        
+        $this->authorize('remove', $planeReservation);
+
         $planeReservation->delete();
 
         return response()->json([], 200);
@@ -90,11 +96,15 @@ class PlaneReservationController extends Controller
     {
         /** @var array<string, string> $validated */
         $validated = $request->validated();
-        // TODO if user is admin
-
+        
+        /** @var User $user */
+        $user = $request->user();
+        
         $planeReservation = PlaneReservation::where('id', $validated['reservation_id'])->firstOrFail();
+        $this->authorize('confirm', $planeReservation);
+
         $planeReservation->confirmed_at = CarbonImmutable::now();
-        $planeReservation->confirmed_by = '01HE69WJM5FNFEFPV321F9240Y'; // admin stub
+        $planeReservation->confirmed_by = $user->id;
         $planeReservation->save();
 
         return response()->json([], 200);

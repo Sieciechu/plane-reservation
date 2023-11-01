@@ -39,5 +39,6 @@ class PlaneReservation extends Model
         'time',
         'confirmed_at',
         'confirmed_by',
+        'deleted_at',
     ];
 }

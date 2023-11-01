@@ -2,7 +2,11 @@
 
 namespace Tests\Feature;
 
+use App\Models\Plane;
+use App\Models\User;
+use App\Models\UserRole;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
 class PlaneControllerTest extends TestCase
@@ -13,6 +17,10 @@ class PlaneControllerTest extends TestCase
     {
         // given
         \App\Models\Plane::factory(3)->create();
+        $user = User::factory()->create([
+            'role' => UserRole::User,
+        ]);
+        Sanctum::actingAs($user, ['*']);
 
         // when
         $response = $this->get('/api/plane/');
@@ -39,10 +47,14 @@ class PlaneControllerTest extends TestCase
     public function test_get_the_specific_plane_returns_it(): void
     {
         // given
-        \App\Models\Plane::factory()->create([
+        Plane::factory()->create([
             'name' => 'PZL Koliber 150',
             'registration' => 'SP-KYS',
         ]);
+        $user = User::factory()->create([
+            'role' => UserRole::User,
+        ]);
+        Sanctum::actingAs($user, ['*']);
 
         // when
         $response = $this->get('/api/plane/SP-KYS');
@@ -70,10 +82,14 @@ class PlaneControllerTest extends TestCase
     public function test_get_the_specific_plane_returns_404_when_not_found(): void
     {
         // given
-        \App\Models\Plane::factory()->create([
+        Plane::factory()->create([
             'name' => 'PZL Koliber 150',
             'registration' => 'SP-KYS',
         ]);
+        $user = User::factory()->create([
+            'role' => UserRole::User,
+        ]);
+        Sanctum::actingAs($user, ['*']);
 
         // when
         $response = $this->get('/api/plane/SP-KYS2');
@@ -85,6 +101,11 @@ class PlaneControllerTest extends TestCase
     public function test_post_the_plane_creates_it(): void
     {
         // given
+        $user = User::factory()->create([
+            'role' => UserRole::User,
+        ]);
+        Sanctum::actingAs($user, ['*']);
+        
         $data = [
             'name' => 'PZL Koliber 150',
             'registration' => 'SP-KYS',
