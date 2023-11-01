@@ -215,10 +215,8 @@ class PlaneReservationCheckerTest extends TestCase
         PlaneReservation::factory()->create([
             'plane_id' => Ulid::fromString('01HE1FBZEPC8SRGM7VQDQV4K9X'),
             'user_id' => Ulid::fromString('01HE1F50RYFHQS5HCTYWHDWYKY'),
-            'starts_at_date' => '2021-01-01',
-            'starts_at_time' => '10:00',
-            'ends_at_date' => '2021-01-01',
-            'ends_at_time' => '11:00',
+            'starts_at' => '2021-01-01 10:00:00',
+            'ends_at' => '2021-01-01 11:00:00',
             'time' => 60,
         ]);
 
@@ -273,10 +271,8 @@ class PlaneReservationCheckerTest extends TestCase
         PlaneReservation::factory()->create([
             'plane_id' => Ulid::fromString('01HE1FNZZX6XPBTDFTN8A66Y69'),
             'user_id' => Ulid::fromString('01HE1F50RYFHQS5HCTYWHDWYKY'),
-            'starts_at_date' => '2021-01-01',
-            'starts_at_time' => '10:00',
-            'ends_at_date' => '2021-01-01',
-            'ends_at_time' => '11:00',
+            'starts_at' => '2021-01-01 10:00:00',
+            'ends_at' => '2021-01-01 11:00:00',
             'time' => 60,
         ]);
 
@@ -313,29 +309,23 @@ class PlaneReservationCheckerTest extends TestCase
         PlaneReservation::factory()->create([
             'plane_id' => Ulid::fromString('01HE1G3R4YDG9H3WRGQPQ8FKV9'),
             'user_id' => Ulid::fromString('01HE1F50RYFHQS5HCTYWHDWYKY'),
-            'starts_at_date' => '2021-01-01',
-            'starts_at_time' => '10:00',
-            'ends_at_date' => '2021-01-01',
-            'ends_at_time' => '11:00',
+            'starts_at' => '2021-01-01 10:00:00',
+            'ends_at' => '2021-01-01 11:00:00',
             'time' => 60,
         ]);
         PlaneReservation::factory()->create([
             'plane_id' => Ulid::fromString('01HE1G3R4YDG9H3WRGQPQ8FKV9'),
             'user_id' => Ulid::fromString('01HE1F50RYFHQS5HCTYWHDWYKY'),
-            'starts_at_date' => '2021-01-16',
-            'starts_at_time' => '15:00',
-            'ends_at_date' => '2021-01-16',
-            'ends_at_time' => '16:00',
+            'starts_at' => '2021-01-16 15:00:00',
+            'ends_at' => '2021-01-16 16:00:00',
             'time' => 60,
         ]);
         // this is different plane, monthly it should also count
         PlaneReservation::factory()->create([
             'plane_id' => Ulid::fromString('01HE1GCNTM44CKBFPMRX33WZ1D'),
             'user_id' => Ulid::fromString('01HE1F50RYFHQS5HCTYWHDWYKY'),
-            'starts_at_date' => '2021-01-21',
-            'starts_at_time' => '12:00',
-            'ends_at_date' => '2021-01-21',
-            'ends_at_time' => '15:00',
+            'starts_at' => '2021-01-21 12:00:00',
+            'ends_at' => '2021-01-21 15:00:00',
             'time' => 60,
         ]);
 
@@ -363,29 +353,68 @@ class PlaneReservationCheckerTest extends TestCase
         PlaneReservation::factory()->create([
             'plane_id' => Ulid::fromString('01HE1GB7NJSMF037F76BVR1D1M'),
             'user_id' => Ulid::fromString('01HE1F50RYFHQS5HCTYWHDWYKY'),
-            'starts_at_date' => '2021-01-01',
-            'starts_at_time' => '10:00',
-            'ends_at_date' => '2021-01-01',
-            'ends_at_time' => '11:00',
+            'starts_at' => '2021-01-01 10:00:00',
+            'ends_at' => '2021-01-01 11:00:00',
             'time' => 60,
         ]);
         PlaneReservation::factory()->create([
             'plane_id' => Ulid::fromString('01HE1GB7NJSMF037F76BVR1D1M'),
             'user_id' => Ulid::fromString('01HE1F50RYFHQS5HCTYWHDWYKY'),
-            'starts_at_date' => '2021-01-16',
-            'starts_at_time' => '15:00',
-            'ends_at_date' => '2021-01-16',
-            'ends_at_time' => '16:00',
+            'starts_at' => '2021-01-16 15:00:00',
+            'ends_at' => '2021-01-16 16:00:00',
             'time' => 60,
         ]);
         // this is different plane, monthly it should also count
         PlaneReservation::factory()->create([
             'plane_id' => Ulid::fromString('01HE1GRM0B8RQTEX4KYFT7Q7TR'),
             'user_id' => Ulid::fromString('01HE1F50RYFHQS5HCTYWHDWYKY'),
-            'starts_at_date' => '2021-01-21',
-            'starts_at_time' => '12:00',
-            'ends_at_date' => '2021-01-21',
-            'ends_at_time' => '15:00',
+            'starts_at' => '2021-01-21 12:00:00',
+            'ends_at' => '2021-01-21 15:00:00',
+            'time' => 60,
+        ]);
+
+        // assert
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('you can reserve planes for max 4 hours monthly');
+        
+        // when
+        $this->service->checkUserMonthlyTimeLimit(
+            CarbonImmutable::parse('2021-01-10 13:00'),
+            CarbonImmutable::parse('2021-01-10 14:01'),
+            $user,
+        );
+    }
+
+    public function whenReservationOverlapsItShouldBeImpossibleToReserve(): void
+    {
+        // given
+        $user = new User([
+            'id' => Ulid::fromString('01HE1F50RYFHQS5HCTYWHDWYKY'),
+            'role' => UserRole::User
+        ]);
+
+        Plane::factory()->create(['id' => Ulid::fromString('01HE1GB7NJSMF037F76BVR1D1M')]);
+        Plane::factory()->create(['id' => Ulid::fromString('01HE1GRM0B8RQTEX4KYFT7Q7TR')]);
+        PlaneReservation::factory()->create([
+            'plane_id' => Ulid::fromString('01HE1GB7NJSMF037F76BVR1D1M'),
+            'user_id' => Ulid::fromString('01HE1F50RYFHQS5HCTYWHDWYKY'),
+            'starts_at' => '2021-01-01 10:00:00',
+            'ends_at' => '2021-01-01 11:00:00',
+            'time' => 60,
+        ]);
+        PlaneReservation::factory()->create([
+            'plane_id' => Ulid::fromString('01HE1GB7NJSMF037F76BVR1D1M'),
+            'user_id' => Ulid::fromString('01HE1F50RYFHQS5HCTYWHDWYKY'),
+            'starts_at' => '2021-01-16 15:00:00',
+            'ends_at' => '2021-01-16 16:00:00',
+            'time' => 60,
+        ]);
+        // this is different plane, it should not count
+        PlaneReservation::factory()->create([
+            'plane_id' => Ulid::fromString('01HE1GRM0B8RQTEX4KYFT7Q7TR'),
+            'user_id' => Ulid::fromString('01HE1F50RYFHQS5HCTYWHDWYKY'),
+            'starts_at' => '2021-01-21 12:00:00',
+            'ends_at' => '2021-01-21 15:00:00',
             'time' => 60,
         ]);
 

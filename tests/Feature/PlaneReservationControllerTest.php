@@ -6,6 +6,7 @@ use App\Models\Plane;
 use App\Models\PlaneReservation;
 use App\Models\User;
 use App\Models\UserRole;
+use Carbon\Carbon;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
@@ -32,10 +33,8 @@ class PlaneReservationControllerTest extends TestCase
         PlaneReservation::create([
             'user_id' => $user->id,
             'plane_id' => $plane->id,
-            'starts_at_date' => '2023-10-29',
-            'ends_at_date' => '2023-10-29',
-            'starts_at_time' => '10:00',
-            'ends_at_time' => '11:59',
+            'starts_at' => '2023-10-29 10:00:00',
+            'ends_at' => '2023-10-29 11:59:00',
             'time' => 119,
             'confirmed_at' => '2023-10-28 12:13:14',
             'confirmed_by' => $admin->id,
@@ -51,10 +50,8 @@ class PlaneReservationControllerTest extends TestCase
                 [
                     'user_id' => $user->id,
                     'plane_id' => $plane->id,
-                    'starts_at_date' => '2023-10-29',
-                    'ends_at_date' => '2023-10-29',
-                    'starts_at_time' => '10:00:00',
-                    'ends_at_time' => '11:59:00',
+                    'starts_at' => '2023-10-29 10:00:00',
+                    'ends_at' => '2023-10-29 11:59:00',
                     'time' => 119,
                     'confirmed_at' => '2023-10-28 12:13:14',
                     'confirmed_by' => $admin->id,
@@ -67,6 +64,8 @@ class PlaneReservationControllerTest extends TestCase
     public function test_make_reservations_for_plane_and_date(): void
     {
         // given
+        Carbon::setTestNow('2023-10-28 12:13:14');
+
         $user = User::factory()->create([
             'role' => \App\Models\UserRole::User,
         ]);
@@ -80,8 +79,8 @@ class PlaneReservationControllerTest extends TestCase
         // when
         $response = $this->post('/api/plane/SP-KYS/reservation/2023-10-29', [
             'user_id' => $user->id,
-            'starts_at_time' => '10:00',
-            'ends_at_time' => '11:59',
+            'starts_at' => '2023-10-29 10:00:00',
+            'ends_at' => '2023-10-29 11:59:00',
         ]);
         
         // then
@@ -90,10 +89,8 @@ class PlaneReservationControllerTest extends TestCase
         $this->assertDatabaseCount('plane_reservations', 1);
         $this->assertDatabaseHas('plane_reservations', [
             'plane_id' => $plane->id,
-            'starts_at_date' => '2023-10-29',
-            'ends_at_date' => '2023-10-29',
-            'starts_at_time' => '10:00',
-            'ends_at_time' => '11:59',
+            'starts_at' => '2023-10-29 10:00:00',
+            'ends_at' => '2023-10-29 11:59:00',
             'time' => 119,
             'confirmed_at' => null,
             'confirmed_by' => null,

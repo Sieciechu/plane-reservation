@@ -19,7 +19,11 @@ class PlaneReservationController extends Controller
         /** @var array<string, mixed> $validated */
         $validated = $request->validated();
 
-        $planeReservations = PlaneReservation::where('starts_at_date', $request->starts_at_date)->get();
+        $startsAt = CarbonImmutable::parse($validated['starts_at_date'])->startOfDay(); // @phpstan-ignore-line
+        $planeReservations = PlaneReservation::query()
+            ->whereYear('starts_at', $startsAt->format('Y'))
+            ->whereMonth('starts_at', $startsAt->format('m'))
+            ->get();
 
         return response()->json([
             'data' => $planeReservations,
@@ -40,11 +44,11 @@ class PlaneReservationController extends Controller
 
         unset($validated['plane_registration']);
         $validated['plane_id'] = $plane->id;
-        $validated['ends_at_date'] = $validated['starts_at_date'];
         
-        $startTime = CarbonImmutable::parse($validated['starts_at_date'] . ' ' . $validated['starts_at_time']);
-        $endTime = CarbonImmutable::parse($validated['ends_at_date'] . ' ' . $validated['ends_at_time']);
-        $validated['time'] = $startTime->diffInMinutes($endTime);
+        $startsAt = CarbonImmutable::parse($validated['starts_at']); // @phpstan-ignore-line
+        $endsAt = CarbonImmutable::parse($validated['ends_at']); // @phpstan-ignore-line
+        $endsAt = $startsAt->setTimeFromTimeString($endsAt->toTimeString());
+        $validated['time'] = $startsAt->diffInMinutes($endsAt);
 
         // $this->reservationChecker->checkAll($validated);
 

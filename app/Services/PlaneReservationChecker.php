@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Models\UserReservationLimit;
 use App\Models\UserRole;
 use Carbon\CarbonImmutable;
+use Exception;
 use Illuminate\Support\ServiceProvider;
 
 class PlaneReservationChecker extends ServiceProvider
@@ -20,12 +21,13 @@ class PlaneReservationChecker extends ServiceProvider
     ){}
     /**
      * @param $params array {
-     *      plane_registration: string,
-     *      user_id: string,
-     *      start_date: string,
-     *      end_date: string,
-     *      time: int,
-     *  }
+     *     plane_registration: string,
+     *     user_id: string,
+     *     starts_at: string,
+     *     ends_at: string,
+     *     time: int,
+     * }
+     * @throws Exception
      */
     public function checkAll(array $params): void
     {
@@ -34,69 +36,76 @@ class PlaneReservationChecker extends ServiceProvider
         /** @var Plane $plane */
         $plane = Plane::findOrFail($params['plane_id']);
         
-        $startDate = CarbonImmutable::parse($params['start_date']);
-        $endDate = CarbonImmutable::parse($params['end_date']);
+        $startDate = CarbonImmutable::parse($params['starts_at']);
+        $endDate = CarbonImmutable::parse($params['ends_at']);
         
         $this->checkReservationEndsSameMonth($startDate, $endDate);
         $this->checkMonthAhead($startDate, $endDate, $user);
         $this->checkDailyTimeLimit($startDate, $endDate, $user, $plane->id);
+        $this->checkReservationOverlaps($startDate, $endDate, $plane->id);
     }
 
-    public function checkReservationEndsSameMonth(CarbonImmutable $startDate, CarbonImmutable $endDate): void
+    /** @throws Exception */
+    public function checkReservationEndsSameMonth(CarbonImmutable $startsAt, CarbonImmutable $endsAt): void
     {
-        if ($startDate->month !== $endDate->month) {
-            throw new \Exception('reservation must end in the same month');
+        if ($startsAt->month !== $endsAt->month) {
+            throw new Exception('reservation must end in the same month');
         }
     }
 
-    public function checkMonthAhead(CarbonImmutable $startDate, CarbonImmutable $endDate, User $user): void
+    /** @throws Exception */
+    public function checkMonthAhead(CarbonImmutable $startsAt, CarbonImmutable $endsAt, User $user): void
     {
         if ($user->role === UserRole::Admin) {
             return;
         }
 
         $now = CarbonImmutable::now()->startOfDay();
-        $diffInDaysNowAndReservationStart = $now->diffInDays($startDate->startOfDay());
-        $diffInDaysNowAndReservationEnd = $now->diffInDays($endDate->startOfDay());
+        $diffInDaysNowAndReservationStart = $now->diffInDays($startsAt->startOfDay());
+        $diffInDaysNowAndReservationEnd = $now->diffInDays($endsAt->startOfDay());
 
         if ($diffInDaysNowAndReservationStart > $this->maxReservationDaysAhead 
             || $diffInDaysNowAndReservationEnd > $this->maxReservationDaysAhead
         ) {
-            throw new \Exception("you can reserve plane for max {$this->maxReservationDaysAhead} days ahead");
+            throw new Exception("you can reserve plane for max {$this->maxReservationDaysAhead} days ahead");
         }
     }
 
-    public function checkDailyTimeLimit(CarbonImmutable $startDate, CarbonImmutable $endDate, User $user, string $planeId): void
+    /** @throws Exception */
+    public function checkDailyTimeLimit(CarbonImmutable $startsAt, CarbonImmutable $endsAt, User $user, string $planeId): void
     {
         if ($user->role === UserRole::Admin) {
             return;
         }
 
-        $reservationTime = $startDate->diffInMinutes($endDate);
+        $reservationTime = $startsAt->diffInMinutes($endsAt);
 
         $usedTime = PlaneReservation::where('user_id', $user->id)
             ->where('plane_id', $planeId)
-            ->where('starts_at_date', $startDate->format('Y-m-d'))
+            ->whereDate('starts_at', $startsAt->format('Y-m-d'))
+            // ->whereMonth('starts_at', $startsAt->format('m'))
+            // ->whereDay('starts_at', $startsAt->format('d'))
             ->sum('time');
 
         $dailyTime = $usedTime + $reservationTime;
         if ($dailyTime > $this->dailyTimeLimitInMinutes) {
             $hours = $this->dailyTimeLimitInMinutes / 60;
-            throw new \Exception("you can reserve plane for max $hours hours daily");
+            throw new Exception("you can reserve plane for max $hours hours daily");
         }
     }
 
-    public function checkUserMonthlyTimeLimit(CarbonImmutable $startDate, CarbonImmutable $endDate, User $user): void
+    /** @throws Exception */
+    public function checkUserMonthlyTimeLimit(CarbonImmutable $startsAt, CarbonImmutable $endsAt, User $user): void
     {
         if ($user->role === UserRole::Admin) {
             return;
         }
 
-        $reservationTime = $startDate->diffInMinutes($endDate);
+        $reservationTime = $startsAt->diffInMinutes($endsAt);
 
         $monthlyUsedTime = PlaneReservation::where('user_id', $user->id)
-            ->whereYear('starts_at_date', $startDate->format('Y'))
-            ->whereMonth('starts_at_date', $startDate->format('m'))
+            ->whereYear('starts_at', $startsAt->format('Y'))
+            ->whereMonth('starts_at', $startsAt->format('m'))
             ->sum('time') ?? 0;
         
         
@@ -104,7 +113,22 @@ class PlaneReservationChecker extends ServiceProvider
 
         if ($monthlyTime > $this->monthlyTimeLimitInMinutes) {
             $hours = $this->monthlyTimeLimitInMinutes / 60;
-            throw new \Exception("you can reserve planes for max $hours hours monthly");
+            throw new Exception("you can reserve planes for max $hours hours monthly");
+        }
+    }
+
+    /** @throws Exception */
+    public function checkReservationOverlaps(CarbonImmutable $startsAt, CarbonImmutable $endsAt, string $planeId): void
+    {
+        $overlappingReservationsCount = PlaneReservation::where('plane_id', $planeId)
+            ->where(function ($query) use ($startsAt, $endsAt) {
+                $query->whereBetween('starts_at', [$startsAt, $endsAt])
+                    ->orWhereBetween('ends_at', [$startsAt, $endsAt]);
+            })
+            ->count();
+
+        if ($overlappingReservationsCount > 0) {
+            throw new Exception('reservation overlaps with another reservation');
         }
     }
 }

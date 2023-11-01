@@ -24,9 +24,8 @@ class PlaneReservationMakeRequest extends FormRequest
         return [
             'plane_registration' => 'required|exists:planes,registration',
             'user_id' => 'required|exists:users,id',
-            'starts_at_date' => 'required|date',
-            'starts_at_time' => 'required|date_format:H:i',
-            'ends_at_time' => 'required|date_format:H:i|after:time_from',
+            'starts_at' => 'required|date_format:Y-m-d H:i:s|after:now',
+            'ends_at' => 'required|date_format:Y-m-d H:i:s|after:time_from',
         ];
     }
 

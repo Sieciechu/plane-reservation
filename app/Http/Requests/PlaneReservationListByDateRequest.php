@@ -24,7 +24,7 @@ class PlaneReservationListByDateRequest extends FormRequest
     {
         return [
             'plane_registration' => 'required|exists:planes,registration',
-            'starts_at_date' => 'required|date|date-format:Y-m-d',
+            'starts_at_date' => 'required|date-format:Y-m-d',
         ];
     }
 
