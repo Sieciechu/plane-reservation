@@ -385,7 +385,11 @@ class PlaneReservationCheckerTest extends TestCase
         );
     }
 
-    public function whenReservationOverlapsItShouldBeImpossibleToReserve(): void
+    /**
+     * @test
+     * @dataProvider overlapingReservationsProvider
+     */
+    public function whenReservationOverlapsItShouldBeImpossibleToReserve(string $start, string $end): void
     {
         // given
         $user = new User([
@@ -413,8 +417,8 @@ class PlaneReservationCheckerTest extends TestCase
         PlaneReservation::factory()->create([
             'plane_id' => Ulid::fromString('01HE1GRM0B8RQTEX4KYFT7Q7TR'),
             'user_id' => Ulid::fromString('01HE1F50RYFHQS5HCTYWHDWYKY'),
-            'starts_at' => '2021-01-21 12:00:00',
-            'ends_at' => '2021-01-21 15:00:00',
+            'starts_at' => '2021-01-10 13:00:00',
+            'ends_at' => '2021-01-10 13:30:00',
             'time' => 60,
         ]);
 
@@ -428,5 +432,13 @@ class PlaneReservationCheckerTest extends TestCase
             CarbonImmutable::parse('2021-01-10 14:01'),
             $user,
         );
+    }
+
+    public static function overlapingReservationsProvider(): iterable
+    {
+        yield ['2021-01-10 13:00', '2021-01-10 14:01'];
+        yield ['2021-01-10 09:00', '2021-01-10 10:01'];
+        yield ['2021-01-10 12:30', '2021-01-10 17:00'];
+        yield ['2021-01-10 12:30', '2021-01-10 15:30'];
     }
 }
