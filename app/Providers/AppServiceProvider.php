@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-use App\Http\Controllers\PlaneReservationController;
+use App\Http\Controllers\Api\PlaneReservationController;
 use App\Services\PlaneReservationChecker;
 use Illuminate\Support\ServiceProvider;
 

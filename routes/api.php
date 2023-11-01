@@ -1,8 +1,8 @@
 <?php
 
-use App\Http\Controllers\PlaneController;
-use App\Http\Controllers\PlaneReservationController;
-use App\Http\Controllers\UserController;
+use App\Http\Controllers\Api\PlaneController;
+use App\Http\Controllers\Api\PlaneReservationController;
+use App\Http\Controllers\Api\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
