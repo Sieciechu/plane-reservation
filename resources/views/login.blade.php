@@ -1,6 +1,6 @@
 <!-- resources/views/tasks.blade.php -->
  
-<x-layout>
+<x-nonLoggedLayout>
     <h1 class="text-white text-center">Zaloguj się</h1>
 
     <h6 class="text-center">i wygodnie rezerwuj loty w AO</h6>
@@ -21,4 +21,29 @@
 
         <button type="submit" class="form-control" style="margin: 0 auto;">Zaloguj</button>
     </form>
-</x-layout>
+
+    <x-slot:customScript>
+        <script type="text/javascript">
+        $(document).ready(function() {
+            $("form").on("submit", function(event) {
+                event.preventDefault();
+                $.ajax({
+                    type: "POST",
+                    url: "/api/user/login",
+                    dataType: 'json',
+                    data: {
+                        email: jQuery('#email').val(),
+                        password: jQuery('#password').val(),
+                    }
+                }).success(function(data){
+                    window.sessionStorage.token = data.auth_token;
+                    alert("zalogowano");
+                    window.location.href = '/';
+                }).fail(function(data){
+                    alert(data.responseJSON.message);
+                });
+            });
+        });
+        </script>
+    </x-slot:customScript>
+</x-nonLoggedLayout>

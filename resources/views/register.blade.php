@@ -1,4 +1,4 @@
-<x-layout>
+<x-nonLoggedLayout>
     <h1 class="text-white text-center">Zarejestruj się</h1>
 
     <h6 class="text-center">i wygodnie rezerwuj loty w AO</h6>
@@ -63,4 +63,4 @@
         </script>
 
     </x-slot>
-</x-layout>
+</x-nonLoggedLayout>
