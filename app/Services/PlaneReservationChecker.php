@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Services;
@@ -6,7 +7,6 @@ namespace App\Services;
 use App\Models\Plane;
 use App\Models\PlaneReservation;
 use App\Models\User;
-use App\Models\UserReservationLimit;
 use App\Models\UserRole;
 use Carbon\CarbonImmutable;
 use Exception;
@@ -18,7 +18,8 @@ class PlaneReservationChecker extends ServiceProvider
         private int $monthlyTimeLimitInMinutes,
         private int $dailyTimeLimitInMinutes,
         private int $maxReservationDaysAhead,
-    ){}
+    ) {
+    }
     /**
      * @param $params array {
      *     plane_registration: string,
@@ -64,7 +65,7 @@ class PlaneReservationChecker extends ServiceProvider
         $diffInDaysNowAndReservationStart = $now->diffInDays($startsAt->startOfDay());
         $diffInDaysNowAndReservationEnd = $now->diffInDays($endsAt->startOfDay());
 
-        if ($diffInDaysNowAndReservationStart > $this->maxReservationDaysAhead 
+        if ($diffInDaysNowAndReservationStart > $this->maxReservationDaysAhead
             || $diffInDaysNowAndReservationEnd > $this->maxReservationDaysAhead
         ) {
             throw new Exception("you can reserve plane for max {$this->maxReservationDaysAhead} days ahead");

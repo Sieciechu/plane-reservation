@@ -5,7 +5,6 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 
 class PlaneReservationListByDateRequest extends FormRequest
-
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -29,12 +28,12 @@ class PlaneReservationListByDateRequest extends FormRequest
     }
 
     public function all($keys = null)
-	{
-	  $request = parent::all($keys);
+    {
+        $request = parent::all($keys);
 
-	  $request['plane_registration'] = $this->route('plane_registration');
-	  $request['starts_at_date'] = $this->route('starts_at_date');
+        $request['plane_registration'] = $this->route('plane_registration');
+        $request['starts_at_date'] = $this->route('starts_at_date');
 
-	  return $request;
-	}
+        return $request;
+    }
 }

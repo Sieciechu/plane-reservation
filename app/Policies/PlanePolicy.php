@@ -5,7 +5,6 @@ namespace App\Policies;
 use App\Models\Plane;
 use App\Models\User;
 use App\Models\UserRole;
-use Illuminate\Auth\Access\Response;
 
 class PlanePolicy
 {

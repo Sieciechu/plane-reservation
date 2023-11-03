@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Tests\Unit;
@@ -11,8 +12,6 @@ use App\Services\PlaneReservationChecker;
 use Carbon\CarbonImmutable;
 use Exception;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Ramsey\Uuid\Rfc4122\UuidV4;
-use Symfony\Component\Uid\Factory\UlidFactory;
 use Symfony\Component\Uid\Ulid;
 use Tests\TestCase;
 
@@ -76,8 +75,8 @@ class PlaneReservationCheckerTest extends TestCase
         yield ['2021-01-16', '2021-01-18'];
     }
 
-    /** 
-     * @test 
+    /**
+     * @test
      * @dataProvider reservationMoreThan30DaysAheadDateProvider
      */
     public function whenReservationIsMoreThan30AheadThenCheckShouldNotPass(string $now, string $startDateString, string $endDateString): void
@@ -98,29 +97,29 @@ class PlaneReservationCheckerTest extends TestCase
     public static function reservationMoreThan30DaysAheadDateProvider(): iterable
     {
         yield [
-            'now' => '2021-01-01', 
+            'now' => '2021-01-01',
             'startDate' => '2021-01-31',
             'endDate' => '2021-02-01',
         ];
         yield 'even if current day is almost gone, the hours do not matter, check should fail' => [
-            'now' => '2021-01-01 23:59:59', 
+            'now' => '2021-01-01 23:59:59',
             'startDate' => '2021-01-20',
             'endDate' => '2021-02-01 00:00:00.00000',
         ];
         yield 'when end date exceeds limit, check should fail' => [
-            'now' => '2021-01-01', 
+            'now' => '2021-01-01',
             'startDate' => '2021-01-20',
             'endDate' => '2021-02-01',
         ];
         yield 'when start date exceeds limit, check should fail' => [
-            'now' => '2021-01-01', 
+            'now' => '2021-01-01',
             'startDate' => '2021-02-01',
             'endDate' => '2021-01-01',
         ];
     }
 
-    /** 
-     * @test 
+    /**
+     * @test
      * @dataProvider reservationUpTo30DaysAheadDateProvider
      */
     public function whenReservationIsWithin30DaysAheadThenCheckShouldPass(string $now, string $startDateString, string $endDateString): void
@@ -138,27 +137,27 @@ class PlaneReservationCheckerTest extends TestCase
     public static function reservationUpTo30DaysAheadDateProvider(): iterable
     {
         yield [
-            'now' => '2021-01-01', 
+            'now' => '2021-01-01',
             'startDate' => '2021-01-31',
             'endDate' => '2021-01-31',
         ];
         yield [
-            'now' => '2021-01-01', 
+            'now' => '2021-01-01',
             'startDate' => '2021-01-20',
             'endDate' => '2021-01-31 23:59:59.99999',
         ];
         yield [
-            'now' => '2021-01-01', 
+            'now' => '2021-01-01',
             'startDate' => '2021-01-31 23:59:59.99999',
             'endDate' => '2021-01-31 23:59:59.99999',
         ];
         yield [
-            'now' => '2021-02-01', 
+            'now' => '2021-02-01',
             'startDate' => '2021-02-02 23:59:59.99999',
             'endDate' => '2021-02-02 23:59:59.99999',
         ];
         yield [
-            'now' => '2021-01-16', 
+            'now' => '2021-01-16',
             'startDate' => '2021-02-14 23:59:59.99999',
             'endDate' => '2021-02-14 23:59:59.99999',
         ];

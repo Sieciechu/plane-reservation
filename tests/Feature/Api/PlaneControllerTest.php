@@ -40,8 +40,6 @@ class PlaneControllerTest extends TestCase
                 ],
             ],
         ]);
-
-        
     }
 
     public function test_get_the_specific_plane_returns_it(): void
@@ -131,5 +129,4 @@ class PlaneControllerTest extends TestCase
         ]);
         $this->assertDatabaseHas('planes', $data);
     }
-
 }

@@ -1,4 +1,5 @@
 <?php
+
 declare(strict_types=1);
 
 namespace App\Http\Controllers\Api;
@@ -8,12 +9,9 @@ use App\Http\Requests\PlaneReservationConfirmRequest;
 use App\Http\Requests\PlaneReservationListByDateRequest;
 use App\Http\Requests\PlaneReservationMakeRequest;
 use App\Http\Requests\PlaneReservationRemoveRequest;
-use App\Http\Requests\PlaneReservationUpdateRequest;
 use App\Models\Plane;
 use App\Models\PlaneReservation;
 use App\Models\User;
-use App\Models\UserReservationLimit;
-use App\Models\UserRole;
 use App\Services\PlaneReservationChecker;
 use Carbon\CarbonImmutable;
 use Illuminate\Http\JsonResponse;
@@ -21,7 +19,7 @@ use Illuminate\Http\JsonResponse;
 class PlaneReservationController extends Controller
 {
     public function __construct(
-         private PlaneReservationChecker $reservationChecker,
+        private PlaneReservationChecker $reservationChecker,
     ) {
     }
 

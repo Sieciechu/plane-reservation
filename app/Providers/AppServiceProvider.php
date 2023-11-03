@@ -13,7 +13,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->bind(PlaneReservationChecker::class, function() {
+        $this->app->bind(PlaneReservationChecker::class, function () {
             /** @var int $monthlyLimit */
             $monthlyLimit = config('planereservation.monthlyTimeLimitInMinutes');
             /** @var int $dailyLimit */
@@ -27,7 +27,7 @@ class AppServiceProvider extends ServiceProvider
                 maxReservationDaysAhead: $daysAheadLimit,
             );
         });
-        $this->app->bind(PlaneReservationController::class, function() {
+        $this->app->bind(PlaneReservationController::class, function () {
             /** @var PlaneReservationChecker $checker */
             $checker = $this->app->get(PlaneReservationChecker::class);
             return new PlaneReservationController(
