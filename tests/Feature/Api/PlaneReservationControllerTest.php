@@ -50,32 +50,28 @@ class PlaneReservationControllerTest extends TestCase
         // then
         $response->assertStatus(200);
         $response->assertJsonStructure([
-            'data' => [
-                '*' => [
-                    'id',
-                    'user_id',
-                    'plane_id',
-                    'starts_at',
-                    'ends_at',
-                    'time',
-                    'confirmed_at',
-                    'confirmed_by',
-                    'deleted_at',
-                ],
+            '*' => [
+                'id',
+                'user_id',
+                'plane_id',
+                'starts_at',
+                'ends_at',
+                'time',
+                'confirmed_at',
+                'confirmed_by',
+                'deleted_at',
             ],
         ]);
         $response->assertJson([
-            'data' => [
-                [
-                    'user_id' => $user->id,
-                    'plane_id' => $plane->id,
-                    'starts_at' => '2023-10-29 10:00:00',
-                    'ends_at' => '2023-10-29 11:59:00',
-                    'time' => 119,
-                    'confirmed_at' => '2023-10-28 12:13:14',
-                    'confirmed_by' => $admin->id,
-                    'deleted_at' => null,
-                ],
+            [
+                'user_id' => $user->id,
+                'plane_id' => $plane->id,
+                'starts_at' => '2023-10-29 10:00:00',
+                'ends_at' => '2023-10-29 11:59:00',
+                'time' => 119,
+                'confirmed_at' => '2023-10-28 12:13:14',
+                'confirmed_by' => $admin->id,
+                'deleted_at' => null,
             ],
         ]);
     }
@@ -173,7 +169,7 @@ class PlaneReservationControllerTest extends TestCase
         ]);
 
         $reponse = $this->get('/api/plane/SP-KYS/reservation/2023-10-29');
-        $this->assertEmpty($reponse->json()['data']);
+        $this->assertEmpty($reponse->json());
     }
 
     public function test_owner_can_remove_his_reservation(): void
@@ -226,7 +222,7 @@ class PlaneReservationControllerTest extends TestCase
         ]);
 
         $reponse = $this->get('/api/plane/SP-KYS/reservation/2023-10-29');
-        $this->assertEmpty($reponse->json()['data']);
+        $this->assertEmpty($reponse->json());
     }
 
     public function test_regular_user_cannot_remove_others_reservation(): void
@@ -279,7 +275,7 @@ class PlaneReservationControllerTest extends TestCase
         ]);
 
         $reponse = $this->get('/api/plane/SP-KYS/reservation/2023-10-29');
-        $this->assertNotEmpty($reponse->json()['data']);
+        $this->assertNotEmpty($reponse->json());
     }
 
 
@@ -329,7 +325,7 @@ class PlaneReservationControllerTest extends TestCase
         ]);
 
         $reponse = $this->get('/api/plane/SP-KYS/reservation/2023-10-29');
-        $this->assertNotEmpty($reponse->json()['data']);
+        $this->assertNotEmpty($reponse->json());
     }
 
     public function test_confirm_reservation(): void

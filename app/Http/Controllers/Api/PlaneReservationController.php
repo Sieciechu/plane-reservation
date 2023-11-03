@@ -37,9 +37,9 @@ class PlaneReservationController extends Controller
             ->whereMonth('starts_at', $startsAt->format('m'))
             ->get();
 
-        return response()->json([
-            'data' => $planeReservations,
-        ]);
+        return response()->json(
+            $planeReservations,
+        );
     }
 
     /**
