@@ -120,8 +120,8 @@ class PlaneReservationChecker extends ServiceProvider
     {
         $overlappingReservationsCount = PlaneReservation::where('plane_id', $planeId)
             ->where(function ($query) use ($startsAt, $endsAt) {
-                $query->whereBetween('starts_at', [$startsAt, $endsAt])
-                    ->orWhereBetween('ends_at', [$startsAt, $endsAt]);
+                $query->whereBetween('starts_at', [$startsAt->subSecond(), $endsAt->subSeconds()])
+                    ->orWhereBetween('ends_at', [$startsAt->addSecond(), $endsAt->addSecond()]);
             })
             ->count();
 

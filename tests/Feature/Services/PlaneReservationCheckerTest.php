@@ -436,6 +436,8 @@ class PlaneReservationCheckerTest extends TestCase
 
     public static function overlapingReservationsProvider(): iterable
     {
+        yield ['2021-01-01 09:00', '2021-01-01 10:01'];
+        yield ['2021-01-01 10:59', '2021-01-01 12:00'];
         yield ['2021-01-01 10:00', '2021-01-01 14:01'];
         yield ['2021-01-01 09:00', '2021-01-01 10:01'];
         yield ['2021-01-15 12:30', '2021-01-16 17:00'];
@@ -460,7 +462,7 @@ class PlaneReservationCheckerTest extends TestCase
             'plane_id' => Ulid::fromString('01HE1GB7NJSMF037F76BVR1D1M'),
             'user_id' => Ulid::fromString('01HE1F50RYFHQS5HCTYWHDWYKY'),
             'starts_at' => '2021-01-01 10:00:00',
-            'ends_at' => '2021-01-01 10:59:00',
+            'ends_at' => '2021-01-01 11:00:00',
             'time' => 60,
         ]);
         PlaneReservation::factory()->create([
@@ -490,6 +492,8 @@ class PlaneReservationCheckerTest extends TestCase
 
     public static function nonOverlapingReservationsProvider(): iterable
     {
+        yield ['2021-01-01 09:00', '2021-01-01 10:00'];
+        yield ['2021-01-01 11:00', '2021-01-01 12:00'];
         yield ['2021-01-10 13:00', '2021-01-10 14:00'];
         yield ['2021-01-10 09:00', '2021-01-10 09:59'];
         yield ['2021-01-10 11:40', '2021-01-10 14:59'];
