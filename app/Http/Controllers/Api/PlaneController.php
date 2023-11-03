@@ -16,9 +16,12 @@ class PlaneController extends Controller
      */
     public function index(): JsonResponse
     {
-        return response()->json([
-            'data' => Plane::all(),
-        ]);
+        return response()->json(
+            Plane::all()->sortBy('registration')->map(fn (Plane $p) => [
+                'id' => $p->id,
+                'registration' => $p->registration,
+            ])->values()
+        );
     }
 
     /**

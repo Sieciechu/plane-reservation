@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Feature;
+namespace Tests\Feature\Api;
 
 use App\Models\Plane;
 use App\Models\User;
@@ -13,10 +13,12 @@ class PlaneControllerTest extends TestCase
 {
     use RefreshDatabase;
     
-    public function test_get_the_planes_returns_the_list(): void
+    public function test_get_the_planes_returns_the_list_ordered_by_registration(): void
     {
         // given
-        \App\Models\Plane::factory(3)->create();
+        Plane::factory()->create(['id' => '01HEBKGAGQA9X8NT3AQ4H2AP7E', 'registration' => 'SP-KYS']);
+        Plane::factory()->create(['id' => '01HEBKJ24HK3H2JENKHQ9PEJQ3', 'registration' => 'SP-ARR']);
+        Plane::factory()->create(['id' => '01HEBKJ6CY71CM4FCYRGP4SC0H', 'registration' => 'SP-IGA']);
         $user = User::factory()->create([
             'role' => UserRole::User,
         ]);
@@ -27,17 +29,25 @@ class PlaneControllerTest extends TestCase
 
         // then
         $response->assertStatus(200);
-        $response->assertJsonCount(3, 'data');
+        $response->assertJsonCount(3);
         $response->assertJsonStructure([
-            'data' => [
-                '*' => [
-                    'id',
-                    'name',
-                    'registration',
-                    'created_at',
-                    'updated_at',
-                    'deleted_at',
-                ],
+            '*' => [
+                'id',
+                'registration',
+            ],
+        ]);
+        $response->assertJson([
+            [
+                'id' => '01HEBKJ24HK3H2JENKHQ9PEJQ3',
+                'registration' => 'SP-ARR',
+            ],
+            [
+                'id' => '01HEBKJ6CY71CM4FCYRGP4SC0H',
+                'registration' => 'SP-IGA',
+            ],
+            [
+                'id' => '01HEBKGAGQA9X8NT3AQ4H2AP7E',
+                'registration' => 'SP-KYS',
             ],
         ]);
     }

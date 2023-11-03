@@ -1,0 +1,206 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Aeroklub Ostrowski</title>
+
+    <!-- CSS FILES -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&family=Open+Sans&display=swap"
+        rel="stylesheet">
+
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <link href="css/bootstrap-icons.css" rel="stylesheet">
+
+    <link href="css/templatemo-topic-listing.css" rel="stylesheet">
+    <!--
+
+TemplateMo 590 topic listing
+
+https://templatemo.com/tm-590-topic-listing
+
+-->
+</head>
+
+<body id="top">
+
+    <main>
+
+        <nav class="navbar navbar-expand-lg">
+            <div class="container">
+                <a class="navbar-brand" href="index.html">
+                    <i class="bi-back"></i>
+                    <span>Aeroklub Ostrowski</span>
+                </a>
+
+                <div class="d-lg-none ms-auto me-4">
+                    <a href="#top" class="navbar-icon bi-person smoothscroll"></a>
+                </div>
+
+                <div class="collapse navbar-collapse" id="navbarNav">
+
+                    <div class="d-none d-lg-block" style="margin-left: auto;">
+                        <a href="#top" class="navbar-icon bi-person smoothscroll"></a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+
+        <section class="hero-section d-flex justify-content-center align-items-center" id="section_1">
+            <div class="container">
+                <div class="row">
+
+                    <div class="col-lg-8 col-12 mx-auto">
+                        <h1 class="text-white text-center">Wybierz samolot</h1>
+
+                        <form method="get" class="custom-form mt-4 pt-2 mb-lg-0 mb-5" role="search" action="#">
+                            <div class="input-group input-group-lg">
+                                <span class="input-group-text bi-search" id="basic-addon1">
+                                </span>
+
+                                <select id="planeList" class="form-select form-select-lg mb-3" aria-label=".form-select-lg example"
+                                    style="box-shadow: none;border: 0; margin-bottom: 0 !important; text-align: center;" name="plane">
+                                    <option selected>--</option>
+                                </select>
+                            </div>
+                            <h6 class="text-center text-white">wybierz datę</h6>
+                            <div class="input-group input-group-lg">
+                                <span class="input-group-text bi-search" id="basic-addon1">
+                                </span>
+
+                                <input id="date" name="date" type="date" class="form-control"
+                                    style="box-shadow: none;border: 0; text-indent: 1ex;margin-bottom: 0; text-align: center;" id="keyword"
+                                    value="" aria-label="Search">
+                            </div>
+                        </form>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <section class="explore-section section-padding" id="section_2">
+            <div class="container">
+
+                <div class="col-12 text-center">
+                    <h2 id="reservationListHeading" class="mb-4">Tabela godzin SP-IGA</h1>
+                </div>
+
+            </div>
+            </div>
+
+            <div class="container">
+                <div class="row">
+
+                    <div class="col-12">
+                        <div class="tab-content" id="myTabContent">
+                            <div class="tab-pane fade show active" id="design-tab-pane" role="tabpanel"
+                                aria-labelledby="design-tab" tabindex="0">
+                                <div class="row">
+                                    <div class="col-lg-4 col-md-6 col-12 mb-4 mb-lg-0">
+                                        <div class="custom-block bg-white shadow-lg">
+                                            <div class="d-flex">
+                                                <h5 class="mb-2">Zarezerwowane</h5>
+                                            </div>
+                                            <div class="d-flex">
+                                                <table class="table">
+                                                    <thead>
+                                                        <tr>
+                                                            <th scope="col"></th>
+                                                            <th scope="col">czas</th>
+                                                            <th scope="col">nazwisko</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody id="dailyReservations">
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-lg-4 col-md-6 col-12 mb-4 mb-lg-0">
+                                        <div class="custom-block bg-white shadow-lg">
+                                            <div class="d-flex">
+                                                <div>
+                                                    <h5 class="mb-2">Rezerwuj</h5>
+                                                </div>
+                                            </div>
+                                            <form method="get" class="custom-form mt-4 pt-2 mb-lg-0 mb-5" role="search">
+                                                <div class="input-group input-group-lg">
+                                                    <input name="from" type="search" class="form-control" 
+                                                    style="text-indent: 1ex;"
+                                                    id="reserve_from" placeholder="od" aria-label="Search"
+                                                    value="12:00"
+                                                    >
+                                                </div>
+                                                <div class="input-group input-group-lg">
+                                                    <input name="to" type="input" class="form-control" 
+                                                    style="text-indent: 1ex;"
+                                                    id="reserve_to" placeholder="do" aria-label="Search"
+                                                    value="15:00"
+                                                >
+                                                </div>
+                                                <button type="submit" class="form-control">Rezerwuj</button>
+                                            </form>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+        </section>
+
+
+
+    </main>
+
+    <!-- JAVASCRIPT FILES -->
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.bundle.min.js"></script>
+    <script src="js/jquery.sticky.js"></script>
+    <script src="js/click-scroll.js"></script>
+    <script src="js/custom.js"></script>
+    <script src="js/app.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+            let selectedDateField = $('#date');
+            selectedDateField.val(new Date().toISOString().split('T')[0]);
+
+            let planeSelectField = $('#planeList');
+
+            app.loadPlanes(planeSelectField);
+
+            let changedFieldsHandler = function(){
+                let selectedPlaneRegistration = planeSelectField.find("option:selected" ).text();
+                $('#reservationListHeading').html("Tabela godzin " + selectedPlaneRegistration);
+                app.loadDailyPlaneReservations(
+                    selectedPlaneRegistration, 
+                    selectedDateField.val(), 
+                    jQuery('#dailyReservations')
+                );
+            };
+
+            planeSelectField.on('change', changedFieldsHandler);
+            selectedDateField.on('change', changedFieldsHandler);
+
+            
+        });
+    </script>
+
+</body>
+
+</html>

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Web\PlaneReservationController;
 use App\Http\Controllers\Web\UserController;
 use Illuminate\Support\Facades\Route;
 
@@ -20,3 +21,4 @@ Route::get('/', function () {
 
 Route::get('/login', [UserController::class, 'login']);
 Route::get('/register', [UserController::class, 'register']);
+Route::get('/dashboard', [PlaneReservationController::class, 'dashboard']);
