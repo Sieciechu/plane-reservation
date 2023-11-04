@@ -48,6 +48,7 @@ class PlaneReservationController extends Controller
                 'starts_at' => $r->starts_at->format('H:i'),
                 'ends_at' => $r->ends_at->format('H:i'),
                 'is_confirmed' => $r->confirmed_at !== null,
+                'can_confirm' => $r->confirmed_at === null && $user->isAdmin(),
                 'can_remove' => $r->user_id === $user->id || $user->isAdmin(),
                 'user_name' => $r->user->name,
             ])->values();
