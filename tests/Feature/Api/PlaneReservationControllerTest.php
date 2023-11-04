@@ -21,9 +21,11 @@ class PlaneReservationControllerTest extends TestCase
         // given
         $user = User::factory()->create([
             'role' => UserRole::User,
+            'name' => 'John Doe',
         ]);
         $admin = User::factory()->create([
             'role' => UserRole::Admin,
+            'name' => 'Admin',
         ]);
 
         Sanctum::actingAs($user, ['*']);
@@ -33,13 +35,49 @@ class PlaneReservationControllerTest extends TestCase
             'name' => 'PZL Koliber 150',
             'registration' => 'SP-KYS',
         ]);
+        $plane2 = Plane::factory()->create([
+            'name' => 'PZL Koliber 160',
+            'registration' => 'SP-IGA',
+        ]);
 
         PlaneReservation::create([
+            'id' => '01HEBWJJGFE9WXK4SPQ8XXWGPB',
             'user_id' => $user->id,
             'plane_id' => $plane->id,
             'starts_at' => '2023-10-29 10:00:00',
-            'ends_at' => '2023-10-29 11:59:00',
-            'time' => 119,
+            'ends_at' => '2023-10-29 12:00:00',
+            'time' => 120,
+            'confirmed_at' => '2023-10-28 12:13:14',
+            'confirmed_by' => $admin->id,
+        ]);
+        PlaneReservation::create([
+            'id' => '01HEBWPFCWB7FNHQTPM96QNEQJ',
+            'user_id' => $admin->id,
+            'plane_id' => $plane->id,
+            'starts_at' => '2023-10-29 12:00:00',
+            'ends_at' => '2023-10-29 13:00:00',
+            'time' => 120,
+            'confirmed_at' => '2023-10-28 12:13:14',
+            'confirmed_by' => $admin->id,
+        ]);
+
+        // should not be returned - different day
+        PlaneReservation::create([
+            'user_id' => $user->id,
+            'plane_id' => $plane->id,
+            'starts_at' => '2023-10-30 10:00:00',
+            'ends_at' => '2023-10-30 12:00:00',
+            'time' => 120,
+            'confirmed_at' => '2023-10-28 12:13:14',
+            'confirmed_by' => $admin->id,
+        ]);
+        // should not be returned - same date, different plane
+        PlaneReservation::create([
+            'user_id' => $user->id,
+            'plane_id' => $plane2->id,
+            'starts_at' => '2023-10-29 10:00:00',
+            'ends_at' => '2023-10-29 12:00:00',
+            'time' => 120,
             'confirmed_at' => '2023-10-28 12:13:14',
             'confirmed_by' => $admin->id,
         ]);
@@ -52,37 +90,44 @@ class PlaneReservationControllerTest extends TestCase
         $response->assertJsonStructure([
             '*' => [
                 'id',
-                'user_id',
-                'plane_id',
+                'user_name',
                 'starts_at',
                 'ends_at',
-                'time',
-                'confirmed_at',
-                'confirmed_by',
-                'deleted_at',
+                'is_confirmed',
+                'can_remove',
             ],
         ]);
         $response->assertJson([
             [
-                'user_id' => $user->id,
-                'plane_id' => $plane->id,
-                'starts_at' => '2023-10-29 10:00:00',
-                'ends_at' => '2023-10-29 11:59:00',
-                'time' => 119,
-                'confirmed_at' => '2023-10-28 12:13:14',
-                'confirmed_by' => $admin->id,
-                'deleted_at' => null,
+                'id' => '01HEBWJJGFE9WXK4SPQ8XXWGPB',
+                'user_name' => 'John Doe',
+                'starts_at' => '10:00',
+                'ends_at' => '12:00',
+                'is_confirmed' => true,
+                'can_remove' => true,
+            ],
+            [
+                'id' => '01HEBWPFCWB7FNHQTPM96QNEQJ',
+                'user_name' => 'Admin',
+                'starts_at' => '12:00',
+                'ends_at' => '13:00',
+                'is_confirmed' => true,
+                'can_remove' => false,
             ],
         ]);
     }
 
-    public function test_make_reservations_for_plane_and_date(): void
+    /**
+     * @dataProvider userRoleProvider
+     */
+    public function test_make_reservations_for_plane_and_date(UserRole $userRole): void
     {
         // given
         Carbon::setTestNow('2023-10-28 12:13:14');
 
         $user = User::factory()->create([
-            'role' => UserRole::User,
+            'role' => $userRole,
+            'id' => '01HEDPF462PP4CR8X0RCS0X155',
         ]);
 
         Sanctum::actingAs($user, ['*']);
@@ -95,7 +140,6 @@ class PlaneReservationControllerTest extends TestCase
 
         // when
         $response = $this->post('/api/plane/SP-KYS/reservation/2023-10-29', [
-            'user_id' => $user->id,
             'starts_at' => '2023-10-29 10:00:00',
             'ends_at' => '2023-10-29 11:59:00',
         ]);
@@ -105,6 +149,89 @@ class PlaneReservationControllerTest extends TestCase
 
         $this->assertDatabaseCount('plane_reservations', 1);
         $this->assertDatabaseHas('plane_reservations', [
+            'user_id' => '01HEDPF462PP4CR8X0RCS0X155',
+            'plane_id' => $plane->id,
+            'starts_at' => '2023-10-29 10:00:00',
+            'ends_at' => '2023-10-29 11:59:00',
+            'time' => 119,
+            'confirmed_at' => null,
+            'confirmed_by' => null,
+            'deleted_at' => null,
+        ]);
+    }
+
+    public static function userRoleProvider(): iterable
+    {
+        yield 'user' => [UserRole::User];
+        yield 'admin' => [UserRole::Admin];
+    }
+
+    public function test_user_should_not_reserve_plane_for_other_user(): void
+    {
+        // given
+        Carbon::setTestNow('2023-10-28 12:13:14');
+
+        $user = User::factory()->create([
+            'role' => UserRole::User,
+        ]);
+        $user2 = User::factory()->create([
+            'role' => UserRole::User,
+            'id' => '01HEDPF462PP4CR8X0RCS0X155',
+        ]);
+
+        Sanctum::actingAs($user, ['*']);
+
+        /** @var Plane $plane */
+        $plane = Plane::factory()->create([
+            'name' => 'PZL Koliber 150',
+            'registration' => 'SP-KYS',
+        ]);
+
+        // when
+        $response = $this->post('/api/plane/SP-KYS/reservation/2023-10-29', [
+            'user_id' => '01HEDPF462PP4CR8X0RCS0X155',
+            'starts_at' => '2023-10-29 10:00:00',
+            'ends_at' => '2023-10-29 11:59:00',
+        ]);
+        
+        // then
+        $response->assertStatus(201);
+    }
+
+    public function test_admin_should_be_able_to_reserve_plane_for_other_user(): void
+    {
+        // given
+        Carbon::setTestNow('2023-10-28 12:13:14');
+
+        $admin = User::factory()->create([
+            'role' => UserRole::Admin,
+            'id' => '01HEDPQRMC3DANY1MHXHTXBW37',
+        ]);
+        $user2 = User::factory()->create([
+            'role' => UserRole::User,
+            'id' => '01HEDPF462PP4CR8X0RCS0X155',
+        ]);
+
+        Sanctum::actingAs($admin, ['*']);
+
+        /** @var Plane $plane */
+        $plane = Plane::factory()->create([
+            'name' => 'PZL Koliber 150',
+            'registration' => 'SP-KYS',
+        ]);
+
+        // when
+        $response = $this->post('/api/plane/SP-KYS/reservation/2023-10-29', [
+            'user_id' => '01HEDPF462PP4CR8X0RCS0X155',
+            'starts_at' => '2023-10-29 10:00:00',
+            'ends_at' => '2023-10-29 11:59:00',
+        ]);
+        
+        // then
+        $response->assertStatus(201);
+        $this->assertDatabaseCount('plane_reservations', 1);
+        $this->assertDatabaseHas('plane_reservations', [
+            'user_id' => '01HEDPF462PP4CR8X0RCS0X155',
             'plane_id' => $plane->id,
             'starts_at' => '2023-10-29 10:00:00',
             'ends_at' => '2023-10-29 11:59:00',

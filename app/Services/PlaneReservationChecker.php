@@ -7,7 +7,6 @@ namespace App\Services;
 use App\Models\Plane;
 use App\Models\PlaneReservation;
 use App\Models\User;
-use App\Models\UserRole;
 use Carbon\CarbonImmutable;
 use Exception;
 use Illuminate\Support\ServiceProvider;
@@ -57,7 +56,7 @@ class PlaneReservationChecker extends ServiceProvider
     /** @throws Exception */
     public function checkMonthAhead(CarbonImmutable $startsAt, CarbonImmutable $endsAt, User $user): void
     {
-        if ($user->role === UserRole::Admin) {
+        if ($user->isAdmin()) {
             return;
         }
 
@@ -75,7 +74,7 @@ class PlaneReservationChecker extends ServiceProvider
     /** @throws Exception */
     public function checkDailyTimeLimit(CarbonImmutable $startsAt, CarbonImmutable $endsAt, User $user, string $planeId): void
     {
-        if ($user->role === UserRole::Admin) {
+        if ($user->isAdmin()) {
             return;
         }
 
@@ -96,7 +95,7 @@ class PlaneReservationChecker extends ServiceProvider
     /** @throws Exception */
     public function checkUserMonthlyTimeLimit(CarbonImmutable $startsAt, CarbonImmutable $endsAt, User $user): void
     {
-        if ($user->role === UserRole::Admin) {
+        if ($user->isAdmin()) {
             return;
         }
 

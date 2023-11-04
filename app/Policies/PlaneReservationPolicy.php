@@ -4,7 +4,6 @@ namespace App\Policies;
 
 use App\Models\PlaneReservation;
 use App\Models\User;
-use App\Models\UserRole;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class PlaneReservationPolicy
@@ -16,11 +15,11 @@ class PlaneReservationPolicy
      */
     public function remove(User $user, PlaneReservation $planeReservation): bool
     {
-        return $user->role === UserRole::Admin || $user->id === $planeReservation->user_id;
+        return $user->isAdmin() || $user->id === $planeReservation->user_id;
     }
 
     public function confirm(User $user, PlaneReservation $planeReservation): bool
     {
-        return $user->role === UserRole::Admin;
+        return $user->isAdmin();
     }
 }

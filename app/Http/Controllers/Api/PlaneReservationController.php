@@ -31,12 +31,27 @@ class PlaneReservationController extends Controller
         /** @var array<string, mixed> $validated */
         $validated = $request->validated();
 
+        /** @var User $user */
+        $user = $request->user();
+
+        $plane = Plane::where('registration', $validated['plane_registration'])->firstOrFail();
+
         $startsAt = CarbonImmutable::parse($validated['starts_at_date'])->startOfDay(); // @phpstan-ignore-line
+
         $planeReservations = PlaneReservation::query()
+            ->where('plane_id', $plane->id)
             ->whereYear('starts_at', $startsAt->format('Y'))
             ->whereMonth('starts_at', $startsAt->format('m'))
-            ->get();
-
+            ->whereDay('starts_at', $startsAt->format('d'))
+            ->get()->map(fn (PlaneReservation $r): array => [
+                'id' => $r->id,
+                'starts_at' => $r->starts_at->format('H:i'),
+                'ends_at' => $r->ends_at->format('H:i'),
+                'is_confirmed' => $r->confirmed_at !== null,
+                'can_remove' => $r->user_id === $user->id || $user->isAdmin(),
+                'user_name' => $r->user->name,
+            ])->values();
+            
         return response()->json(
             $planeReservations,
         );
@@ -50,7 +65,12 @@ class PlaneReservationController extends Controller
         /** @var array<string, mixed> $validated */
         $validated = $request->validated();
         
+        /** @var User $user */
         $user = $request->user();
+        
+        if (!($user->isAdmin() && isset($validated['user_id']))) {
+            $validated['user_id'] = $user->id;
+        }
 
         /** @var string $planeRegistration */
         $planeRegistration = $validated['plane_registration'];
@@ -59,8 +79,8 @@ class PlaneReservationController extends Controller
         unset($validated['plane_registration']);
         $validated['plane_id'] = $plane->id;
         
-        $startsAt = CarbonImmutable::parse($validated['starts_at']); // @phpstan-ignore-line
-        $endsAt = CarbonImmutable::parse($validated['ends_at']); // @phpstan-ignore-line
+        $startsAt = CarbonImmutable::parse($validated['starts_at'])->seconds(0)->milliseconds(0); // @phpstan-ignore-line
+        $endsAt = CarbonImmutable::parse($validated['ends_at'])->seconds(0)->milliseconds(0); // @phpstan-ignore-line
         $endsAt = $startsAt->setTimeFromTimeString($endsAt->toTimeString());
         $validated['time'] = $startsAt->diffInMinutes($endsAt);
 

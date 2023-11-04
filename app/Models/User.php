@@ -73,4 +73,9 @@ class User extends Authenticatable
         $arr['email_verified_at'] = $this->email_verified_at;
         return $arr;
     }
+
+    public function isAdmin(): bool
+    {
+        return $this->role === UserRole::Admin;
+    }
 }

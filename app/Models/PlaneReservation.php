@@ -6,6 +6,7 @@ use DateTimeInterface;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
@@ -17,6 +18,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property int $time
  * @property DateTimeInterface $confirmed_at
  * @property string $confirmed_by
+ * @property User $user
  */
 class PlaneReservation extends Model
 {
@@ -24,6 +26,12 @@ class PlaneReservation extends Model
 
     /** @var array<string> */
     protected $dates = ['deleted_at'];
+    protected $casts = [
+        'starts_at' => 'immutable_datetime',
+        'ends_at' => 'immutable_datetime',
+        'confirmed_at' => 'immutable_datetime',
+        'deleted_at' => 'immutable_datetime',
+    ];
 
     /**
      * The attributes that are mass assignable.
@@ -41,4 +49,9 @@ class PlaneReservation extends Model
         'confirmed_by',
         'deleted_at',
     ];
+
+    public function user(): HasOne
+    {
+        return $this->hasOne(User::class, 'id', 'user_id');
+    }
 }

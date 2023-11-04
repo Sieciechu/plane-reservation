@@ -90,78 +90,71 @@ https://templatemo.com/tm-590-topic-listing
             </div>
         </section>
 
-        <section class="explore-section section-padding" id="section_2">
+        <section class="explore-section section-padding d-none" id="section_2">
             <div class="container">
 
                 <div class="col-12 text-center">
-                    <h2 id="reservationListHeading" class="mb-4">Tabela godzin SP-IGA</h1>
+                    <h2 id="reservationListHeading" class="mb-4"></h1>
                 </div>
 
             </div>
             </div>
 
             <div class="container">
-                <div class="row">
-
-                    <div class="col-12">
-                        <div class="tab-content" id="myTabContent">
-                            <div class="tab-pane fade show active" id="design-tab-pane" role="tabpanel"
-                                aria-labelledby="design-tab" tabindex="0">
-                                <div class="row">
-                                    <div class="col-lg-4 col-md-6 col-12 mb-4 mb-lg-0">
-                                        <div class="custom-block bg-white shadow-lg">
-                                            <div class="d-flex">
-                                                <h5 class="mb-2">Zarezerwowane</h5>
-                                            </div>
-                                            <div class="d-flex">
-                                                <table class="table">
-                                                    <thead>
-                                                        <tr>
-                                                            <th scope="col"></th>
-                                                            <th scope="col">czas</th>
-                                                            <th scope="col">nazwisko</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody id="dailyReservations">
-                                                    </tbody>
-                                                </table>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-lg-4 col-md-6 col-12 mb-4 mb-lg-0">
-                                        <div class="custom-block bg-white shadow-lg">
-                                            <div class="d-flex">
-                                                <div>
-                                                    <h5 class="mb-2">Rezerwuj</h5>
-                                                </div>
-                                            </div>
-                                            <form method="get" class="custom-form mt-4 pt-2 mb-lg-0 mb-5" role="search">
-                                                <div class="input-group input-group-lg">
-                                                    <input name="from" type="search" class="form-control" 
-                                                    style="text-indent: 1ex;"
-                                                    id="reserve_from" placeholder="od" aria-label="Search"
-                                                    value="12:00"
-                                                    >
-                                                </div>
-                                                <div class="input-group input-group-lg">
-                                                    <input name="to" type="input" class="form-control" 
-                                                    style="text-indent: 1ex;"
-                                                    id="reserve_to" placeholder="do" aria-label="Search"
-                                                    value="15:00"
-                                                >
-                                                </div>
-                                                <button type="submit" class="form-control">Rezerwuj</button>
-                                            </form>
-                                        </div>
-                                    </div>
-
-                                </div>
+                <div class="row mb-3 text-center">
+                    
+                    <div class="col-md-8 themed-grid-col">
+                        <div class="custom-block bg-white shadow-lg">
+                            <div class="d-flex">
+                                <h5 class="mb-2">Zarezerwowane</h5>
+                            </div>
+                            <div class="d-flex">
+                                <table class="table">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col"></th>
+                                            <th scope="col">czas</th>
+                                            <th scope="col">nazwisko</th>
+                                            <th scope="col"></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="dailyReservations">
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
-
                     </div>
+
+                    <div class="col-md-4 themed-grid-col">
+                        <div class="custom-block bg-white shadow-lg">
+                            <div class="d-flex">
+                                <div>
+                                    <h5 class="mb-2">Rezerwuj</h5>
+                                </div>
+                            </div>
+                            <form id="makeReservationForm" method="post" class="custom-form mt-4 pt-2 mb-lg-0 mb-5" role="search" action="#">
+                                <div class="input-group input-group-lg">
+                                    <input name="starts_at" type="search" class="form-control" 
+                                    style="text-indent: 1ex;"
+                                    id="starts_at" placeholder="od" aria-label="Search"
+                                    value="12:00"
+                                    >
+                                </div>
+                                <div class="input-group input-group-lg">
+                                    <input name="ends_at" type="input" class="form-control" 
+                                    style="text-indent: 1ex;"
+                                    id="ends_at" placeholder="do" aria-label="Search"
+                                    value="15:00"
+                                >
+                                </div>
+                                <button type="submit" class="form-control">Rezerwuj</button>
+                            </form>
+                        </div>
+                    </div>
+                    
                 </div>
+               
+            </div>
         </section>
 
 
@@ -177,27 +170,19 @@ https://templatemo.com/tm-590-topic-listing
     <script src="js/app.js"></script>
     <script type="text/javascript">
         $(document).ready(function() {
-            let selectedDateField = $('#date');
-            selectedDateField.val(new Date().toISOString().split('T')[0]);
+            let app = window.app;
+            app.dashboardInit();
 
-            let planeSelectField = $('#planeList');
-
-            app.loadPlanes(planeSelectField);
-
-            let changedFieldsHandler = function(){
-                let selectedPlaneRegistration = planeSelectField.find("option:selected" ).text();
-                $('#reservationListHeading').html("Tabela godzin " + selectedPlaneRegistration);
-                app.loadDailyPlaneReservations(
-                    selectedPlaneRegistration, 
-                    selectedDateField.val(), 
-                    jQuery('#dailyReservations')
-                );
-            };
-
-            planeSelectField.on('change', changedFieldsHandler);
-            selectedDateField.on('change', changedFieldsHandler);
-
-            
+            $("#makeReservationForm").on("submit", function(event) {
+                event.preventDefault();
+                app.makeReservation(jQuery('#starts_at').val(), jQuery('#ends_at').val()).success(function(){
+                    app.loadDailyPlaneReservations(
+                        app.planeRegistration, 
+                        app.reservationDate, 
+                        jQuery('#dailyReservations')
+                    );
+                });
+            });
         });
     </script>
 

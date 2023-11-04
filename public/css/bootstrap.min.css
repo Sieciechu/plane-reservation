@@ -3641,7 +3641,7 @@ fieldset:disabled .btn {
 .navbar > .container-xl,
 .navbar > .container-xxl {
     display: flex;
-    flex-wrap: inherit;
+    /* flex-wrap: inherit; */
     align-items: center;
     justify-content: space-between;
 }
@@ -3652,7 +3652,8 @@ fieldset:disabled .btn {
     font-size: var(--bs-navbar-brand-font-size);
     color: var(--bs-navbar-brand-color);
     text-decoration: none;
-    white-space: nowrap;
+    /* white-space: nowrap; */
+    white-space: inherit;
 }
 .navbar-brand:focus,
 .navbar-brand:hover {

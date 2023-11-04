@@ -4,7 +4,6 @@ namespace App\Policies;
 
 use App\Models\Plane;
 use App\Models\User;
-use App\Models\UserRole;
 
 class PlanePolicy
 {
@@ -29,7 +28,7 @@ class PlanePolicy
      */
     public function create(User $user): bool
     {
-        return $user->role === UserRole::Admin;
+        return $user->isAdmin();
     }
 
     /**
@@ -37,7 +36,7 @@ class PlanePolicy
      */
     public function update(User $user, Plane $plane): bool
     {
-        return $user->role === UserRole::Admin;
+        return $user->isAdmin();
     }
 
     /**
@@ -45,7 +44,7 @@ class PlanePolicy
      */
     public function delete(User $user, Plane $plane): bool
     {
-        return $user->role === UserRole::Admin;
+        return $user->isAdmin();
     }
 
     /**
@@ -53,7 +52,7 @@ class PlanePolicy
      */
     public function restore(User $user, Plane $plane): bool
     {
-        return $user->role === UserRole::Admin;
+        return $user->isAdmin();
     }
 
     /**
@@ -61,6 +60,6 @@ class PlanePolicy
      */
     public function forceDelete(User $user, Plane $plane): bool
     {
-        return $user->role === UserRole::Admin;
+        return $user->isAdmin();
     }
 }
