@@ -90,8 +90,7 @@ class PlaneReservationController extends Controller
 
         try {
             $this->reservationChecker->checkAll($validated);
-        }
-        catch (Exception $e) {
+        } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()], 422);
         }
 
