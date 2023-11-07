@@ -14,6 +14,7 @@ use App\Models\PlaneReservation;
 use App\Models\User;
 use App\Services\PlaneReservationChecker;
 use Carbon\CarbonImmutable;
+use Exception;
 use Illuminate\Http\JsonResponse;
 
 class PlaneReservationController extends Controller
@@ -87,7 +88,12 @@ class PlaneReservationController extends Controller
         $endsAt = $startsAt->setTimeFromTimeString($endsAt->toTimeString());
         $validated['time'] = $startsAt->diffInMinutes($endsAt);
 
-        $this->reservationChecker->checkAll($validated);
+        try {
+            $this->reservationChecker->checkAll($validated);
+        }
+        catch (Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 422);
+        }
 
         $planeReservation = PlaneReservation::create($validated);
 
