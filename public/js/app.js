@@ -10,7 +10,7 @@ sessionStorage.flashMsg = sessionStorage.flashMsg || JSON.stringify({
 });
 
 app.loadPlanes = function(planeSelectField){
-    this.ajax("GET", "/api/plane", {}).success(function(data){
+    return app.ajax("GET", "/api/plane", {}).success(function(data){
         let planes = data;
         planes.forEach(function(plane){
             planeSelectField.append(`<option value="${plane.id}">${plane.registration}</option>`);
@@ -19,7 +19,7 @@ app.loadPlanes = function(planeSelectField){
 };
  
 app.loadDailyPlaneReservations = function(planeRegistration, date, dailyReservationsView){
-    app.ajax("GET", "/api/plane/" + planeRegistration + "/reservation/" + date, {}).success(function(data){
+    return app.ajax("GET", "/api/plane/" + planeRegistration + "/reservation/" + date, {}).success(function(data){
         let dailyReservations = data;
         dailyReservationsView.html('');
         let notConfirmedIcon = '<i class="bi bi-question-circle" style="color: var(--bs-danger);" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Rezerwacja niepotwierdzona"></i>';
@@ -112,7 +112,7 @@ app.makeReservation = function(starts_at_value, ends_at_value){
 };
 
 app.removeReservation = function(reservationId){
-    app.ajax("DELETE", "/api/plane/reservation", {reservation_id: reservationId}).success(function(){
+    return app.ajax("DELETE", "/api/plane/reservation", {reservation_id: reservationId}).success(function(){
         app.loadDailyPlaneReservations(
             app.planeRegistration, 
             app.reservationDate, 
@@ -124,7 +124,7 @@ app.removeReservation = function(reservationId){
 };
 
 app.confirmReservation = function(reservationId){
-    app.ajax(
+    return app.ajax(
         "POST",
         "/api/plane/reservation/confirm",
         {
@@ -143,7 +143,7 @@ app.confirmReservation = function(reservationId){
 };
 
 app.logout = function(){
-    app.ajax("GET", "/api/user/logout", {}).success(function(){
+    return app.ajax("GET", "/api/user/logout", {}).success(function(){
         sessionStorage.removeItem('token');
         app.addFlashMsg('success', "wylogowano pomyślnie");
         window.location.href = '/login';
@@ -151,7 +151,7 @@ app.logout = function(){
 };
 
 app.login = function(email, password){
-    app.ajax(
+    return app.ajax(
         "POST",
         "/api/user/login",
         {
@@ -195,6 +195,9 @@ app.addFlashMsg = function(level, msg){
 app.showFlashMessages = function(containerId){
     let container = $('#' + containerId);
     let flashMsg = JSON.parse(sessionStorage.flashMsg);
+    $('html, body').animate({
+        scrollTop: $('#top').offset().top
+    }, 300);
     flashMsg.success.forEach(function(message){
         container.append(`<div class="alert alert-success alert-dismissible fade show" role="alert">
             ${message}
