@@ -15,10 +15,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
 
 Route::get('/login', [UserController::class, 'login'])->name('login');
 Route::get('/register', [UserController::class, 'register']);
+
 Route::get('/dashboard', [PlaneReservationController::class, 'dashboard']);
+Route::get('/', [PlaneReservationController::class, 'dashboard']);

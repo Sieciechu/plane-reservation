@@ -8,7 +8,7 @@
     <form method="post" class="custom-form mt-4 pt-2 mb-lg-0 mb-5" action="/login">
         <div class="input-group input-group-lg">
             
-            <input name="keyword" type="search" class="form-control" 
+            <input name="keyword" type="email" class="form-control" 
                 id="email" placeholder="email" aria-label="Search">
             
         </div>
@@ -23,25 +23,12 @@
     </form>
 
     <x-slot:customScript>
+        <script src="js/app.js"></script>
         <script type="text/javascript">
         $(document).ready(function() {
             $("form").on("submit", function(event) {
                 event.preventDefault();
-                $.ajax({
-                    type: "POST",
-                    url: "/api/user/login",
-                    dataType: 'json',
-                    data: {
-                        email: jQuery('#email').val(),
-                        password: jQuery('#password').val(),
-                    }
-                }).success(function(data){
-                    window.sessionStorage.token = data.auth_token;
-                    alert("zalogowano");
-                    window.location.href = '/dashboard';
-                }).fail(function(data){
-                    alert(data.responseJSON.error);
-                });
+                app.login($('#email').val(), $('#password').val())
             });
         });
         </script>

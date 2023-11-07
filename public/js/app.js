@@ -6,14 +6,13 @@ window.app.planeRegistration = '';
 window.app.reservationDate = '';
 
 app.loadPlanes = function(planeSelectField){
+    let that = this;
     this.ajax("GET", "/api/plane", {}).success(function(data){
         let planes = data;
         planes.forEach(function(plane){
             planeSelectField.append(`<option value="${plane.id}">${plane.registration}</option>`);
         });
-    }).fail(function(data){
-        alert(data.responseJSON.message);
-    });
+    }).fail(that.ajaxFail);
 };
  
 app.loadDailyPlaneReservations = function(planeRegistration, date, dailyReservationsView){
@@ -50,9 +49,7 @@ app.loadDailyPlaneReservations = function(planeRegistration, date, dailyReservat
         $('button.confirmReservation').on('click', function(){
             that.confirmReservation(this.dataset.id);
         });
-    }).fail(function(data){
-        alert(data.responseJSON.message);
-    });
+    }).fail(that.ajaxFail);
 };
 
 app.dashboardInit = function(){
@@ -96,7 +93,7 @@ app.dashboardInit = function(){
 
 app.makeReservation = function(starts_at_value, ends_at_value){
     let that = this;
-    that.ajax(
+    return that.ajax(
         "POST",
         "/api/plane/" + that.planeRegistration + "/reservation/" + that.reservationDate,
         {
@@ -105,9 +102,12 @@ app.makeReservation = function(starts_at_value, ends_at_value){
         }
     ).success(function(){
         alert('Rezerwacja została dodana. Oczekuje na potwierdzenie.');
-    }).fail(function(data){
-        alert(data.responseJSON.message);
-    });
+        that.loadDailyPlaneReservations(
+            app.planeRegistration, 
+            app.reservationDate, 
+            jQuery('#dailyReservations')
+        );
+    }).fail(that.ajaxFail);
 };
 
 app.removeReservation = function(reservationId){
@@ -120,9 +120,7 @@ app.removeReservation = function(reservationId){
             that.reservationDate, 
             jQuery('#dailyReservations')
         );
-    }).fail(function(data){
-        alert(data.responseJSON.message);
-    });
+    }).fail(that.ajaxFail);
 };
 
 app.confirmReservation = function(reservationId){
@@ -141,9 +139,7 @@ app.confirmReservation = function(reservationId){
             that.reservationDate, 
             jQuery('#dailyReservations')
         );
-    }).fail(function(data){
-        alert(data.responseJSON.message);
-    });
+    }).fail(that.ajaxFail);
 };
 
 app.logout = function(){
@@ -156,6 +152,22 @@ app.logout = function(){
     });
 };
 
+app.login = function(email, password){
+    let that = this;
+    that.ajax(
+        "POST",
+        "/api/user/login",
+        {
+            email: email,
+            password: password,
+        }
+    ).success(function(data){
+        window.sessionStorage.token = data.auth_token;
+        alert("zalogowano");
+        window.location.href = '/dashboard';
+    }).fail(that.ajaxFail);
+}
+
 app.ajax = function(method, url, data){
     return $.ajax({
         type: method,
@@ -164,4 +176,9 @@ app.ajax = function(method, url, data){
         dataType: 'json',
         data: data
     });
+};
+
+app.ajaxFail = function(data){
+    let msg = data.responseJSON.error || 'undefined error';
+    alert(msg);
 };

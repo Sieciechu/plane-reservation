@@ -43,7 +43,9 @@ class PlaneReservationController extends Controller
             ->whereYear('starts_at', $startsAt->format('Y'))
             ->whereMonth('starts_at', $startsAt->format('m'))
             ->whereDay('starts_at', $startsAt->format('d'))
-            ->get()->map(fn (PlaneReservation $r): array => [
+            ->get()
+            ->sortBy('starts_at')
+            ->map(fn (PlaneReservation $r): array => [
                 'id' => $r->id,
                 'starts_at' => $r->starts_at->format('H:i'),
                 'ends_at' => $r->ends_at->format('H:i'),

@@ -508,7 +508,7 @@ strong {
   border: 0;
 }
 
-.hero-section input[type="search"] {
+.hero-section input[type="search"], .hero-section input[type="email"] {
   border: 0;
   box-shadow: none;
   margin-bottom: 0;

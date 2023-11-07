@@ -36,25 +36,35 @@ https://templatemo.com/tm-590-topic-listing
 
     <main>
 
-        <nav class="navbar navbar-expand-lg">
-            <div class="container">
-                <a class="navbar-brand" href="index.html">
-                    <i class="bi-back"></i>
-                    <span>Aeroklub Ostrowski</span>
-                </a>
+    <div id="sticky-wrapper" class="sticky-wrapper" style="height: 78px;"><nav class="navbar navbar-expand-lg" style="">
+                <div class="container">
+                    <a class="navbar-brand" href="/">
+                        <i class="bi-back"></i>
+                        <span>Aeroklub Ostrowski</span>
+                    </a>
 
-                <div class="d-lg-none ms-auto me-4">
-                    <a href="#top" class="navbar-icon bi-person smoothscroll"></a>
-                </div>
-
-                <div class="collapse navbar-collapse" id="navbarNav">
-
-                    <div class="d-none d-lg-block" style="margin-left: auto;">
+                    <div class="d-lg-none ms-auto me-4">
                         <a href="#top" class="navbar-icon bi-person smoothscroll"></a>
                     </div>
+    
+                    <button class="navbar-toggler collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+    
+                    <div class="navbar-collapse collapse" id="navbarNav" style="">
+                        <ul class="navbar-nav ms-lg-5 me-lg-auto">
+                            <li class="nav-item">
+                                <a class="nav-link click-scroll" href="#" onclick="app.logout()">Wyloguj się</a>
+                            </li>
+                        </ul>
+
+                        <div class="d-none d-lg-block">
+                            <a href="#top" class="navbar-icon bi-person smoothscroll"></a>
+                        </div>
+                    </div>
                 </div>
-            </div>
-        </nav>
+            </nav>
+        </div>
 
 
         <section class="hero-section d-flex justify-content-center align-items-center" id="section_1">
@@ -177,13 +187,7 @@ https://templatemo.com/tm-590-topic-listing
 
             $("#makeReservationForm").on("submit", function(event) {
                 event.preventDefault();
-                app.makeReservation(jQuery('#starts_at').val(), jQuery('#ends_at').val()).success(function(){
-                    app.loadDailyPlaneReservations(
-                        app.planeRegistration, 
-                        app.reservationDate, 
-                        jQuery('#dailyReservations')
-                    );
-                });
+                app.makeReservation(jQuery('#starts_at').val(), jQuery('#ends_at').val());
             });
         });
     </script>

@@ -51,7 +51,7 @@ class UserController extends Controller
                 'error' => 'Invalid login or password',
             ], 401);
         }
-
+        
         $authToken = $user->createToken('authToken')->plainTextToken;
         return response()->json(['auth_token' => $authToken], 200);
     }
