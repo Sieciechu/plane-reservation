@@ -72,6 +72,10 @@ https://templatemo.com/tm-590-topic-listing
                 <div class="row">
 
                     <div class="col-lg-8 col-12 mx-auto">
+                    
+                    <section id="section_flash">
+                    </section>
+
                         <h1 class="text-white text-center">Wybierz samolot</h1>
 
                         <form method="get" class="custom-form mt-4 pt-2 mb-lg-0 mb-5" role="search" action="#">
@@ -183,6 +187,8 @@ https://templatemo.com/tm-590-topic-listing
     <script type="text/javascript">
         $(document).ready(function() {
             let app = window.app;
+            app.showFlashMessages('section_flash');
+
             app.dashboardInit();
 
             $("#makeReservationForm").on("submit", function(event) {

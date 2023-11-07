@@ -4,20 +4,22 @@
 window.app = {};
 window.app.planeRegistration = '';
 window.app.reservationDate = '';
+sessionStorage.flashMsg = sessionStorage.flashMsg || JSON.stringify({
+    'success': [],
+    'error': [],
+});
 
 app.loadPlanes = function(planeSelectField){
-    let that = this;
     this.ajax("GET", "/api/plane", {}).success(function(data){
         let planes = data;
         planes.forEach(function(plane){
             planeSelectField.append(`<option value="${plane.id}">${plane.registration}</option>`);
         });
-    }).fail(that.ajaxFail);
+    }).fail(app.ajaxFail);
 };
  
 app.loadDailyPlaneReservations = function(planeRegistration, date, dailyReservationsView){
-    let that = this;
-    that.ajax("GET", "/api/plane/" + planeRegistration + "/reservation/" + date, {}).success(function(data){
+    app.ajax("GET", "/api/plane/" + planeRegistration + "/reservation/" + date, {}).success(function(data){
         let dailyReservations = data;
         dailyReservationsView.html('');
         let notConfirmedIcon = '<i class="bi bi-question-circle" style="color: var(--bs-danger);" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Rezerwacja niepotwierdzona"></i>';
@@ -44,40 +46,39 @@ app.loadDailyPlaneReservations = function(planeRegistration, date, dailyReservat
         });
 
         $('button.removeReservation').on('click', function(){
-            that.removeReservation(this.dataset.id);
+            app.removeReservation(this.dataset.id);
         });
         $('button.confirmReservation').on('click', function(){
-            that.confirmReservation(this.dataset.id);
+            app.confirmReservation(this.dataset.id);
         });
-    }).fail(that.ajaxFail);
+    }).fail(app.ajaxFail);
 };
 
 app.dashboardInit = function(){
-    let that = this;
-    that.reservationDate = new Date().toISOString().split('T')[0];
+    app.reservationDate = new Date().toISOString().split('T')[0];
     let selectedDateField = $('#date');
-    selectedDateField.val(that.reservationDate);
+    selectedDateField.val(app.reservationDate);
 
     let planeSelectField = $('#planeList');
 
-    that.loadPlanes(planeSelectField);
+    app.loadPlanes(planeSelectField);
 
     let changedFieldsHandler = function(){
-        that.planeRegistration = planeSelectField.find("option:selected" ).text();
-        that.reservationDate = selectedDateField.val();
+        app.planeRegistration = planeSelectField.find("option:selected" ).text();
+        app.reservationDate = selectedDateField.val();
 
-        $('#reservationListHeading').html(`Tabela godzin ${that.planeRegistration} ${that.reservationDate}`);
+        $('#reservationListHeading').html(`Tabela godzin ${app.planeRegistration} ${app.reservationDate}`);
 
-        if(that.planeRegistration == '--'){
+        if(app.planeRegistration == '--'){
             $('#section_2').addClass('d-none');
             return;
         }
 
         $('#section_2').removeClass('d-none');
 
-        that.loadDailyPlaneReservations(
-            that.planeRegistration, 
-            that.reservationDate, 
+        app.loadDailyPlaneReservations(
+            app.planeRegistration, 
+            app.reservationDate, 
             jQuery('#dailyReservations')
         );
     };
@@ -92,69 +93,65 @@ app.dashboardInit = function(){
 };
 
 app.makeReservation = function(starts_at_value, ends_at_value){
-    let that = this;
-    return that.ajax(
+    return app.ajax(
         "POST",
-        "/api/plane/" + that.planeRegistration + "/reservation/" + that.reservationDate,
+        "/api/plane/" + app.planeRegistration + "/reservation/" + app.reservationDate,
         {
-            starts_at: that.reservationDate + ' ' + starts_at_value + ':00',
-            ends_at: that.reservationDate + ' ' + ends_at_value + ':00'
+            starts_at: app.reservationDate + ' ' + starts_at_value + ':00',
+            ends_at: app.reservationDate + ' ' + ends_at_value + ':00'
         }
     ).success(function(){
-        alert('Rezerwacja została dodana. Oczekuje na potwierdzenie.');
-        that.loadDailyPlaneReservations(
+        app.loadDailyPlaneReservations(
             app.planeRegistration, 
             app.reservationDate, 
             jQuery('#dailyReservations')
         );
-    }).fail(that.ajaxFail);
+        app.addFlashMsg('success', "Rezerwacja została dodana. Oczekuje na potwierdzenie.");
+        app.showFlashMessages('section_flash');
+    }).fail(app.ajaxFail);
 };
 
 app.removeReservation = function(reservationId){
-    let that = this;
-    that.ajax("DELETE", "/api/plane/reservation", {reservation_id: reservationId}).success(function(){
-        alert('Rezerwacja została usunięta');
-        
-        that.loadDailyPlaneReservations(
-            that.planeRegistration, 
-            that.reservationDate, 
+    app.ajax("DELETE", "/api/plane/reservation", {reservation_id: reservationId}).success(function(){
+        app.loadDailyPlaneReservations(
+            app.planeRegistration, 
+            app.reservationDate, 
             jQuery('#dailyReservations')
         );
-    }).fail(that.ajaxFail);
+        app.addFlashMsg('success', "rezerwacja została usunięta");
+        app.showFlashMessages('section_flash');
+    }).fail(app.ajaxFail);
 };
 
 app.confirmReservation = function(reservationId){
-    let that = this;
-    that.ajax(
+    app.ajax(
         "POST",
         "/api/plane/reservation/confirm",
         {
             reservation_id: reservationId,
         }
     ).success(function(){
-        alert('Rezerwacja została potwierdzona');
-        
-        that.loadDailyPlaneReservations(
-            that.planeRegistration, 
-            that.reservationDate, 
+        app.loadDailyPlaneReservations(
+            app.planeRegistration, 
+            app.reservationDate, 
             jQuery('#dailyReservations')
         );
-    }).fail(that.ajaxFail);
+            
+        app.addFlashMsg('success', "rezerwacja została potwierdzona");
+        app.showFlashMessages('section_flash');
+    }).fail(app.ajaxFail);
 };
 
 app.logout = function(){
     app.ajax("GET", "/api/user/logout", {}).success(function(){
         sessionStorage.removeItem('token');
-        alert('Wylogowano pomyślnie');
+        app.addFlashMsg('success', "wylogowano pomyślnie");
         window.location.href = '/login';
-    }).fail(function(data){
-        alert("Błąd podczas wylogowywania");
-    });
+    }).fail(app.ajaxFail);
 };
 
 app.login = function(email, password){
-    let that = this;
-    that.ajax(
+    app.ajax(
         "POST",
         "/api/user/login",
         {
@@ -163,9 +160,9 @@ app.login = function(email, password){
         }
     ).success(function(data){
         window.sessionStorage.token = data.auth_token;
-        alert("zalogowano");
+        app.addFlashMsg('success', "zalogowano");
         window.location.href = '/dashboard';
-    }).fail(that.ajaxFail);
+    }).fail(app.ajaxFail);
 }
 
 app.ajax = function(method, url, data){
@@ -178,7 +175,44 @@ app.ajax = function(method, url, data){
     });
 };
 
-app.ajaxFail = function(data){
-    let msg = data.responseJSON.error || 'undefined error';
-    alert(msg);
+app.ajaxFail = function(response){
+    let msg = response.responseJSON.error || response.responseJSON.message || 'undefined error';
+    app.addFlashMsg('error', msg);
+    if(401 == response.status){
+        sessionStorage.removeItem('token');
+        window.location = '/login';
+        return;
+    }
+    app.showFlashMessages('section_flash');
+};
+
+app.addFlashMsg = function(level, msg){
+    let flashMsg = JSON.parse(sessionStorage.flashMsg);
+    flashMsg[level].push(msg);
+    sessionStorage.flashMsg = JSON.stringify(flashMsg);
+};
+
+app.showFlashMessages = function(containerId){
+    let container = $('#' + containerId);
+    let flashMsg = JSON.parse(sessionStorage.flashMsg);
+    flashMsg.success.forEach(function(message){
+        container.append(`<div class="alert alert-success alert-dismissible fade show" role="alert">
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>`);
+    });
+    flashMsg.error.forEach(function(message){
+        container.append(`<div class="alert alert-danger alert-dismissible fade show" role="alert">
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>`);
+    });
+    setTimeout(function(){
+        container.find('button.btn-close').click();
+     },3000);
+     
+    sessionStorage.flashMsg = JSON.stringify({
+        'success': [],
+        'error': [],
+    });
 };

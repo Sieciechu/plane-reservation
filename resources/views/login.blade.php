@@ -1,6 +1,8 @@
 <!-- resources/views/tasks.blade.php -->
  
 <x-nonLoggedLayout>
+    <section id="section_flash"></section>
+
     <h1 class="text-white text-center">Zaloguj się</h1>
 
     <h6 class="text-center">i wygodnie rezerwuj loty w AO</h6>
@@ -26,6 +28,8 @@
         <script src="js/app.js"></script>
         <script type="text/javascript">
         $(document).ready(function() {
+            app.showFlashMessages('section_flash');
+            
             $("form").on("submit", function(event) {
                 event.preventDefault();
                 app.login($('#email').val(), $('#password').val())
