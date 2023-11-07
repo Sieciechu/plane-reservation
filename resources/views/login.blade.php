@@ -38,9 +38,9 @@
                 }).success(function(data){
                     window.sessionStorage.token = data.auth_token;
                     alert("zalogowano");
-                    window.location.href = '/';
+                    window.location.href = '/dashboard';
                 }).fail(function(data){
-                    alert(data.responseJSON.message);
+                    alert(data.responseJSON.error);
                 });
             });
         });

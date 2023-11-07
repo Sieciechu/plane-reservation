@@ -30,6 +30,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/plane/', [PlaneController::class, 'store']);
 
     Route::get('/user/', [UserController::class, 'index']);
+    Route::get('/user/logout', [UserController::class, 'logout']);
     
     Route::get('/plane/{plane_registration}/reservation/{starts_at_date}', [PlaneReservationController::class, 'listByDate']);
     Route::post('/plane/{plane_registration}/reservation/{starts_at_date}', [PlaneReservationController::class, 'make']);

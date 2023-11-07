@@ -19,6 +19,6 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/login', [UserController::class, 'login']);
+Route::get('/login', [UserController::class, 'login'])->name('login');
 Route::get('/register', [UserController::class, 'register']);
 Route::get('/dashboard', [PlaneReservationController::class, 'dashboard']);

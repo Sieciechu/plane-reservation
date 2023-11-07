@@ -114,7 +114,7 @@ https://templatemo.com/tm-590-topic-listing
                                         <tr>
                                             <th scope="col"></th>
                                             <th scope="col">czas</th>
-                                            <th scope="col">nazwisko</th>
+                                            <th scope="col">imię, naziwsko</th>
                                             <th scope="col"></th>
                                         </tr>
                                     </thead>
@@ -136,15 +136,17 @@ https://templatemo.com/tm-590-topic-listing
                                 <div class="input-group input-group-lg">
                                     <input name="starts_at" type="search" class="form-control" 
                                     style="text-indent: 1ex;"
-                                    id="starts_at" placeholder="od" aria-label="Search"
-                                    value="12:00"
+                                    id="starts_at" placeholder="HH:MM" aria-label="Search"
+                                    pattern="\d\d:\d\d" title="Time in format: HH:MM"
+                                    value=""
                                     >
                                 </div>
                                 <div class="input-group input-group-lg">
                                     <input name="ends_at" type="input" class="form-control" 
                                     style="text-indent: 1ex;"
-                                    id="ends_at" placeholder="do" aria-label="Search"
-                                    value="15:00"
+                                    id="ends_at" placeholder="HH:MM" aria-label="Search"
+                                    pattern="\d\d:\d\d" title="Time in format: HH:MM"
+                                    value=""
                                 >
                                 </div>
                                 <button type="submit" class="form-control">Rezerwuj</button>

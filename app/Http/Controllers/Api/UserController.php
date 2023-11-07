@@ -55,4 +55,15 @@ class UserController extends Controller
         $authToken = $user->createToken('authToken')->plainTextToken;
         return response()->json(['auth_token' => $authToken], 200);
     }
+
+    public function logout(): JsonResponse
+    {
+        /** @var User $user */
+        $user = auth()->user();
+        $user->tokens()->delete();
+
+        return response()->json([
+            'message' => 'Logged out',
+        ]);
+    }
 }
