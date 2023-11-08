@@ -1,7 +1,7 @@
 <!-- resources/views/tasks.blade.php -->
  
 <x-nonLoggedLayout>
-    <section id="section_flash"></section>
+    <section id="section_flash" class="flash-messages"><!-- here flash messages will be shown with js script --></section>
 
     <h1 class="text-white text-center">Zaloguj się</h1>
 
@@ -28,8 +28,8 @@
         <script src="js/app.js"></script>
         <script type="text/javascript">
         $(document).ready(function() {
-            app.showFlashMessages('section_flash');
-            
+            app.showFlashMessages(app.flashMsgGetFirstVisibleContainer());
+
             $("form").on("submit", function(event) {
                 event.preventDefault();
                 app.login($('#email').val(), $('#password').val())

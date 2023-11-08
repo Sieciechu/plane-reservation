@@ -20,6 +20,14 @@ url("../fonts/bootstrap-icons.woff?8d200481aa7f02a2d63a331fc782cfaf") format("wo
   -moz-osx-font-smoothing: grayscale;
 }
 
+
+.bi {
+  width:1em;
+  height:1em;
+  vertical-align:-.125em;
+  fill:currentcolor;
+}
+
 .bi-123::before { content: "\f67f"; }
 .bi-alarm-fill::before { content: "\f101"; }
 .bi-alarm::before { content: "\f102"; }

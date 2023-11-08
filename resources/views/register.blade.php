@@ -1,4 +1,6 @@
 <x-nonLoggedLayout>
+    <section id="section_flash" class="flash-messages"><!-- here flash messages will be shown with js script --></section>
+
     <h1 class="text-white text-center">Zarejestruj się</h1>
 
     <h6 class="text-center">i wygodnie rezerwuj loty w AO</h6>
@@ -6,7 +8,7 @@
     <form method="post" class="custom-form mt-4 pt-2 mb-lg-0 mb-5" action="/register">
         <div class="input-group input-group-lg">
             
-            <input name="email" type="search" class="form-control" 
+            <input name="email" type="email" class="form-control" 
                 id="email" placeholder="email" aria-label="Search">
             
         </div>
@@ -36,26 +38,19 @@
     </form>
 
     <x-slot:customScript>
+        <script src="js/app.js"></script>
         <script type="text/javascript">
         $(document).ready(function() {
+            app.showFlashMessages(app.flashMsgGetFirstVisibleContainer());
+
             $("form").on("submit", function(event) {
                 event.preventDefault();
-                $.ajax({
-                    type: "POST",
-                    url: "/api/user",
-                    dataType: 'json',
-                    data: {
-                        name: jQuery('#name').val(),
-                        email: jQuery('#email').val(),
-                        password: jQuery('#password').val(),
-                        password_confirmation: jQuery('#password_confirmation').val()
-                    }
-                }).success(function(data){
-                    alert("rejestracja udana. Zaloguj się.");
-                    window.location.href = '/login';
-                }).fail(function(data){
-                    alert(data.responseJSON.message);
-                });
+                app.registerUser(
+                    jQuery('#name').val(),
+                    jQuery('#email').val(),
+                    jQuery('#password').val(),
+                    jQuery('#password_confirmation').val()
+                );
             });
 
             $('#email').focus();

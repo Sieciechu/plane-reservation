@@ -45,6 +45,17 @@ app.loadDailyPlaneReservations = function(planeRegistration, date, dailyReservat
             const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
         });
 
+        let isPlaneReservationSectionVisible = false == $('#section_plane_reservation').hasClass('d-none')
+        console.log('isPlaneReservationSectionVisible = ' + isPlaneReservationSectionVisible);
+        
+        if(isPlaneReservationSectionVisible) {
+            $('#section_flash_top').addClass('d-none');
+            $('#section_flash_bottom').removeClass('d-none');
+        } else {
+            $('#section_flash_top').removeClass('d-none');
+            $('#section_flash_bottom').addClass('d-none');
+        }
+
         $('button.removeReservation').on('click', function(){
             app.removeReservation(this.dataset.id);
         });
@@ -63,6 +74,8 @@ app.dashboardInit = function(){
 
     app.loadPlanes(planeSelectField);
 
+    let sectionPlaneReservation = $('#section_plane_reservation');
+
     let changedFieldsHandler = function(){
         app.planeRegistration = planeSelectField.find("option:selected" ).text();
         app.reservationDate = selectedDateField.val();
@@ -70,11 +83,11 @@ app.dashboardInit = function(){
         $('#reservationListHeading').html(`Tabela godzin ${app.planeRegistration} ${app.reservationDate}`);
 
         if(app.planeRegistration == '--'){
-            $('#section_2').addClass('d-none');
+            sectionPlaneReservation.addClass('d-none');
             return;
         }
 
-        $('#section_2').removeClass('d-none');
+        sectionPlaneReservation.removeClass('d-none');
 
         app.loadDailyPlaneReservations(
             app.planeRegistration, 
@@ -86,7 +99,7 @@ app.dashboardInit = function(){
     planeSelectField.on('change', changedFieldsHandler);
     selectedDateField.on('change', function(){
         $('html, body').animate({
-            scrollTop: $("#section_2").offset().top
+            scrollTop: sectionPlaneReservation.offset().top
         }, 300);
         changedFieldsHandler();
     });
@@ -107,7 +120,7 @@ app.makeReservation = function(starts_at_value, ends_at_value){
             jQuery('#dailyReservations')
         );
         app.addFlashMsg('success', "Rezerwacja została dodana. Oczekuje na potwierdzenie.");
-        app.showFlashMessages('section_flash');
+        app.showFlashMessages(app.flashMsgGetFirstVisibleContainer());
     }).fail(app.ajaxFail);
 };
 
@@ -119,7 +132,7 @@ app.removeReservation = function(reservationId){
             jQuery('#dailyReservations')
         );
         app.addFlashMsg('success', "rezerwacja została usunięta");
-        app.showFlashMessages('section_flash');
+        app.showFlashMessages(app.flashMsgGetFirstVisibleContainer());
     }).fail(app.ajaxFail);
 };
 
@@ -138,7 +151,7 @@ app.confirmReservation = function(reservationId){
         );
             
         app.addFlashMsg('success', "rezerwacja została potwierdzona");
-        app.showFlashMessages('section_flash');
+        app.showFlashMessages(app.flashMsgGetFirstVisibleContainer());
     }).fail(app.ajaxFail);
 };
 
@@ -163,7 +176,22 @@ app.login = function(email, password){
         app.addFlashMsg('success', "zalogowano");
         window.location.href = '/dashboard';
     }).fail(app.ajaxFail);
-}
+};
+app.registerUser = function(name, email, password, password_confirmation){
+    return app.ajax(
+        "POST",
+        "/api/user",
+        {
+            name: name,
+            email: email,
+            password: password,
+            password_confirmation: password_confirmation
+        }
+    ).success(function(){
+        app.addFlashMsg('success',"rejestracja udana. Zaloguj się.");
+        window.location.href = '/login';
+    }).fail(app.ajaxFail);
+};
 
 app.ajax = function(method, url, data){
     return $.ajax({
@@ -183,7 +211,11 @@ app.ajaxFail = function(response){
         window.location = '/login';
         return;
     }
-    app.showFlashMessages('section_flash');
+    app.showFlashMessages(app.flashMsgGetFirstVisibleContainer());
+};
+
+app.flashMsgGetFirstVisibleContainer = function(){
+    return $('section.flash-messages:visible:first');
 };
 
 app.addFlashMsg = function(level, msg){
@@ -192,20 +224,19 @@ app.addFlashMsg = function(level, msg){
     sessionStorage.flashMsg = JSON.stringify(flashMsg);
 };
 
-app.showFlashMessages = function(containerId){
-    let container = $('#' + containerId);
+app.showFlashMessages = function(container){
     let flashMsg = JSON.parse(sessionStorage.flashMsg);
-    $('html, body').animate({
-        scrollTop: $('#top').offset().top
-    }, 300);
+
     flashMsg.success.forEach(function(message){
-        container.append(`<div class="alert alert-success alert-dismissible fade show" role="alert">
+        container.append(`<div class="alert alert-success alert-dismissible fade show d-flex align-items-center" role="alert">
+            <svg class="bi flex-shrink-0 me-2" role="img" aria-label="Success:"><use xlink:href="#check-circle-fill"/></svg>
             ${message}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>`);
     });
     flashMsg.error.forEach(function(message){
-        container.append(`<div class="alert alert-danger alert-dismissible fade show" role="alert">
+        container.append(`<div class="alert alert-danger alert-dismissible fade show d-flex align-items-center" role="alert">
+            <svg class="bi flex-shrink-0 me-2" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>
             ${message}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>`);
