@@ -16,7 +16,7 @@ class PlaneReservationControllerTest extends TestCase
 {
     use RefreshDatabase;
     
-    public function test_get_reservations_by_plane_and_date(): void
+    public function test_get_reservations_by_plane_and_date_should_be_sorted_by_start_time(): void
     {
         // given
         $user = User::factory()->create([
@@ -54,8 +54,8 @@ class PlaneReservationControllerTest extends TestCase
             'id' => '01HEBWPFCWB7FNHQTPM96QNEQJ',
             'user_id' => $admin->id,
             'plane_id' => $plane->id,
-            'starts_at' => '2023-10-29 12:00:00',
-            'ends_at' => '2023-10-29 13:00:00',
+            'starts_at' => '2023-10-29 08:00:00',
+            'ends_at' => '2023-10-29 10:00:00',
             'time' => 120,
             'confirmed_at' => '2023-10-28 12:13:14',
             'confirmed_by' => $admin->id,
@@ -99,20 +99,20 @@ class PlaneReservationControllerTest extends TestCase
         ]);
         $response->assertJson([
             [
+                'id' => '01HEBWPFCWB7FNHQTPM96QNEQJ',
+                'user_name' => 'Admin',
+                'starts_at' => '08:00',
+                'ends_at' => '10:00',
+                'is_confirmed' => true,
+                'can_remove' => false,
+            ],
+            [
                 'id' => '01HEBWJJGFE9WXK4SPQ8XXWGPB',
                 'user_name' => 'John Doe',
                 'starts_at' => '10:00',
                 'ends_at' => '12:00',
                 'is_confirmed' => true,
                 'can_remove' => true,
-            ],
-            [
-                'id' => '01HEBWPFCWB7FNHQTPM96QNEQJ',
-                'user_name' => 'Admin',
-                'starts_at' => '12:00',
-                'ends_at' => '13:00',
-                'is_confirmed' => true,
-                'can_remove' => false,
             ],
         ]);
     }
