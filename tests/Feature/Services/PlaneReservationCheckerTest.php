@@ -506,7 +506,7 @@ class PlaneReservationCheckerTest extends TestCase
         yield 'does not overlap any #3' => ['2021-01-10 13:00', '2021-01-10 14:00'];
         yield 'does not overlap any #4' => ['2021-01-10 09:00', '2021-01-10 09:59'];
         yield 'does not overlap any #5' => ['2021-01-10 11:40', '2021-01-10 14:59'];
-        yield 'when overlaps unconfirmed it should be possible to reserver' => ['2021-01-10 10:20', '2021-01-10 14:59'];
+        yield 'when overlaps unconfirmed it should be possible to reserve' => ['2021-01-10 10:20', '2021-01-10 14:59'];
     }
 
     public function testCannotMakeReservationBeforeSunrise(): void
