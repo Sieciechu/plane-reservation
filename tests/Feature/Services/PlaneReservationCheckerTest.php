@@ -9,6 +9,7 @@ use App\Models\PlaneReservation;
 use App\Models\User;
 use App\Models\UserRole;
 use App\Services\PlaneReservationChecker;
+use App\Services\SunTimeService;
 use Carbon\CarbonImmutable;
 use Exception;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -21,14 +22,20 @@ class PlaneReservationCheckerTest extends TestCase
 
     private PlaneReservationChecker $service;
 
+    /** @var SunTimeService|\PHPUnit\Framework\MockObject\MockObject */
+    private $sunTimeService;
+
     public function setUp(): void
     {
         parent::setUp();
+
+        $this->sunTimeService = $this->createMock(SunTimeService::class);
         
         $this->service = new PlaneReservationChecker(
-            monthlyTimeLimitInMinutes: 240,
-            dailyTimeLimitInMinutes: 120,
-            maxReservationDaysAhead: 30,
+            240,
+            120,
+            30,
+            $this->sunTimeService,
         );
     }
     
@@ -388,7 +395,7 @@ class PlaneReservationCheckerTest extends TestCase
      * @test
      * @dataProvider overlapingReservationsProvider
      */
-    public function whenReservationOverlapsItShouldBeImpossibleToReserve(string $start, string $end): void
+    public function whenOverlapsConfirmedReservationItShouldBeImpossibleToReserve(string $start, string $end): void
     {
         // given
         $user = new User([
@@ -403,6 +410,7 @@ class PlaneReservationCheckerTest extends TestCase
             'user_id' => Ulid::fromString('01HE1F50RYFHQS5HCTYWHDWYKY'),
             'starts_at' => '2021-01-01 10:00:00',
             'ends_at' => '2021-01-01 11:00:00',
+            'confirmed_at' => '2021-01-01 09:00:00',
             'time' => 60,
         ]);
         PlaneReservation::factory()->create([
@@ -410,6 +418,7 @@ class PlaneReservationCheckerTest extends TestCase
             'user_id' => Ulid::fromString('01HE1F50RYFHQS5HCTYWHDWYKY'),
             'starts_at' => '2021-01-16 15:00:00',
             'ends_at' => '2021-01-16 16:00:00',
+            'confirmed_at' => '2021-01-01 09:00:00',
             'time' => 60,
         ]);
         // this is different plane, it should not count
@@ -418,15 +427,16 @@ class PlaneReservationCheckerTest extends TestCase
             'user_id' => Ulid::fromString('01HE1F50RYFHQS5HCTYWHDWYKY'),
             'starts_at' => '2021-01-10 13:00:00',
             'ends_at' => '2021-01-10 13:30:00',
+            'confirmed_at' => '2021-01-01 09:00:00',
             'time' => 60,
         ]);
 
         // assert
         $this->expectException(Exception::class);
-        $this->expectExceptionMessage('reservation overlaps with another reservation');
+        $this->expectExceptionMessage('reservation overlaps with another confirmed reservation');
         
         // when
-        $this->service->checkReservationOverlaps(
+        $this->service->checkOverlapsConfirmedReservation(
             CarbonImmutable::parse($start),
             CarbonImmutable::parse($end),
             '01HE1GB7NJSMF037F76BVR1D1M',
@@ -447,7 +457,7 @@ class PlaneReservationCheckerTest extends TestCase
      * @test
      * @dataProvider nonOverlapingReservationsProvider
      */
-    public function whenReservationDoesNotOverlapItShouldBePossibleToReserve(string $start, string $end): void
+    public function whenReservationDoesNotOverlapConfirmedItShouldBePossibleToReserve(string $start, string $end): void
     {
         // given
         $user = new User([
@@ -481,7 +491,7 @@ class PlaneReservationCheckerTest extends TestCase
         ]);
         
         // when
-        $this->service->checkReservationOverlaps(
+        $this->service->checkOverlapsConfirmedReservation(
             CarbonImmutable::parse($start),
             CarbonImmutable::parse($end),
             '01HE1GB7NJSMF037F76BVR1D1M',
@@ -491,10 +501,69 @@ class PlaneReservationCheckerTest extends TestCase
 
     public static function nonOverlapingReservationsProvider(): iterable
     {
-        yield ['2021-01-01 09:00', '2021-01-01 10:00'];
-        yield ['2021-01-01 11:00', '2021-01-01 12:00'];
-        yield ['2021-01-10 13:00', '2021-01-10 14:00'];
-        yield ['2021-01-10 09:00', '2021-01-10 09:59'];
-        yield ['2021-01-10 11:40', '2021-01-10 14:59'];
+        yield 'does not overlap any #1' => ['2021-01-01 09:00', '2021-01-01 10:00'];
+        yield 'does not overlap any #2' => ['2021-01-01 11:00', '2021-01-01 12:00'];
+        yield 'does not overlap any #3' => ['2021-01-10 13:00', '2021-01-10 14:00'];
+        yield 'does not overlap any #4' => ['2021-01-10 09:00', '2021-01-10 09:59'];
+        yield 'does not overlap any #5' => ['2021-01-10 11:40', '2021-01-10 14:59'];
+        yield 'when overlaps unconfirmed it should be possible to reserver' => ['2021-01-10 10:20', '2021-01-10 14:59'];
+    }
+
+    public function testCannotMakeReservationBeforeSunrise(): void
+    {
+        // given
+        $reservationStart = CarbonImmutable::parse('2023-01-01 05:00:00', 'Europe/Warsaw');
+        $this->sunTimeService->expects(self::once())
+            ->method('getSunriseTime')
+            ->willReturn(CarbonImmutable::parse('2023-01-01 15:51:00', 'Europe/Warsaw'));
+
+        // assert
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('reservation cannot start before sunrise');
+
+        // when
+        $this->service->checkReservationForSunrise($reservationStart);
+    }
+
+    public function testItShouldBePossibleToMakeReservationAfterSunrise(): void
+    {
+        // given
+        $reservationStart = CarbonImmutable::parse('2023-01-01 05:00:00', 'Europe/Warsaw');
+        $this->sunTimeService->expects(self::once())
+            ->method('getSunriseTime')
+            ->willReturn(CarbonImmutable::parse('2023-01-01 04:33:00', 'Europe/Warsaw'));
+
+        // when
+        $this->service->checkReservationForSunrise($reservationStart);
+        $this->assertTrue(true);
+    }
+
+    public function testCannotMakeReservationAfterSunset(): void
+    {
+        // given
+        $reservationEnd = CarbonImmutable::parse('2023-01-01 15:51:01', 'Europe/Warsaw');
+        $this->sunTimeService->expects(self::once())
+            ->method('getSunsetTime')
+            ->willReturn(CarbonImmutable::parse('2023-01-01 15:51:00', 'Europe/Warsaw'));
+
+        // assert
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('reservation cannot end after sunset');
+
+        // when
+        $this->service->checkReservationForSunset($reservationEnd);
+    }
+
+    public function testItShouldBePossibleToMakeReservationBeforeSunset(): void
+    {
+        // given
+        $reservationEnd = CarbonImmutable::parse('2023-01-01 15:51:00', 'Europe/Warsaw');
+        $this->sunTimeService->expects(self::once())
+            ->method('getSunsetTime')
+            ->willReturn(CarbonImmutable::parse('2023-01-01 15:51:01', 'Europe/Warsaw'));
+
+        // when
+        $this->service->checkReservationForSunset($reservationEnd);
+        $this->assertTrue(true);
     }
 }

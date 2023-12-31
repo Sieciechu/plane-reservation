@@ -124,6 +124,7 @@ class PlaneReservationControllerTest extends TestCase
     {
         // given
         Carbon::setTestNow('2023-10-28 12:13:14');
+        CarbonImmutable::setTestNow('2023-10-28 12:13:14');
 
         $user = User::factory()->create([
             'role' => $userRole,
@@ -170,6 +171,7 @@ class PlaneReservationControllerTest extends TestCase
     {
         // given
         Carbon::setTestNow('2023-10-28 12:13:14');
+        CarbonImmutable::setTestNow('2023-10-28 12:13:14');
 
         $user = User::factory()->create([
             'role' => UserRole::User,
@@ -202,6 +204,7 @@ class PlaneReservationControllerTest extends TestCase
     {
         // given
         Carbon::setTestNow('2023-10-28 12:13:14');
+        CarbonImmutable::setTestNow('2023-10-28 12:13:14');
 
         $admin = User::factory()->create([
             'role' => UserRole::Admin,
@@ -273,6 +276,7 @@ class PlaneReservationControllerTest extends TestCase
 
         // when
         Carbon::setTestNow('2023-10-28 12:13:14');
+        CarbonImmutable::setTestNow('2023-10-28 12:13:14');
 
         $response = $this->delete('/api/plane/reservation/', [
             'reservation_id' => '01HE68JBYDRR96FVYZYK7D7JS2',
@@ -326,6 +330,7 @@ class PlaneReservationControllerTest extends TestCase
 
         // when
         Carbon::setTestNow('2023-10-28 12:13:14');
+        CarbonImmutable::setTestNow('2023-10-28 12:13:14');
 
         $response = $this->delete('/api/plane/reservation/', [
             'reservation_id' => '01HE68JBYDRR96FVYZYK7D7JS2',
@@ -379,6 +384,7 @@ class PlaneReservationControllerTest extends TestCase
         $user2 = User::factory()->create(['role' => UserRole::User]);
         Sanctum::actingAs($user2, ['*']);
         Carbon::setTestNow('2023-10-28 12:13:14');
+        CarbonImmutable::setTestNow('2023-10-28 12:13:14');
 
         $response = $this->delete('/api/plane/reservation/', [
             'reservation_id' => '01HE68JBYDRR96FVYZYK7D7JS2',
@@ -410,6 +416,7 @@ class PlaneReservationControllerTest extends TestCase
     {
         // given
         Carbon::setTestNow('2023-10-28 12:13:14');
+        CarbonImmutable::setTestNow('2023-10-28 12:13:14');
 
         $user = User::factory()->create([
             'role' => UserRole::User,

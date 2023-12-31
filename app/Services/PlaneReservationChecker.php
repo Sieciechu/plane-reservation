@@ -9,14 +9,14 @@ use App\Models\PlaneReservation;
 use App\Models\User;
 use Carbon\CarbonImmutable;
 use Exception;
-use Illuminate\Support\ServiceProvider;
 
-class PlaneReservationChecker extends ServiceProvider
+class PlaneReservationChecker
 {
     public function __construct(
         private int $monthlyTimeLimitInMinutes,
         private int $dailyTimeLimitInMinutes,
         private int $maxReservationDaysAhead,
+        private SunTimeService $airportSunTimeService,
     ) {
     }
     /**
@@ -42,7 +42,7 @@ class PlaneReservationChecker extends ServiceProvider
         $this->checkReservationEndsSameMonth($startDate, $endDate);
         $this->checkMonthAhead($startDate, $endDate, $user);
         $this->checkDailyTimeLimit($startDate, $endDate, $user, $plane->id);
-        $this->checkReservationOverlaps($startDate, $endDate, $plane->id);
+        $this->checkOverlapsConfirmedReservation($startDate, $endDate, $plane->id);
     }
 
     /** @throws Exception */
@@ -116,17 +116,34 @@ class PlaneReservationChecker extends ServiceProvider
     }
 
     /** @throws Exception */
-    public function checkReservationOverlaps(CarbonImmutable $startsAt, CarbonImmutable $endsAt, string $planeId): void
+    public function checkOverlapsConfirmedReservation(CarbonImmutable $startsAt, CarbonImmutable $endsAt, string $planeId): void
     {
         $overlappingReservationsCount = PlaneReservation::where('plane_id', $planeId)
             ->where(function ($query) use ($startsAt, $endsAt) {
                 $query->whereBetween('starts_at', [$startsAt->subSecond(), $endsAt->subSeconds()])
                     ->orWhereBetween('ends_at', [$startsAt->addSecond(), $endsAt->addSecond()]);
             })
+            ->where('confirmed_at', '!=', null)
             ->count();
 
         if ($overlappingReservationsCount > 0) {
-            throw new Exception('reservation overlaps with another reservation');
+            throw new Exception('reservation overlaps with another confirmed reservation');
+        }
+    }
+
+    public function checkReservationForSunrise(CarbonImmutable $startsAt): void
+    {
+        $sunriseTime = $this->airportSunTimeService->getSunriseTime($startsAt);
+        if ($startsAt->isBefore($sunriseTime->format('Y-m-d H:i:s'))) {
+            throw new Exception('reservation cannot start before sunrise');
+        }
+    }
+
+    public function checkReservationForSunset(CarbonImmutable $endsAt): void
+    {
+        $sunsetTime = $this->airportSunTimeService->getSunsetTime($endsAt);
+        if ($endsAt->isAfter($sunsetTime)) {
+            throw new Exception('reservation cannot end after sunset');
         }
     }
 }

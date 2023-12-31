@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Http\Controllers\Api\PlaneReservationController;
 use App\Services\PlaneReservationChecker;
+use App\Services\SunTimeService;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -20,11 +21,20 @@ class AppServiceProvider extends ServiceProvider
             $dailyLimit = config('planereservation.dailyTimeLimitInMinutes');
             /** @var int $daysAheadLimit */
             $daysAheadLimit = config('planereservation.maxReservationDaysAhead');
+
+            /** @var float $latitude */
+            $latitude = config('planereservation.airport.EPOM.latitude');
+            /** @var float $logitude */
+            $logitude = config('planereservation.airport.EPOM.longitude');
+            
+
+            $airportSunTimeService = new SunTimeService($logitude, $latitude, 'Europe/Warsaw');
             
             return new PlaneReservationChecker(
-                monthlyTimeLimitInMinutes: $monthlyLimit,
-                dailyTimeLimitInMinutes: $dailyLimit,
-                maxReservationDaysAhead: $daysAheadLimit,
+                $monthlyLimit,
+                $dailyLimit,
+                $daysAheadLimit,
+                $airportSunTimeService,
             );
         });
         $this->app->bind(PlaneReservationController::class, function () {
