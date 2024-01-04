@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Services\PlaneReservationCheck;
 
+use App\Models\PlaneReservation;
 use App\Models\User;
 use Carbon\CarbonImmutable;
-use App\Models\PlaneReservation;
 
 class DailyTimeLimitCheck implements Checker
 {
