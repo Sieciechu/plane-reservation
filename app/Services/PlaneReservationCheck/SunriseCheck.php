@@ -18,6 +18,10 @@ class SunriseCheck implements Checker
     /** @throws Exception */
     public function check(CarbonImmutable $startsAt, CarbonImmutable $endsAt, User $user, string $planeId): void
     {
+        if ($user->isAdmin()) {
+            return;
+        }
+
         $sunriseTime = $this->sunTimeService->getSunriseTime($startsAt);
         if ($startsAt->startOfMinute()->lessThan($sunriseTime)) {
             throw new Exception('reservation cannot start before sunrise: ' . $sunriseTime->format('Y-m-d H:i'));

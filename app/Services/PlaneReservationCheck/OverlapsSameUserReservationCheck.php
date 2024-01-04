@@ -8,7 +8,7 @@ use App\Models\PlaneReservation;
 use App\Models\User;
 use Carbon\CarbonImmutable;
 
-class OverlapsConfirmedReservationCheck implements Checker
+class OverlapsSameUserReservationCheck implements Checker
 {
     public function check(CarbonImmutable $startsAt, CarbonImmutable $endsAt, User $user, string $planeId): void
     {
@@ -21,11 +21,11 @@ class OverlapsConfirmedReservationCheck implements Checker
                 $query->whereBetween('starts_at', [$startsAt->subSecond(), $endsAt->subSeconds()])
                     ->orWhereBetween('ends_at', [$startsAt->addSecond(), $endsAt->addSecond()]);
             })
-            ->where('confirmed_at', '!=', null)
+            ->where('user_id', $user->id)
             ->count();
 
         if ($overlappingReservationsCount > 0) {
-            throw new Exception('reservation overlaps with another confirmed reservation');
+            throw new Exception('reservation cannot overlap with your other reservations');
         }
     }
 }

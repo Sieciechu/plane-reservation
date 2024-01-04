@@ -9,6 +9,7 @@ use App\Services\PlaneReservationCheck\MonthAheadCheck;
 use App\Services\PlaneReservationCheck\MonthlyLimitCheck;
 use App\Services\PlaneReservationCheck\MultipleCheck;
 use App\Services\PlaneReservationCheck\OverlapsConfirmedReservationCheck;
+use App\Services\PlaneReservationCheck\OverlapsSameUserReservationCheck;
 use App\Services\PlaneReservationCheck\SunriseCheck;
 use App\Services\PlaneReservationCheck\SunsetCheck;
 use App\Services\PlaneReservationChecker;
@@ -49,6 +50,7 @@ class AppServiceProvider extends ServiceProvider
                     new MonthAheadCheck($daysAheadLimit),
                     new MonthlyLimitCheck($monthlyLimit),
                     new OverlapsConfirmedReservationCheck(),
+                    new OverlapsSameUserReservationCheck(),
                 ),
             );
         });

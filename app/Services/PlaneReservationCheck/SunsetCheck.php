@@ -18,6 +18,10 @@ class SunsetCheck implements Checker
     /** @throws Exception */
     public function check(CarbonImmutable $startsAt, CarbonImmutable $endsAt, User $user, string $planeId): void
     {
+        if ($user->isAdmin()) {
+            return;
+        }
+
         $sunsetTime = $this->sunTimeService->getSunsetTime($endsAt);
         if ($endsAt->startOfMinute()->greaterThan($sunsetTime)) {
             throw new Exception('reservation cannot end after sunset: ' . $sunsetTime->format('Y-m-d H:i'));
