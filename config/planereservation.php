@@ -8,7 +8,7 @@ return [
         'EPOM' => [
             'latitude' => 51.70154,
             'longitude' => 17.84688,
-            'timezone' => 'Europe/Warsaw',
+            'timezone' => 'UTC',
         ]
     ],
 ];

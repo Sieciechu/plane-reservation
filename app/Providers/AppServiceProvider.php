@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Http\Controllers\Api\PlaneReservationController;
+use App\Http\Controllers\Api\SunTimeController;
 use App\Services\PlaneReservationCheck\DailyTimeLimitCheck;
 use App\Services\PlaneReservationCheck\EndsSameMonthCheck;
 use App\Services\PlaneReservationCheck\MonthAheadCheck;
@@ -23,6 +24,16 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
+        $this->app->bind('epomSunTimeService', function () {
+            /** @var float $latitude */
+            $latitude = config('planereservation.airport.EPOM.latitude');
+            /** @var float $logitude */
+            $logitude = config('planereservation.airport.EPOM.longitude');
+            /** @var string $timezone */
+            $timezone = config('planereservation.airport.EPOM.timezone');
+            return new SunTimeService($logitude, $latitude, $timezone);
+        });
+
         $this->app->bind(PlaneReservationChecker::class, function () {
             /** @var int $monthlyLimit */
             $monthlyLimit = config('planereservation.monthlyTimeLimitInMinutes');
@@ -31,20 +42,10 @@ class AppServiceProvider extends ServiceProvider
             /** @var int $daysAheadLimit */
             $daysAheadLimit = config('planereservation.maxReservationDaysAhead');
 
-            /** @var float $latitude */
-            $latitude = config('planereservation.airport.EPOM.latitude');
-            /** @var float $logitude */
-            $logitude = config('planereservation.airport.EPOM.longitude');
-            /** @var string $timezone */
-            $timezone = config('planereservation.airport.EPOM.timezone');
-            
-
-            $airportSunTimeService = new SunTimeService($logitude, $latitude, $timezone);
-            
             return new PlaneReservationChecker(
                 new MultipleCheck(
-                    new SunriseCheck($airportSunTimeService),
-                    new SunsetCheck($airportSunTimeService),
+                    new SunriseCheck($this->app->get('epomSunTimeService')),
+                    new SunsetCheck($this->app->get('epomSunTimeService')),
                     new DailyTimeLimitCheck($dailyLimit),
                     new EndsSameMonthCheck(),
                     new MonthAheadCheck($daysAheadLimit),
@@ -59,6 +60,13 @@ class AppServiceProvider extends ServiceProvider
             $checker = $this->app->get(PlaneReservationChecker::class);
             return new PlaneReservationController(
                 reservationChecker: $checker,
+            );
+        });
+        $this->app->bind(SunTimeController::class, function () {
+            /** @var SunTimeService $sunTimeService */
+            $sunTimeService = $this->app->get('epomSunTimeService');
+            return new SunTimeController(
+                sunTimeService: $sunTimeService,
             );
         });
     }

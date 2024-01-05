@@ -18,13 +18,22 @@ app.loadPlanes = function(planeSelectField){
     }).fail(app.ajaxFail);
 };
  
+app.loadDailySunriseSunset = function(date, sunriseView, sunsetView){
+    return app.ajax("GET", "/api/suntimes/" + date, {}).success(function(data){
+        let sunrise = data.sunrise;
+        let sunset = data.sunset;
+        sunriseView.html(`Wschód słońca: ${sunrise} <span class="utc-warning">UTC</span>`);
+        sunsetView.html(`Zachód słońca: ${sunset} <span class="utc-warning">UTC</span>`);
+    }).fail(app.ajaxFail);
+};
+
 app.loadDailyPlaneReservations = function(planeRegistration, date, dailyReservationsView){
     return app.ajax("GET", "/api/plane/" + planeRegistration + "/reservation/" + date, {}).success(function(data){
         let dailyReservations = data;
         dailyReservationsView.html('');
         let notConfirmedIcon = '<i class="bi bi-question-circle" style="color: var(--bs-danger);" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Rezerwacja niepotwierdzona"></i>';
         let confirmedIcon = '<i class="bi bi-check-circle-fill" style="color: var(--primary-color);" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Rezerwacja potwierdzona">';
-        
+
         dailyReservations.forEach(function(item){
             let isConfirmed = item.is_confirmed == true ? confirmedIcon : notConfirmedIcon;
             let canConfirm = item.can_confirm == true
@@ -86,6 +95,8 @@ app.dashboardInit = function(){
             sectionPlaneReservation.addClass('d-none');
             return;
         }
+
+        app.loadDailySunriseSunset(app.reservationDate, $('#sunrise'), $('#sunset'));
 
         sectionPlaneReservation.removeClass('d-none');
 

@@ -123,7 +123,7 @@ https://templatemo.com/tm-590-topic-listing
 
             <div class="container">
                 <section id="section_flash_bottom" class="flash-messages d-none"><!-- here flash messages will be shown with js script --></section>
-                <div class="row mb-3 text-center">
+                <div class="row mb-3">
                     
                     <div class="col-md-8 themed-grid-col">
                         <div class="custom-block bg-white shadow-lg">
@@ -135,12 +135,12 @@ https://templatemo.com/tm-590-topic-listing
                                     <thead>
                                         <tr>
                                             <th scope="col"></th>
-                                            <th scope="col">czas</th>
+                                            <th scope="col">czas <span class="utc-warning">UTC(!)</span></th>
                                             <th scope="col">imię, naziwsko</th>
                                             <th scope="col"></th>
                                         </tr>
                                     </thead>
-                                    <tbody id="dailyReservations">
+                                    <tbody id="dailyReservations" class="text-start">
                                     </tbody>
                                 </table>
                             </div>
@@ -151,9 +151,28 @@ https://templatemo.com/tm-590-topic-listing
                         <div class="custom-block bg-white shadow-lg">
                             <div class="d-flex">
                                 <div>
+                                    <h5 class="mb-2">Słońce</h5>
+                                </div>
+                            </div>
+                            <div class="d-flex">
+                                <div>
+                                    <p id="sunrise"></p>
+                                </div>
+                            </div>
+                            <div class="d-flex">
+                                <div>
+                                    <p id="sunset"></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="custom-block bg-white shadow-lg">
+                            <div class="d-flex">
+                                <div>
                                     <h5 class="mb-2">Rezerwuj</h5>
                                 </div>
                             </div>
+
                             <form id="makeReservationForm" method="post" class="custom-form mt-4 pt-2 mb-lg-0 mb-5" role="search" action="#">
                                 <div class="input-group input-group-lg">
                                     <input name="starts_at" type="search" class="form-control" 

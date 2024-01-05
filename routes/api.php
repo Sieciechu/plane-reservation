@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Api\PlaneController;
 use App\Http\Controllers\Api\PlaneReservationController;
+use App\Http\Controllers\Api\SunTimeController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -37,4 +38,5 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/plane/reservation', [PlaneReservationController::class, 'removeReservation']);
     Route::post('/plane/reservation/confirm', [PlaneReservationController::class, 'confirmReservation']);
 
+    Route::get('/suntimes/{starts_at_date}', [SunTimeController::class, 'getSunriseAndSunsetTimes']);
 });
