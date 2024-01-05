@@ -42,10 +42,13 @@ class AppServiceProvider extends ServiceProvider
             /** @var int $daysAheadLimit */
             $daysAheadLimit = config('planereservation.maxReservationDaysAhead');
 
+            /** @var SunTimeService $sunTimeService */
+            $sunTimeService = $this->app->get('epomSunTimeService');
+
             return new PlaneReservationChecker(
                 new MultipleCheck(
-                    new SunriseCheck($this->app->get('epomSunTimeService')),
-                    new SunsetCheck($this->app->get('epomSunTimeService')),
+                    new SunriseCheck($sunTimeService),
+                    new SunsetCheck($sunTimeService),
                     new DailyTimeLimitCheck($dailyLimit),
                     new EndsSameMonthCheck(),
                     new MonthAheadCheck($daysAheadLimit),
