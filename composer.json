@@ -10,7 +10,8 @@
         "laravel/framework": "^10.10",
         "laravel/sanctum": "^3.2",
         "laravel/tinker": "^2.8",
-        "nesbot/carbon": "^2.71"
+        "nesbot/carbon": "^2.71",
+        "smsplanet/smsplanet-php-client": "dev-master"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",
@@ -35,6 +36,12 @@
             "Tests\\": "tests/"
         }
     },
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/smsplanetpl/smsplanet-php-client.git"
+        }
+    ],
     "scripts": {
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a7640c4a4a4d8b14a02dc956d45ae9bc",
+    "content-hash": "a5b7a10f5d224cf1b425cd95296fe4dc",
     "packages": [
         {
             "name": "brick/math",
@@ -3185,6 +3185,71 @@
                 }
             ],
             "time": "2023-11-08T05:53:05+00:00"
+        },
+        {
+            "name": "smsplanet/smsplanet-php-client",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/smsplanetpl/smsplanet-php-client.git",
+                "reference": "23691fc94b960610f028b8a5268ecc3379079418"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/smsplanetpl/smsplanet-php-client/zipball/23691fc94b960610f028b8a5268ecc3379079418",
+                "reference": "23691fc94b960610f028b8a5268ecc3379079418",
+                "shasum": ""
+            },
+            "require": {
+                "ext-dom": "*",
+                "ext-fileinfo": "*",
+                "ext-simplexml": "*",
+                "guzzlehttp/guzzle": "^7.0.1",
+                "nesbot/carbon": "^2.20",
+                "php": ">=7.2"
+            },
+            "require-dev": {
+                "phpunit/phpunit": "^8.2",
+                "vlucas/phpdotenv": "^3.4"
+            },
+            "default-branch": true,
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "SMSPLANET\\PHP\\": "src/"
+                }
+            },
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "Paweł Feruś",
+                    "email": "pawel.ferus@agsystems.pl"
+                },
+                {
+                    "name": "Krzysztof Gwiazda",
+                    "email": "krzysztof.gwiazda@agsystems.pl"
+                },
+                {
+                    "name": "Sergij Lebedyn",
+                    "email": "sergiusz.lebedyn@otostolik.pl"
+                }
+            ],
+            "description": "Klient SMS API napisany w języku PHP, pozwalający na wysyłanie wiadomości SMS, MMS oraz korzystanie z innych funkcji dostępnych w serwisie SMSPLANET.pl",
+            "homepage": "https://github.com/smsplanetpl/smsplanet-php-client",
+            "keywords": [
+                "api client",
+                "mms",
+                "sms",
+                "smsplanet",
+                "smsplanet.pl"
+            ],
+            "support": {
+                "source": "https://github.com/smsplanetpl/smsplanet-php-client/tree/master",
+                "issues": "https://github.com/smsplanetpl/smsplanet-php-client/issues"
+            },
+            "time": "2021-04-06T10:51:50+00:00"
         },
         {
             "name": "symfony/console",
@@ -8456,7 +8521,9 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "smsplanet/smsplanet-php-client": 20
+    },
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
