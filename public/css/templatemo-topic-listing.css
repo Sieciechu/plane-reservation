@@ -133,6 +133,10 @@ strong {
   font-weight: var(--font-weight-bold);
 }
 
+span.utc-warning {
+  color: var(--bs-red);
+  font-weight: bold;
+ }
 
 /*---------------------------------------
   SECTION               
@@ -547,6 +551,7 @@ strong {
   padding: 30px;
   transition: all 0.3s ease;
   height: 100%;
+  margin-bottom: 1ex;
 }
 
 .custom-block:hover {
