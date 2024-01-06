@@ -51,6 +51,7 @@ class UserControllerTest extends TestCase
         $response = $this->post('/api/user/', [
             'name' => 'John Doe',
             'email' => 'email@post.com',
+            'phone' => '0048123456789',
             'password' => 'somepassword',
             'password_confirmation' => 'somepassword',
         ]);
@@ -88,6 +89,7 @@ class UserControllerTest extends TestCase
         $this->post('/api/user/', [
             'name' => 'John Doe',
             'email' => 'some.email@post.com',
+            'phone' => '0048123456789',
             'password' => 'somepassword',
             'password_confirmation' => 'somepassword',
         ]);
