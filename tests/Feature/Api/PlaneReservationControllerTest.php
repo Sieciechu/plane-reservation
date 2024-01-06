@@ -143,6 +143,7 @@ class PlaneReservationControllerTest extends TestCase
         $response = $this->post('/api/plane/SP-KYS/reservation/2023-10-29', [
             'starts_at' => '2023-10-29 10:00:00',
             'ends_at' => '2023-10-29 11:59:00',
+            'comment' => 'some comment',
         ]);
         
         // then
@@ -158,6 +159,7 @@ class PlaneReservationControllerTest extends TestCase
             'confirmed_at' => null,
             'confirmed_by' => null,
             'deleted_at' => null,
+            'comment' => 'some comment',
         ]);
     }
 
