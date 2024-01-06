@@ -48,6 +48,7 @@ class PlaneReservation extends Model
         'confirmed_at',
         'confirmed_by',
         'deleted_at',
+        'comment',
     ];
 
     public function user(): HasOne

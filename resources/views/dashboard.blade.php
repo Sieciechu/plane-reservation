@@ -137,6 +137,7 @@ https://templatemo.com/tm-590-topic-listing
                                             <th scope="col"></th>
                                             <th scope="col">czas <span class="utc-warning">UTC(!)</span></th>
                                             <th scope="col">imię, naziwsko</th>
+                                            <th scope="col">komentarz</th>
                                             <th scope="col"></th>
                                         </tr>
                                     </thead>
@@ -147,6 +148,9 @@ https://templatemo.com/tm-590-topic-listing
                         </div>
                     </div>
 
+                </div>
+
+                <div class="row mb-3">
                     <div class="col-md-4 themed-grid-col">
                         <div class="custom-block bg-white shadow-lg">
                             <div class="d-flex">
@@ -165,11 +169,14 @@ https://templatemo.com/tm-590-topic-listing
                                 </div>
                             </div>
                         </div>
+                    </div>
 
+                    <div class="col-md-4 themed-grid-col">
                         <div class="custom-block bg-white shadow-lg">
                             <div class="d-flex">
                                 <div>
                                     <h5 class="mb-2">Rezerwuj</h5>
+                                    <span class="mb-2 utc-warning">podaj czas utc</span>
                                 </div>
                             </div>
 
@@ -179,7 +186,7 @@ https://templatemo.com/tm-590-topic-listing
                                     style="text-indent: 1ex;"
                                     id="starts_at" placeholder="HH:MM" aria-label="Search"
                                     maxlength="5"
-                                    pattern="\d\d:\d\d" title="Time in format: HH:MM"
+                                    pattern="\d\d:\d\d" title="UTC Time in format: HH:MM"
                                     value=""
                                     >
                                 </div>
@@ -188,7 +195,13 @@ https://templatemo.com/tm-590-topic-listing
                                     style="text-indent: 1ex;"
                                     id="ends_at" placeholder="HH:MM" aria-label="Search"
                                     maxlength="5"
-                                    pattern="\d\d:\d\d" title="Time in format: HH:MM"
+                                    pattern="\d\d:\d\d" title="UTC Time in format: HH:MM"
+                                    value=""
+                                >
+                                </div><div class="input-group input-group-lg">
+                                    <input name="comment" type="input" class="form-control" 
+                                    style="text-indent: 1ex;"
+                                    id="comment" placeholder="opcjonalny komentarz" aria-label="Search"
                                     value=""
                                 >
                                 </div>
@@ -196,6 +209,8 @@ https://templatemo.com/tm-590-topic-listing
                             </form>
                         </div>
                     </div>
+  
+                </div>
                     
                 </div>
                
@@ -220,7 +235,11 @@ https://templatemo.com/tm-590-topic-listing
 
             $("#makeReservationForm").on("submit", function(event) {
                 event.preventDefault();
-                app.makeReservation(jQuery('#starts_at').val(), jQuery('#ends_at').val());
+                app.makeReservation(
+                    jQuery('#starts_at').val(),
+                    jQuery('#ends_at').val(),
+                    jQuery('#comment').val()
+                );
             });
         });
     </script>

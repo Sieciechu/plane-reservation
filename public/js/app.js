@@ -46,6 +46,7 @@ app.loadDailyPlaneReservations = function(planeRegistration, date, dailyReservat
                     <th>${isConfirmed}</th>
                     <th scope="row">${item.starts_at} - ${item.ends_at}</th>
                     <td>${item.user_name}</td>
+                    <td>${item.comment}</td>
                     <td>${canRemove} ${canConfirm}</td>
                 </tr>`;
             
@@ -116,13 +117,14 @@ app.dashboardInit = function(){
     });
 };
 
-app.makeReservation = function(starts_at_value, ends_at_value){
+app.makeReservation = function(starts_at_value, ends_at_value, comment){
     return app.ajax(
         "POST",
         "/api/plane/" + app.planeRegistration + "/reservation/" + app.reservationDate,
         {
             starts_at: app.reservationDate + ' ' + starts_at_value + ':00',
-            ends_at: app.reservationDate + ' ' + ends_at_value + ':00'
+            ends_at: app.reservationDate + ' ' + ends_at_value + ':00',
+            comment: comment
         }
     ).success(function(){
         app.loadDailyPlaneReservations(

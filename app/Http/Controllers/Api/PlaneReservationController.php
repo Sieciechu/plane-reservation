@@ -54,6 +54,7 @@ class PlaneReservationController extends Controller
                 'can_confirm' => $r->confirmed_at === null && $user->isAdmin(),
                 'can_remove' => $r->user_id === $user->id || $user->isAdmin(),
                 'user_name' => $r->user->name,
+                'comment' => $r->comment ?? '',
             ])->values();
             
         return response()->json(
