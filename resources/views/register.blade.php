@@ -20,7 +20,17 @@
             
         </div>
         
+        <div class="input-group input-group-lg">
+            
+            <input name="phone" type="tel" class="form-control" 
+                id="phone" placeholder="nr telefonu" aria-label="Search"
+                pattern="[0-9]+" title="Dozwolone tylko cyfry. 0048 to kierunkowy Polski."
+                value="0048"
+            >
+            
+        </div>
         
+
         <div class="input-group input-group-lg">
             <input name="password" type="password" class="form-control loginvariant" 
             
@@ -48,6 +58,7 @@
                 app.registerUser(
                     jQuery('#name').val(),
                     jQuery('#email').val(),
+                    jQuery('#phone').val(),
                     jQuery('#password').val(),
                     jQuery('#password_confirmation').val()
                 );

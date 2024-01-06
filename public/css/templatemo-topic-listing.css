@@ -512,7 +512,7 @@ span.utc-warning {
   border: 0;
 }
 
-.hero-section input[type="search"], .hero-section input[type="email"] {
+.hero-section input[type="search"], .hero-section input[type="email"], .hero-section input[type="tel"] {
   border: 0;
   box-shadow: none;
   margin-bottom: 0;

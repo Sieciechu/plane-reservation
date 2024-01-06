@@ -188,13 +188,14 @@ app.login = function(email, password){
         window.location.href = '/dashboard';
     }).fail(app.ajaxFail);
 };
-app.registerUser = function(name, email, password, password_confirmation){
+app.registerUser = function(name, email, phone, password, password_confirmation){
     return app.ajax(
         "POST",
         "/api/user",
         {
             name: name,
             email: email,
+            phone: phone,
             password: password,
             password_confirmation: password_confirmation
         }
