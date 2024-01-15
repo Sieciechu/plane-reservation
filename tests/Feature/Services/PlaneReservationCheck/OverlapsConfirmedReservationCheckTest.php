@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Tests\Feature\PlaneReservationCheck;
+namespace Tests\Feature\Services\PlaneReservationCheck;
 
 use App\Models\Plane;
 use App\Models\PlaneReservation;
