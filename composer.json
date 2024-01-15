@@ -67,6 +67,17 @@
         ],
         "phpstan" : [
             "@php ./vendor/bin/phpstan analyse"
+        ],
+        "phpunit" : [
+            "@php ./vendor/bin/phpunit  --exclude-testsuite Integration"
+        ],
+        "phpunit-integration" : [
+            "@php ./vendor/bin/phpunit --testsuite Integration"
+        ],
+        "test-all": [
+            "@phpcs-fix",
+            "@phpstan",
+            "@phpunit"
         ]
     },
     "extra": {
