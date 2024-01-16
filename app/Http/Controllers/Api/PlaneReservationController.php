@@ -108,8 +108,6 @@ class PlaneReservationController extends Controller
 
     public function removeReservation(PlaneReservationRemoveRequest $request): JsonResponse
     {
-        die('asdasdasda');
-
         /** @var array<string, string> $validated */
         $validated = $request->validated();
         
@@ -146,7 +144,10 @@ class PlaneReservationController extends Controller
         $planeReservation->confirmed_by = $user->id;
         $planeReservation->save();
 
-        $this->smsService->sendReservationConfirmation($planeReservation);
+        $isAuthorOfReservation = $user->id === $planeReservation->user_id;
+        if (!$isAuthorOfReservation) {
+            $this->smsService->sendReservationConfirmation($planeReservation);
+        }
 
         return response()->json([], 200);
     }
