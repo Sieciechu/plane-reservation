@@ -35,8 +35,8 @@ Route::middleware('auth:sanctum')->group(function () {
     
     Route::get('/plane/{plane_registration}/reservation/{starts_at_date}', [PlaneReservationController::class, 'listByDate']);
     Route::post('/plane/{plane_registration}/reservation/{starts_at_date}', [PlaneReservationController::class, 'make']);
-    Route::delete('/plane/reservation', [PlaneReservationController::class, 'removeReservation']);
-    Route::post('/plane/reservation/confirm', [PlaneReservationController::class, 'confirmReservation']);
+    Route::delete('/plane/reservation/{reservation_id}', [PlaneReservationController::class, 'removeReservation']);
+    Route::patch('/plane/reservation/{reservation_id}/confirm', [PlaneReservationController::class, 'confirmReservation']);
 
     Route::get('/suntimes/{starts_at_date}', [SunTimeController::class, 'getSunriseAndSunsetTimes']);
 });

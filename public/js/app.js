@@ -138,7 +138,7 @@ app.makeReservation = function(starts_at_value, ends_at_value, comment){
 };
 
 app.removeReservation = function(reservationId){
-    return app.ajax("DELETE", "/api/plane/reservation", {reservation_id: reservationId}).success(function(){
+    return app.ajax("DELETE", `/api/plane/reservation/${reservationId}`).success(function(){
         app.loadDailyPlaneReservations(
             app.planeRegistration, 
             app.reservationDate, 
@@ -151,11 +151,8 @@ app.removeReservation = function(reservationId){
 
 app.confirmReservation = function(reservationId){
     return app.ajax(
-        "POST",
-        "/api/plane/reservation/confirm",
-        {
-            reservation_id: reservationId,
-        }
+        "PATCH",
+        `/api/plane/reservation/${reservationId}/confirm`
     ).success(function(){
         app.loadDailyPlaneReservations(
             app.planeRegistration, 

@@ -280,13 +280,9 @@ class PlaneReservationControllerTest extends TestCase
         Carbon::setTestNow('2023-10-28 12:13:14');
         CarbonImmutable::setTestNow('2023-10-28 12:13:14');
 
-        $response = $this->delete('/api/plane/reservation/', [
-            'reservation_id' => '01HE68JBYDRR96FVYZYK7D7JS2',
-        ]);
+        $response = $this->delete('/api/plane/reservation/01HE68JBYDRR96FVYZYK7D7JS2');
         // when
-        $response = $this->delete('/api/plane/reservation/', [
-            'reservation_id' => '01HE68JBYDRR96FVYZYK7D7JS2',
-        ]);
+        $response = $this->delete('/api/plane/reservation/01HE68JBYDRR96FVYZYK7D7JS2');
         
         // then
         $response->assertStatus(200);
@@ -301,8 +297,8 @@ class PlaneReservationControllerTest extends TestCase
             'deleted_at' => '2023-10-28 12:13:14',
         ]);
 
-        $reponse = $this->get('/api/plane/SP-KYS/reservation/2023-10-29');
-        $this->assertEmpty($reponse->json());
+        $response = $this->get('/api/plane/SP-KYS/reservation/2023-10-29');
+        $this->assertEmpty($response->json());
     }
 
     public function test_owner_can_remove_his_reservation(): void
@@ -334,13 +330,9 @@ class PlaneReservationControllerTest extends TestCase
         Carbon::setTestNow('2023-10-28 12:13:14');
         CarbonImmutable::setTestNow('2023-10-28 12:13:14');
 
-        $response = $this->delete('/api/plane/reservation/', [
-            'reservation_id' => '01HE68JBYDRR96FVYZYK7D7JS2',
-        ]);
+        $response = $this->delete('/api/plane/reservation/01HE68JBYDRR96FVYZYK7D7JS2');
         // when
-        $response = $this->delete('/api/plane/reservation/', [
-            'reservation_id' => '01HE68JBYDRR96FVYZYK7D7JS2',
-        ]);
+        $response = $this->delete('/api/plane/reservation/01HE68JBYDRR96FVYZYK7D7JS2');
         
         // then
         $response->assertStatus(200);
@@ -355,8 +347,8 @@ class PlaneReservationControllerTest extends TestCase
             'deleted_at' => '2023-10-28 12:13:14',
         ]);
 
-        $reponse = $this->get('/api/plane/SP-KYS/reservation/2023-10-29');
-        $this->assertEmpty($reponse->json());
+        $response = $this->get('/api/plane/SP-KYS/reservation/2023-10-29');
+        $this->assertEmpty($response->json());
     }
 
     public function test_regular_user_cannot_remove_others_reservation(): void
@@ -388,13 +380,8 @@ class PlaneReservationControllerTest extends TestCase
         Carbon::setTestNow('2023-10-28 12:13:14');
         CarbonImmutable::setTestNow('2023-10-28 12:13:14');
 
-        $response = $this->delete('/api/plane/reservation/', [
-            'reservation_id' => '01HE68JBYDRR96FVYZYK7D7JS2',
-        ]);
         // when
-        $response = $this->delete('/api/plane/reservation/', [
-            'reservation_id' => '01HE68JBYDRR96FVYZYK7D7JS2',
-        ]);
+        $response = $this->delete('/api/plane/reservation/01HE68JBYDRR96FVYZYK7D7JS2');
         
         // then
         $response->assertStatus(403);
@@ -409,8 +396,8 @@ class PlaneReservationControllerTest extends TestCase
             'deleted_at' => null,
         ]);
 
-        $reponse = $this->get('/api/plane/SP-KYS/reservation/2023-10-29');
-        $this->assertNotEmpty($reponse->json());
+        $response = $this->get('/api/plane/SP-KYS/reservation/2023-10-29');
+        $this->assertNotEmpty($response->json());
     }
 
 
@@ -443,9 +430,7 @@ class PlaneReservationControllerTest extends TestCase
         ]);
 
         // when
-        $response = $this->delete('/api/plane/reservation/', [
-            'reservation_id' => '01HE68XAY50PSC2WKAFS2M7NXP',
-        ]);
+        $response = $this->delete('/api/plane/reservation/01HE68XAY50PSC2WKAFS2M7NXP');
         
         // then
         $response->assertStatus(404);
@@ -460,18 +445,23 @@ class PlaneReservationControllerTest extends TestCase
             'deleted_at' => null,
         ]);
 
-        $reponse = $this->get('/api/plane/SP-KYS/reservation/2023-10-29');
-        $this->assertNotEmpty($reponse->json());
+        $response = $this->get('/api/plane/SP-KYS/reservation/2023-10-29');
+        $this->assertNotEmpty($response->json());
     }
 
     public function test_confirm_reservation(): void
     {
         // given
-        $user = User::factory()->create([
+        $admin = User::factory()->create([
             'id' => '01HE69WJM5FNFEFPV321F9240Y',
             'role' => UserRole::Admin,
         ]);
-        Sanctum::actingAs($user, ['*']);
+        Sanctum::actingAs($admin, ['*']);
+
+        User::factory()->create([
+            'id' => '01HM5ASEDHKZF8JC66FD4ZAR3S',
+            'role' => UserRole::User,
+        ]);
 
         /** @var Plane $plane */
         $plane = Plane::factory()->create([
@@ -481,7 +471,7 @@ class PlaneReservationControllerTest extends TestCase
 
         PlaneReservation::factory()->create([
             'id' => '01HE68JBYDRR96FVYZYK7D7JS2',
-            'user_id' => $user->id,
+            'user_id' => '01HM5ASEDHKZF8JC66FD4ZAR3S',
             'plane_id' => $plane->id,
             'starts_at' => '2023-10-29 10:00:00',
             'ends_at' => '2023-10-29 11:59:00',
@@ -495,9 +485,7 @@ class PlaneReservationControllerTest extends TestCase
         Carbon::setTestNow('2023-10-28 12:13:14');
         CarbonImmutable::setTestNow('2023-10-28 12:13:14');
 
-        $response = $this->post('/api/plane/reservation/confirm', [
-            'reservation_id' => '01HE68JBYDRR96FVYZYK7D7JS2',
-        ]);
+        $response = $this->patch('/api/plane/reservation/01HE68JBYDRR96FVYZYK7D7JS2/confirm');
         
         // then
         $response->assertStatus(200);
@@ -512,6 +500,9 @@ class PlaneReservationControllerTest extends TestCase
             'confirmed_by' => '01HE69WJM5FNFEFPV321F9240Y',
             'deleted_at' => null,
         ]);
+
+        $dummySmsClient = $this->app->get(\App\Infrastructure\SmsSender\DummySmsClient::class);
+        $this->assertCount(1, $dummySmsClient->smses);
     }
 
     public function test_regular_user_cannot_confirm_any_reservation(): void
@@ -544,9 +535,7 @@ class PlaneReservationControllerTest extends TestCase
         Carbon::setTestNow('2023-10-28 12:13:14');
         CarbonImmutable::setTestNow('2023-10-28 12:13:14');
 
-        $response = $this->post('/api/plane/reservation/confirm', [
-            'reservation_id' => '01HE68JBYDRR96FVYZYK7D7JS2',
-        ]);
+        $response = $this->patch('/api/plane/reservation/01HE68JBYDRR96FVYZYK7D7JS2/confirm');
         
         // then
         $response->assertStatus(403);
@@ -593,12 +582,8 @@ class PlaneReservationControllerTest extends TestCase
         Carbon::setTestNow('2023-10-28 12:13:14');
         CarbonImmutable::setTestNow('2023-10-28 12:13:14');
         
-        $response1 = $this->post('/api/plane/reservation/confirm', [
-            'reservation_id' => '01HE68JBYDRR96FVYZYK7D7JS2',
-        ]);
-        $response2 = $this->post('/api/plane/reservation/confirm', [
-            'reservation_id' => '01HE6AE4K6D2YYDE5GWHCK13GG',
-        ]);
+        $response1 = $this->patch('/api/plane/reservation/01HE68JBYDRR96FVYZYK7D7JS2/confirm');
+        $response2 = $this->patch('/api/plane/reservation/01HE6AE4K6D2YYDE5GWHCK13GG/confirm');
         
         // then
         $response1->assertStatus(404);

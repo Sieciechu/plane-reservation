@@ -25,4 +25,13 @@ class PlaneReservationRemoveRequest extends FormRequest
             'reservation_id' => 'required|string',
         ];
     }
+
+    public function all($keys = null)
+    {
+        $request = parent::all($keys);
+
+        $request['reservation_id'] = $this->route('reservation_id');
+
+        return $request;
+    }
 }
