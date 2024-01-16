@@ -9,6 +9,13 @@ return [
             'latitude' => 51.70154,
             'longitude' => 17.84688,
             'timezone' => 'UTC',
+            'sms' => [
+                'from' => 'A.Ostrowski',
+            ]
         ]
     ],
+    'smsplanet' => [
+        'apitoken' => getenv('SMSPLANET_API_APITOKEN'),
+        'apipassword' => getenv('SMSPLANET_API_APIPASSWORD'),
+    ]
 ];

@@ -13,6 +13,7 @@ use App\Models\Plane;
 use App\Models\PlaneReservation;
 use App\Models\User;
 use App\Services\PlaneReservationChecker;
+use App\Services\SmsSender\SmsService;
 use Carbon\CarbonImmutable;
 use Exception;
 use Illuminate\Http\JsonResponse;
@@ -20,7 +21,8 @@ use Illuminate\Http\JsonResponse;
 class PlaneReservationController extends Controller
 {
     public function __construct(
-        private PlaneReservationChecker $reservationChecker,
+        private readonly PlaneReservationChecker $reservationChecker,
+        private readonly SmsService $smsService,
     ) {
     }
 
@@ -101,21 +103,30 @@ class PlaneReservationController extends Controller
         // $user = User::where('id', $validated['user_id'])->firstOrFail();
         // $user->notify(new \App\Notifications\PlaneReservationCreated($planeReservation));
 
-
         return response()->json([], 201);
     }
 
     public function removeReservation(PlaneReservationRemoveRequest $request): JsonResponse
     {
+        die('asdasdasda');
+
         /** @var array<string, string> $validated */
         $validated = $request->validated();
         
+        /** @var User $user */
         $user = $request->user();
+        /** @var PlaneReservation $planeReservation */
         $planeReservation = PlaneReservation::withTrashed()->where('id', $validated['reservation_id'])->firstOrFail();
         
         $this->authorize('remove', $planeReservation);
 
         $planeReservation->delete();
+        // TODO: add removed by
+
+        $isAuthorOfReservation = $user->id === $planeReservation->user_id;
+        if (!$isAuthorOfReservation) {
+            $this->smsService->sendReservationCancellation($planeReservation);
+        }
 
         return response()->json([], 200);
     }
@@ -134,6 +145,8 @@ class PlaneReservationController extends Controller
         $planeReservation->confirmed_at = CarbonImmutable::now();
         $planeReservation->confirmed_by = $user->id;
         $planeReservation->save();
+
+        $this->smsService->sendReservationConfirmation($planeReservation);
 
         return response()->json([], 200);
     }
