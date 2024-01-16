@@ -68,6 +68,12 @@ https://templatemo.com/tm-590-topic-listing
                             <li class="nav-item">
                                 <a class="nav-link click-scroll" href="#" onclick="app.logout()">Wyloguj się</a>
                             </li>
+                            <li class="nav-item">
+                                <a class="nav-link click-scroll" href="/dashboard">Rezerwacje</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link click-scroll" href="/dashboard2">Tabele rezerwacji</a>
+                            </li>
                         </ul>
 
                         <div class="d-none d-lg-block">

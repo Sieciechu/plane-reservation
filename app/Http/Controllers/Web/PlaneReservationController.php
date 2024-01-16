@@ -13,4 +13,9 @@ class PlaneReservationController extends Controller
     {
         return view('dashboard');
     }
+
+    public function dashboard2(): View
+    {
+        return view('dashboard2');
+    }
 }
