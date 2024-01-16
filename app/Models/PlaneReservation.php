@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use DateTimeInterface;
+use Carbon\CarbonImmutable;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -13,10 +13,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property string $id
  * @property string $user_id
  * @property string $plane_id
- * @property DateTimeInterface $starts_at
- * @property DateTimeInterface $ends_at
+ * @property CarbonImmutable $starts_at
+ * @property CarbonImmutable $ends_at
  * @property int $time
- * @property DateTimeInterface $confirmed_at
+ * @property CarbonImmutable $confirmed_at
  * @property string $confirmed_by
  * @property User $user
  */
