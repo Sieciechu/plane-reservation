@@ -10,7 +10,7 @@ return [
             'longitude' => 17.84688,
             'timezone' => 'UTC',
             'sms' => [
-                'from' => 'A.Ostrowski',
+                'from' => 'Samoloty AO',
             ]
         ]
     ],
