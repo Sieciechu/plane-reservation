@@ -657,6 +657,12 @@ progress {
     border-bottom: 1px solid;
 }
 
+.flash-messages {
+    position: sticky;
+    top: 5.5rem;
+    z-index: 1000;
+}
+
 .col {
     flex: 1 0 0%;
 }

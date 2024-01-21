@@ -129,32 +129,19 @@ https://templatemo.com/tm-590-topic-listing
 
             <div class="container">
                 <section id="section_flash_bottom" class="flash-messages d-none"><!-- here flash messages will be shown with js script --></section>
-                <div class="row mb-3">
+                    <div class="planesboard row mb-3">
                     
-                    <div class="col-md-8 themed-grid-col">
-                        <div class="custom-block bg-white shadow-lg">
-                            <div class="d-flex">
-                                <h5 class="mb-2">Zarezerwowane</h5>
+                        <div class="col-12 themed-grid-col">
+                            <div class="custom-block bg-white shadow-lg">
+                                <div class="planeheader">
+                                    <h3 class="mb-2">Zarezerwowane</h3>
+                                </div>
+                                <div id="dailyReservations"><!-- here reservations will be loaded by js --></div>
                             </div>
-                            <div class="d-flex">
-                                <table class="table">
-                                    <thead>
-                                        <tr>
-                                            <th scope="col"></th>
-                                            <th scope="col">czas <span class="utc-warning">UTC(!)</span></th>
-                                            <th scope="col">imię, naziwsko</th>
-                                            <th scope="col">komentarz</th>
-                                            <th scope="col"></th>
-                                        </tr>
-                                    </thead>
-                                    <tbody id="dailyReservations" class="text-start">
-                                    </tbody>
-                                </table>
-                            </div>
+                        
                         </div>
+                    
                     </div>
-
-                </div>
 
                 <div class="row mb-3">
                     <div class="col-md-4 themed-grid-col">
@@ -188,20 +175,18 @@ https://templatemo.com/tm-590-topic-listing
 
                             <form id="makeReservationForm" method="post" class="custom-form mt-4 pt-2 mb-lg-0 mb-5" role="search" action="#">
                                 <div class="input-group input-group-lg">
-                                    <input name="starts_at" type="search" class="form-control" 
+                                    <input name="starts_at" type="time" class="form-control" 
                                     style="text-indent: 1ex;"
-                                    id="starts_at" placeholder="HH:MM" aria-label="Search"
-                                    maxlength="5"
-                                    pattern="\d\d:\d\d" title="UTC Time in format: HH:MM"
+                                    id="starts_at" aria-label="Search"
+                                    title="UTC Time in format: HH:MM"
                                     value=""
                                     >
                                 </div>
                                 <div class="input-group input-group-lg">
-                                    <input name="ends_at" type="input" class="form-control" 
+                                    <input name="ends_at" type="time" class="form-control" 
                                     style="text-indent: 1ex;"
-                                    id="ends_at" placeholder="HH:MM" aria-label="Search"
-                                    maxlength="5"
-                                    pattern="\d\d:\d\d" title="UTC Time in format: HH:MM"
+                                    id="ends_at" aria-label="Search"
+                                    title="UTC Time in format: HH:MM"
                                     value=""
                                 >
                                 </div><div class="input-group input-group-lg">

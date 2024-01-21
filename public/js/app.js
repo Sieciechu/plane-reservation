@@ -32,23 +32,36 @@ app.loadDailyPlaneReservations = function(planeRegistration, date, dailyReservat
         let dailyReservations = data;
         dailyReservationsView.html('');
         let notConfirmedIcon = '<i class="bi bi-question-circle" style="color: var(--bs-danger);" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Rezerwacja niepotwierdzona"></i>';
-        let confirmedIcon = '<i class="bi bi-check-circle-fill" style="color: var(--primary-color);" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Rezerwacja potwierdzona">';
+        let confirmedIcon = '<i class="bi bi-check-circle-fill" style="color: var(--primary-color);" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Rezerwacja potwierdzona"></i>';
 
         dailyReservations.forEach(function(item){
             let isConfirmed = item.is_confirmed == true ? confirmedIcon : notConfirmedIcon;
             let canConfirm = item.can_confirm == true
-                ? `<button type="button" class="btn btn-primary confirmReservation" data-id="${item.id}">Potwierdź rezerwację</button>`
+                ? `<button type="button" class="btn btn-primary confirmReservation" data-id="${item.id}">potwierdź</button>`
                 : '';
             let canRemove = item.can_remove == true
-                ? `<button type="button" class="btn btn-danger removeReservation" data-id="${item.id}">Usuń</button>`
+                ? `<button type="button" class="btn btn-danger removeReservation" data-id="${item.id}">usuń</button>`
                 : '';
-            let row = `<tr>
-                    <th>${isConfirmed}</th>
-                    <th scope="row">${item.starts_at} - ${item.ends_at}</th>
-                    <td>${item.user_name}</td>
-                    <td>${item.comment}</td>
-                    <td>${canRemove} ${canConfirm}</td>
-                </tr>`;
+            let row = `
+<div class="reservation-entry-row">
+    <div class="col-1 col-md-1 col-sm-1 col-lg-1 col-xl-1 themed-grid-col">
+        <p>${isConfirmed}</p>
+    </div>
+    <div class="col-4 col-md-4 col-sm-4 col-lg-2 col-xl-2 themed-grid-col">
+        <p>${item.starts_at} - ${item.ends_at}</p>
+    </div>
+    <div class="col-6 col-md-6 col-sm-6 col-lg-2 col-xl-2 themed-grid-col">
+        <p>${item.user_name}</p>
+    </div>
+    <div class="col-12 col-md-12 col-sm-12 col-lg-8 col-xl-5 themed-grid-col">
+        <p class="mb-0">${item.comment}</p>
+
+    </div>
+    <div style="text-align: left;" class="col-12 col-md-8 col-sm-12 col-lg-3 col-xl-2 themed-grid-col">
+        <p class="mt-1">${canRemove} ${canConfirm}</p>
+    </div>
+</div>
+`;
             
             $('#dailyReservations').append(row);
             const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
@@ -239,14 +252,14 @@ app.showFlashMessages = function(container){
     let flashMsg = JSON.parse(sessionStorage.flashMsg);
 
     flashMsg.success.forEach(function(message){
-        container.append(`<div class="alert alert-success alert-dismissible fade show d-flex align-items-center" role="alert">
+        container.append(`<div class="alert alert-success alert-dismissible fade show d-flex align-items-center shadow" role="alert">
             <svg class="bi flex-shrink-0 me-2" role="img" aria-label="Success:"><use xlink:href="#check-circle-fill"/></svg>
             ${message}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>`);
     });
     flashMsg.error.forEach(function(message){
-        container.append(`<div class="alert alert-danger alert-dismissible fade show d-flex align-items-center" role="alert">
+        container.append(`<div class="alert alert-danger alert-dismissible fade show d-flex align-items-center shadow" role="alert">
             <svg class="bi flex-shrink-0 me-2" role="img" aria-label="Danger:"><use xlink:href="#exclamation-triangle-fill"/></svg>
             ${message}
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
@@ -254,7 +267,7 @@ app.showFlashMessages = function(container){
     });
     setTimeout(function(){
         container.find('button.btn-close').click();
-     },3000);
+     },2000);
      
     sessionStorage.flashMsg = JSON.stringify({
         'success': [],
