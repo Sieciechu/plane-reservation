@@ -5,8 +5,13 @@ namespace App\Providers;
 use App;
 use App\Http\Controllers\Api\PlaneReservationController;
 use App\Http\Controllers\Api\SunTimeController;
+use App\Infrastructure\Repository\EloquentPlaneRepository;
+use App\Infrastructure\Repository\EloquentPlaneReservationRepository;
 use App\Infrastructure\SmsSender\DummySmsClient;
 use App\Infrastructure\SmsSender\SmsPlanetClient;
+use App\Services\PlaneRepository;
+use App\Services\PlaneReservation\PlaneReservationRepository;
+use App\Services\PlaneReservation\PlaneReservationService;
 use App\Services\PlaneReservationCheck\DailyTimeLimitCheck;
 use App\Services\PlaneReservationCheck\EndsSameMonthCheck;
 use App\Services\PlaneReservationCheck\MonthAheadCheck;
@@ -70,9 +75,13 @@ class AppServiceProvider extends ServiceProvider
             /** @var SmsService $epomSmsService */
             $epomSmsService = $this->app->get('epomSmsService');
 
+            /** @var PlaneReservationService $planeReservationService */
+            $planeReservationService = $this->app->get(PlaneReservationService::class);
+
             return new PlaneReservationController(
                 reservationChecker: $checker,
                 smsService: $epomSmsService,
+                planeReservationService: $planeReservationService,
             );
         });
         $this->app->bind(SunTimeController::class, function () {
@@ -113,6 +122,25 @@ class AppServiceProvider extends ServiceProvider
 
         $this->app->singleton(DummySmsClient::class, function () {
             return new DummySmsClient();
+        });
+
+        $this->app->bind(PlaneRepository::class, function () {
+            return new EloquentPlaneRepository();
+        });
+
+        $this->app->bind(PlaneReservationRepository::class, function ($app) {
+            return new EloquentPlaneReservationRepository();
+        });
+
+        $this->app->bind(PlaneReservationService::class, function ($app) {
+            /** @var PlaneRepository $planeRepository */
+            $planeRepository = $app->get(PlaneRepository::class);
+            /** @var PlaneReservationRepository $planeReservationRepository */
+            $planeReservationRepository = $app->get(PlaneReservationRepository::class);
+            return new PlaneReservationService(
+                planeRepo: $planeRepository,
+                planeReservationRepo: $planeReservationRepository,
+            );
         });
     }
 

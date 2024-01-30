@@ -18,6 +18,7 @@ class PlaneFactory extends Factory
     public function definition(): array
     {
         return [
+            'id' => Str::uuid()->toString(),
             'name' => Str::random(10),
             'registration' => fake()->regexify('SP-[A-Z]{3}'),
         ];

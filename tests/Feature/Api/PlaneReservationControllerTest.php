@@ -589,4 +589,78 @@ class PlaneReservationControllerTest extends TestCase
         $response1->assertStatus(404);
         $response2->assertStatus(404);
     }
+
+    public function test_get_all_reservations_for_date(): void
+    {
+        // given
+        $user = User::factory()->create([
+            'role' => UserRole::Admin,
+        ]);
+        Sanctum::actingAs($user, ['*']);
+
+        $plane = Plane::factory()->create([
+            'name' => 'PZL Koliber 150',
+            'registration' => 'SP-ABC',
+        ]);
+        $plane2 = Plane::factory()->create([
+            'name' => 'PZL Koliber 160',
+            'registration' => 'SP-DEF',
+        ]);
+
+        PlaneReservation::factory()->create([
+            'id' => '01HE68JBYDRR96FVYZYK7D7JS2',
+            'user_id' => $user->id,
+            'plane_id' => $plane->id,
+            'starts_at' => '2023-11-01 10:00:00',
+            'ends_at' => '2023-11-01 11:59:00',
+            'time' => 119,
+            'confirmed_at' => null,
+            'confirmed_by' => null,
+            'deleted_at' => null,
+        ]);
+        PlaneReservation::factory()->create([
+            'id' => '01HE68JBYDRR96FVYZYK7D7JS3',
+            'user_id' => $user->id,
+            'plane_id' => $plane2->id,
+            'starts_at' => '2023-11-01 12:00:00',
+            'ends_at' => '2023-11-01 13:59:00',
+            'time' => 119,
+            'confirmed_at' => null,
+            'confirmed_by' => null,
+            'deleted_at' => null,
+        ]);
+        PlaneReservation::factory()->create([
+            'id' => '01HE68JBYDRR96FVYZYK7D7JS4',
+            'user_id' => $user->id,
+            'plane_id' => $plane->id,
+            'starts_at' => '2023-11-01 14:00:00',
+            'ends_at' => '2023-11-01 15:59:00',
+            'time' => 119,
+            'confirmed_at' => null,
+            'confirmed_by' => null,
+            'deleted_at' => null,
+        ]);
+
+        // when
+        $response = $this->get('/api/plane/reservation/date/2023-11-01');
+        
+        // then
+        $response->assertStatus(200);
+        $response->assertJsonCount(2);
+
+        $response->assertJsonStructure([
+            '*' => [
+                '*' => [
+                    'id',
+                    'starts_at',
+                    'ends_at',
+                    'is_confirmed',
+                    'can_confirm',
+                    'can_remove',
+                    'user_name',
+                    'comment',
+                ],
+            ],
+        ]);
+    }
 }

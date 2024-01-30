@@ -16,8 +16,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property CarbonImmutable $starts_at
  * @property CarbonImmutable $ends_at
  * @property int $time
- * @property CarbonImmutable $confirmed_at
+ * @property CarbonImmutable|null $confirmed_at
  * @property string $confirmed_by
+ * @property string $comment
  * @property User $user
  */
 class PlaneReservation extends Model

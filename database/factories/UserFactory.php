@@ -20,6 +20,7 @@ class UserFactory extends Factory
     public function definition(): array
     {
         return [
+            'id' => Str::uuid()->toString(),
             'name' => fake()->name(),
             'role' => fake()->randomElement(UserRole::cases())->value,
             'email' => fake()->unique()->safeEmail(),

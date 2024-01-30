@@ -6,12 +6,14 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\PlaneReservationConfirmRequest;
+use App\Http\Requests\PlaneReservationGetAllForDate;
 use App\Http\Requests\PlaneReservationListByDateRequest;
 use App\Http\Requests\PlaneReservationMakeRequest;
 use App\Http\Requests\PlaneReservationRemoveRequest;
 use App\Models\Plane;
 use App\Models\PlaneReservation;
 use App\Models\User;
+use App\Services\PlaneReservation\PlaneReservationService;
 use App\Services\PlaneReservationChecker;
 use App\Services\SmsSender\SmsService;
 use Carbon\CarbonImmutable;
@@ -21,8 +23,9 @@ use Illuminate\Http\JsonResponse;
 class PlaneReservationController extends Controller
 {
     public function __construct(
-        private readonly PlaneReservationChecker $reservationChecker,
-        private readonly SmsService $smsService,
+        private PlaneReservationChecker $reservationChecker,
+        private SmsService $smsService,
+        private PlaneReservationService $planeReservationService,
     ) {
     }
 
@@ -150,5 +153,19 @@ class PlaneReservationController extends Controller
         }
 
         return response()->json([], 200);
+    }
+
+    public function getAllReservationsForDate(PlaneReservationGetAllForDate $request): JsonResponse
+    {
+        /** @var array<string, mixed> $validated */
+        $validated = $request->validated();
+
+        /** @var User $user */
+        $user = $request->user();
+
+        $date = CarbonImmutable::parse($validated['date'])->startOfDay(); // @phpstan-ignore-line
+        $reservations = $this->planeReservationService->getAllReservationsWithActionsForDate($date, $user);
+
+        return response()->json($reservations);
     }
 }
