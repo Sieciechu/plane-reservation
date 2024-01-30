@@ -6,6 +6,9 @@ namespace Tests\Feature\Infrastructure\SmsSender;
 
 use Tests\TestCase;
 
+/**
+ * @group paid
+ */
 class SmsPlanetClientTest extends TestCase
 {
     public function testSendSms(): void
