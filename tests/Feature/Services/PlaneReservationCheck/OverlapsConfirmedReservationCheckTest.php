@@ -12,7 +12,6 @@ use App\Services\PlaneReservationCheck\Exception;
 use App\Services\PlaneReservationCheck\OverlapsConfirmedReservationCheck;
 use Carbon\CarbonImmutable;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Symfony\Component\Uid\Ulid;
 use Tests\TestCase;
 
 class OverlapsConfirmedReservationCheckTest extends TestCase
@@ -35,23 +34,23 @@ class OverlapsConfirmedReservationCheckTest extends TestCase
     {
         // given
         $user = new User([
-            'id' => Ulid::fromString('01HE1F50RYFHQS5HCTYWHDWYKY'),
+            'id' => '01HE1F50RYFHQS5HCTYWHDWYKY',
             'role' => UserRole::User
         ]);
 
-        Plane::factory()->create(['id' => Ulid::fromString('01HE1GB7NJSMF037F76BVR1D1M')]);
-        Plane::factory()->create(['id' => Ulid::fromString('01HE1GRM0B8RQTEX4KYFT7Q7TR')]);
+        Plane::factory()->create(['id' => '01HE1GB7NJSMF037F76BVR1D1M']);
+        Plane::factory()->create(['id' => '01HE1GRM0B8RQTEX4KYFT7Q7TR']);
         PlaneReservation::factory()->create([
-            'plane_id' => Ulid::fromString('01HE1GB7NJSMF037F76BVR1D1M'),
-            'user_id' => Ulid::fromString('01HE1F50RYFHQS5HCTYWHDWYKY'),
+            'plane_id' => '01HE1GB7NJSMF037F76BVR1D1M',
+            'user_id' => '01HE1F50RYFHQS5HCTYWHDWYKY',
             'starts_at' => '2021-01-01 10:00:00',
             'ends_at' => '2021-01-01 11:00:00',
             'confirmed_at' => '2021-01-01 09:00:00',
             'time' => 60,
         ]);
         PlaneReservation::factory()->create([
-            'plane_id' => Ulid::fromString('01HE1GB7NJSMF037F76BVR1D1M'),
-            'user_id' => Ulid::fromString('01HE1F50RYFHQS5HCTYWHDWYKY'),
+            'plane_id' => '01HE1GB7NJSMF037F76BVR1D1M',
+            'user_id' => '01HE1F50RYFHQS5HCTYWHDWYKY',
             'starts_at' => '2021-01-16 15:00:00',
             'ends_at' => '2021-01-16 16:00:00',
             'confirmed_at' => '2021-01-01 09:00:00',
@@ -59,8 +58,8 @@ class OverlapsConfirmedReservationCheckTest extends TestCase
         ]);
         // this is different plane, it should not count
         PlaneReservation::factory()->create([
-            'plane_id' => Ulid::fromString('01HE1GRM0B8RQTEX4KYFT7Q7TR'),
-            'user_id' => Ulid::fromString('01HE1F50RYFHQS5HCTYWHDWYKY'),
+            'plane_id' => '01HE1GRM0B8RQTEX4KYFT7Q7TR',
+            'user_id' => '01HE1F50RYFHQS5HCTYWHDWYKY',
             'starts_at' => '2021-01-10 13:00:00',
             'ends_at' => '2021-01-10 13:30:00',
             'confirmed_at' => '2021-01-01 09:00:00',
@@ -97,30 +96,30 @@ class OverlapsConfirmedReservationCheckTest extends TestCase
     {
         // given
         $user = new User([
-            'id' => Ulid::fromString('01HE1F50RYFHQS5HCTYWHDWYKY'),
+            'id' => '01HE1F50RYFHQS5HCTYWHDWYKY',
             'role' => UserRole::User
         ]);
 
-        Plane::factory()->create(['id' => Ulid::fromString('01HE1GB7NJSMF037F76BVR1D1M')]);
-        Plane::factory()->create(['id' => Ulid::fromString('01HE1GRM0B8RQTEX4KYFT7Q7TR')]);
+        Plane::factory()->create(['id' => '01HE1GB7NJSMF037F76BVR1D1M']);
+        Plane::factory()->create(['id' => '01HE1GRM0B8RQTEX4KYFT7Q7TR']);
         PlaneReservation::factory()->create([
-            'plane_id' => Ulid::fromString('01HE1GB7NJSMF037F76BVR1D1M'),
-            'user_id' => Ulid::fromString('01HE1F50RYFHQS5HCTYWHDWYKY'),
+            'plane_id' => '01HE1GB7NJSMF037F76BVR1D1M',
+            'user_id' => '01HE1F50RYFHQS5HCTYWHDWYKY',
             'starts_at' => '2021-01-01 10:00:00',
             'ends_at' => '2021-01-01 11:00:00',
             'time' => 60,
         ]);
         PlaneReservation::factory()->create([
-            'plane_id' => Ulid::fromString('01HE1GB7NJSMF037F76BVR1D1M'),
-            'user_id' => Ulid::fromString('01HE1F50RYFHQS5HCTYWHDWYKY'),
+            'plane_id' => '01HE1GB7NJSMF037F76BVR1D1M',
+            'user_id' => '01HE1F50RYFHQS5HCTYWHDWYKY',
             'starts_at' => '2021-01-16 15:00:00',
             'ends_at' => '2021-01-16 16:00:00',
             'time' => 60,
         ]);
         // this is different plane, it should not count
         PlaneReservation::factory()->create([
-            'plane_id' => Ulid::fromString('01HE1GRM0B8RQTEX4KYFT7Q7TR'),
-            'user_id' => Ulid::fromString('01HE1F50RYFHQS5HCTYWHDWYKY'),
+            'plane_id' => '01HE1GRM0B8RQTEX4KYFT7Q7TR',
+            'user_id' => '01HE1F50RYFHQS5HCTYWHDWYKY',
             'starts_at' => '2021-01-10 13:00:00',
             'ends_at' => '2021-01-10 14:00:00',
             'time' => 60,

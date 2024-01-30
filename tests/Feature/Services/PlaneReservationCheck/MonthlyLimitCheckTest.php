@@ -13,7 +13,6 @@ use App\Services\PlaneReservationCheck\MonthlyLimitCheck;
 use App\Services\SunTimeService;
 use Carbon\CarbonImmutable;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Symfony\Component\Uid\Ulid;
 use Tests\TestCase;
 
 class MonthlyLimitCheckTest extends TestCase
@@ -33,31 +32,31 @@ class MonthlyLimitCheckTest extends TestCase
     {
         // given
         $user = new User([
-            'id' => Ulid::fromString('01HE1F50RYFHQS5HCTYWHDWYKY'),
+            'id' => '01HE1F50RYFHQS5HCTYWHDWYKY',
             'role' => UserRole::User
         ]);
 
-        Plane::factory()->create(['id' => Ulid::fromString('01HE1G3R4YDG9H3WRGQPQ8FKV9')]);
-        Plane::factory()->create(['id' => Ulid::fromString('01HE1GCNTM44CKBFPMRX33WZ1D')]);
+        Plane::factory()->create(['id' => '01HE1G3R4YDG9H3WRGQPQ8FKV9']);
+        Plane::factory()->create(['id' => '01HE1GCNTM44CKBFPMRX33WZ1D']);
 
         PlaneReservation::factory()->create([
-            'plane_id' => Ulid::fromString('01HE1G3R4YDG9H3WRGQPQ8FKV9'),
-            'user_id' => Ulid::fromString('01HE1F50RYFHQS5HCTYWHDWYKY'),
+            'plane_id' => '01HE1G3R4YDG9H3WRGQPQ8FKV9',
+            'user_id' => '01HE1F50RYFHQS5HCTYWHDWYKY',
             'starts_at' => '2021-01-01 10:00:00',
             'ends_at' => '2021-01-01 11:00:00',
             'time' => 60,
         ]);
         PlaneReservation::factory()->create([
-            'plane_id' => Ulid::fromString('01HE1G3R4YDG9H3WRGQPQ8FKV9'),
-            'user_id' => Ulid::fromString('01HE1F50RYFHQS5HCTYWHDWYKY'),
+            'plane_id' => '01HE1G3R4YDG9H3WRGQPQ8FKV9',
+            'user_id' => '01HE1F50RYFHQS5HCTYWHDWYKY',
             'starts_at' => '2021-01-16 15:00:00',
             'ends_at' => '2021-01-16 16:00:00',
             'time' => 60,
         ]);
         // this is different plane, monthly it should also count
         PlaneReservation::factory()->create([
-            'plane_id' => Ulid::fromString('01HE1GCNTM44CKBFPMRX33WZ1D'),
-            'user_id' => Ulid::fromString('01HE1F50RYFHQS5HCTYWHDWYKY'),
+            'plane_id' => '01HE1GCNTM44CKBFPMRX33WZ1D',
+            'user_id' => '01HE1F50RYFHQS5HCTYWHDWYKY',
             'starts_at' => '2021-01-21 12:00:00',
             'ends_at' => '2021-01-21 15:00:00',
             'time' => 60,
@@ -79,30 +78,30 @@ class MonthlyLimitCheckTest extends TestCase
     {
         // given
         $user = new User([
-            'id' => Ulid::fromString('01HE1F50RYFHQS5HCTYWHDWYKY'),
+            'id' => '01HE1F50RYFHQS5HCTYWHDWYKY',
             'role' => UserRole::User
         ]);
 
-        Plane::factory()->create(['id' => Ulid::fromString('01HE1GB7NJSMF037F76BVR1D1M')]);
-        Plane::factory()->create(['id' => Ulid::fromString('01HE1GRM0B8RQTEX4KYFT7Q7TR')]);
+        Plane::factory()->create(['id' => '01HE1GB7NJSMF037F76BVR1D1M']);
+        Plane::factory()->create(['id' => '01HE1GRM0B8RQTEX4KYFT7Q7TR']);
         PlaneReservation::factory()->create([
-            'plane_id' => Ulid::fromString('01HE1GB7NJSMF037F76BVR1D1M'),
-            'user_id' => Ulid::fromString('01HE1F50RYFHQS5HCTYWHDWYKY'),
+            'plane_id' => '01HE1GB7NJSMF037F76BVR1D1M',
+            'user_id' => '01HE1F50RYFHQS5HCTYWHDWYKY',
             'starts_at' => '2021-01-01 10:00:00',
             'ends_at' => '2021-01-01 11:00:00',
             'time' => 60,
         ]);
         PlaneReservation::factory()->create([
-            'plane_id' => Ulid::fromString('01HE1GB7NJSMF037F76BVR1D1M'),
-            'user_id' => Ulid::fromString('01HE1F50RYFHQS5HCTYWHDWYKY'),
+            'plane_id' => '01HE1GB7NJSMF037F76BVR1D1M',
+            'user_id' => '01HE1F50RYFHQS5HCTYWHDWYKY',
             'starts_at' => '2021-01-16 15:00:00',
             'ends_at' => '2021-01-16 16:00:00',
             'time' => 60,
         ]);
         // this is different plane, monthly it should also count
         PlaneReservation::factory()->create([
-            'plane_id' => Ulid::fromString('01HE1GRM0B8RQTEX4KYFT7Q7TR'),
-            'user_id' => Ulid::fromString('01HE1F50RYFHQS5HCTYWHDWYKY'),
+            'plane_id' => '01HE1GRM0B8RQTEX4KYFT7Q7TR',
+            'user_id' => '01HE1F50RYFHQS5HCTYWHDWYKY',
             'starts_at' => '2021-01-21 12:00:00',
             'ends_at' => '2021-01-21 15:00:00',
             'time' => 60,

@@ -12,7 +12,6 @@ use App\Services\PlaneReservationCheck\DailyTimeLimitCheck;
 use Carbon\CarbonImmutable;
 use Exception;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Symfony\Component\Uid\Ulid;
 use Tests\TestCase;
 
 class DailyTimeLimitCheckTest extends TestCase
@@ -42,7 +41,7 @@ class DailyTimeLimitCheckTest extends TestCase
     public function userShouldBeAbleToReserveDailyUpToDailyLimitWithOneGo(): void
     {
         // given
-        Plane::factory()->create(['id' => Ulid::fromString('01F9ZJZJZJZJZJZJZJZJZJZJZJ')]);
+        Plane::factory()->create(['id' => '01F9ZJZJZJZJZJZJZJZJZJZJZJ']);
 
         $user = new User(['role' => UserRole::User]);
         $startDate = CarbonImmutable::parse('2021-01-01 10:00');
@@ -58,14 +57,14 @@ class DailyTimeLimitCheckTest extends TestCase
     {
         // given
         $user = new User([
-            'id' => Ulid::fromString('01HE1F50RYFHQS5HCTYWHDWYKY'),
+            'id' => '01HE1F50RYFHQS5HCTYWHDWYKY',
             'role' => UserRole::User
         ]);
 
-        Plane::factory()->create(['id' => Ulid::fromString('01HE1FBZEPC8SRGM7VQDQV4K9X')]);
+        Plane::factory()->create(['id' => '01HE1FBZEPC8SRGM7VQDQV4K9X']);
         PlaneReservation::factory()->create([
-            'plane_id' => Ulid::fromString('01HE1FBZEPC8SRGM7VQDQV4K9X'),
-            'user_id' => Ulid::fromString('01HE1F50RYFHQS5HCTYWHDWYKY'),
+            'plane_id' => '01HE1FBZEPC8SRGM7VQDQV4K9X',
+            'user_id' => '01HE1F50RYFHQS5HCTYWHDWYKY',
             'starts_at' => '2021-01-01 10:00:00',
             'ends_at' => '2021-01-01 11:00:00',
             'time' => 60,
@@ -95,7 +94,7 @@ class DailyTimeLimitCheckTest extends TestCase
         $this->expectExceptionMessage('you can reserve plane for max 2 hours daily');
 
         // given
-        Plane::factory()->create(['id' => Ulid::fromString('01HE1FN3P71S3V242YXJ9XMQVT')]);
+        Plane::factory()->create(['id' => '01HE1FN3P71S3V242YXJ9XMQVT']);
 
         $user = new User(['role' => UserRole::User]);
         $startDate = CarbonImmutable::parse('2021-01-01 10:00');
@@ -114,14 +113,14 @@ class DailyTimeLimitCheckTest extends TestCase
         
         // given
         $user = new User([
-            'id' => Ulid::fromString('01HE1F50RYFHQS5HCTYWHDWYKY'),
+            'id' => '01HE1F50RYFHQS5HCTYWHDWYKY',
             'role' => UserRole::User
         ]);
 
-        Plane::factory()->create(['id' => Ulid::fromString('01HE1FNZZX6XPBTDFTN8A66Y69')]);
+        Plane::factory()->create(['id' => '01HE1FNZZX6XPBTDFTN8A66Y69']);
         PlaneReservation::factory()->create([
-            'plane_id' => Ulid::fromString('01HE1FNZZX6XPBTDFTN8A66Y69'),
-            'user_id' => Ulid::fromString('01HE1F50RYFHQS5HCTYWHDWYKY'),
+            'plane_id' => '01HE1FNZZX6XPBTDFTN8A66Y69',
+            'user_id' => '01HE1F50RYFHQS5HCTYWHDWYKY',
             'starts_at' => '2021-01-01 10:00:00',
             'ends_at' => '2021-01-01 11:00:00',
             'time' => 60,
