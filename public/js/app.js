@@ -4,10 +4,42 @@
 window.app = {};
 window.app.planeRegistration = '';
 window.app.reservationDate = '';
-sessionStorage.flashMsg = sessionStorage.flashMsg || JSON.stringify({
-    'success': [],
-    'error': [],
-});
+
+app.storage = {};
+app.storage.init = function(){
+    window.localStorage.aeroklubostrowski = window.localStorage.aeroklubostrowski || '';
+    app.storage.internal = window.localStorage.aeroklubostrowski || '';
+
+    app.storage
+}
+
+app.initFlashMsg = function(){
+    let flashMsg = app.storage.getItem('flashMsg') || JSON.stringify({
+        'success': [],
+        'error': [],
+    });
+    app.storage.storeItem('flashMsg', flashMsg);
+}
+
+app.storage.storeItem = function(key, value){
+    app.storage.internal = JSON.stringify({[key]: value});
+}
+app.storage.getItem = function(key){
+    return JSON.parse(app.storage.internal)[key];
+}
+app.storage.removeItem = function(key){
+    app.storage.internal = JSON.stringify({[key]: null});
+}
+
+app.storeToken = function(token){
+    window.localStorage.aeroklubostrowski = JSON.stringify({token: token});
+}
+app.getToken = function(){
+    return JSON.parse(window.localStorage.aeroklubostrowski).token;
+}
+app.removeToken = function(){
+    window.localStorage.aeroklubostrowski = JSON.stringify({token: null});
+}
 
 app.loadPlanes = function(planeSelectField){
     return app.ajax("GET", "/api/plane", {}).success(function(data){
@@ -27,6 +59,100 @@ app.loadDailySunriseSunset = function(date, sunriseView, sunsetView){
     }).fail(app.ajaxFail);
 };
 
+app.html = {};
+
+app.html.activateTooltip = function(){
+    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+}
+
+app.html.getDailyReservationComponent = function(item){
+    let notConfirmedIcon = '<i class="bi bi-question-circle" style="color: var(--bs-danger);" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Rezerwacja niepotwierdzona"></i>';
+    let confirmedIcon = '<i class="bi bi-check-circle-fill" style="color: var(--primary-color);" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Rezerwacja potwierdzona"></i>';
+    let isConfirmed = item.is_confirmed == true ? confirmedIcon : notConfirmedIcon;
+    let canConfirm = item.can_confirm == true
+        ? `<button type="button" class="btn btn-primary confirmReservation" data-id="${item.id}">potwierdź</button>`
+        : '';
+    let canRemove = item.can_remove == true
+        ? `<button type="button" class="btn btn-danger removeReservation" data-id="${item.id}">usuń</button>`
+        : '';
+    let component = `
+<div class="reservation-entry-row">
+<div class="col-1 col-md-1 col-sm-1 col-lg-1 col-xl-1 themed-grid-col">
+    <p>${isConfirmed}</p>
+</div>
+<div class="col-4 col-md-4 col-sm-4 col-lg-2 col-xl-2 themed-grid-col">
+    <p>${item.starts_at} - ${item.ends_at}</p>
+</div>
+<div class="col-6 col-md-6 col-sm-6 col-lg-2 col-xl-2 themed-grid-col">
+    <p>${item.user_name}</p>
+</div>
+<div class="col-12 col-md-12 col-sm-12 col-lg-8 col-xl-5 themed-grid-col">
+    <p class="mb-0">${item.comment}</p>
+
+</div>
+<div style="text-align: left;" class="col-12 col-md-8 col-sm-12 col-lg-3 col-xl-2 themed-grid-col">
+    <p class="mt-1">${canRemove} ${canConfirm}</p>
+</div>
+</div>
+`;
+    return component;
+};
+
+app.html.getAdminReservationComponent = function(item){
+    let notConfirmedIcon = '<i class="bi bi-question-circle" style="color: var(--bs-danger);" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Rezerwacja niepotwierdzona"></i>';
+    let confirmedIcon = '<i class="bi bi-check-circle-fill" style="color: var(--primary-color);" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Rezerwacja potwierdzona"></i>';
+    let isConfirmed = item.is_confirmed == true ? confirmedIcon : notConfirmedIcon;
+    let canConfirm = item.can_confirm == true
+        ? `<button type="button" class="btn btn-primary confirmReservation" data-id="${item.id}">potwierdź</button>`
+        : '';
+    let canRemove = item.can_remove == true
+        ? `<button type="button" class="btn btn-danger removeReservation" data-id="${item.id}">usuń</button>`
+        : '';
+    let component = `
+<div class="reservation-entry-row">
+<div class="col-1 col-md-1 col-sm-1 col-xl-1 themed-grid-col">
+    <p>${isConfirmed}</p>
+</div>
+<div class="col-4 col-md-4 col-sm-4 col-xl-4 themed-grid-col">
+    <p>${item.starts_at} - ${item.ends_at}</p>
+</div>
+<div class="col-6 col-md-6 col-sm-6 col-xl-6 themed-grid-col">
+    <p>${item.user_name}</p>
+</div>
+<div class="col-12 col-md-12 col-sm-12 col-xl-12 themed-grid-col">
+    <p class="mb-0">${item.comment}</p>
+
+</div>
+<div style="text-align: right;" class="col-12 col-md-8 col-sm-12 col-xl-12 themed-grid-col">
+    <p class="mt-1">${canRemove} ${canConfirm}</p>
+</div>
+</div>
+`;
+    return component;
+};
+
+
+app.html.getReservationAdminColumnComponent = function(planeRegistration, reservations){
+    let header = `
+<div class="col-12 col-md-6 col-sm-12 col-xl-3 themed-grid-col">
+    <div class="custom-block bg-white shadow-lg">
+        <div class="planeheader">
+            <h3 class="mb-2">${planeRegistration}</h3>
+        </div>
+        <div class="">
+            [reservationList]
+        </div>
+    </div>
+</div>
+`;
+    let reservationList = '';
+    reservations.forEach(function(item){
+        reservationList += app.html.getAdminReservationComponent(item);
+    });
+    return header.replace('[reservationList]', reservationList);
+}
+
 app.loadDailyPlaneReservations = function(planeRegistration, date, dailyReservationsView){
     return app.ajax("GET", "/api/plane/" + planeRegistration + "/reservation/" + date, {}).success(function(data){
         let dailyReservations = data;
@@ -35,41 +161,13 @@ app.loadDailyPlaneReservations = function(planeRegistration, date, dailyReservat
         let confirmedIcon = '<i class="bi bi-check-circle-fill" style="color: var(--primary-color);" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Rezerwacja potwierdzona"></i>';
 
         dailyReservations.forEach(function(item){
-            let isConfirmed = item.is_confirmed == true ? confirmedIcon : notConfirmedIcon;
-            let canConfirm = item.can_confirm == true
-                ? `<button type="button" class="btn btn-primary confirmReservation" data-id="${item.id}">potwierdź</button>`
-                : '';
-            let canRemove = item.can_remove == true
-                ? `<button type="button" class="btn btn-danger removeReservation" data-id="${item.id}">usuń</button>`
-                : '';
-            let row = `
-<div class="reservation-entry-row">
-    <div class="col-1 col-md-1 col-sm-1 col-lg-1 col-xl-1 themed-grid-col">
-        <p>${isConfirmed}</p>
-    </div>
-    <div class="col-4 col-md-4 col-sm-4 col-lg-2 col-xl-2 themed-grid-col">
-        <p>${item.starts_at} - ${item.ends_at}</p>
-    </div>
-    <div class="col-6 col-md-6 col-sm-6 col-lg-2 col-xl-2 themed-grid-col">
-        <p>${item.user_name}</p>
-    </div>
-    <div class="col-12 col-md-12 col-sm-12 col-lg-8 col-xl-5 themed-grid-col">
-        <p class="mb-0">${item.comment}</p>
-
-    </div>
-    <div style="text-align: left;" class="col-12 col-md-8 col-sm-12 col-lg-3 col-xl-2 themed-grid-col">
-        <p class="mt-1">${canRemove} ${canConfirm}</p>
-    </div>
-</div>
-`;
-            
+            let row = app.html.getDailyReservationComponent(item);
             $('#dailyReservations').append(row);
-            const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
-            const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
         });
 
+        app.html.activateTooltip();
+
         let isPlaneReservationSectionVisible = false == $('#section_plane_reservation').hasClass('d-none')
-        console.log('isPlaneReservationSectionVisible = ' + isPlaneReservationSectionVisible);
         
         if(isPlaneReservationSectionVisible) {
             $('#section_flash_top').addClass('d-none');
@@ -180,7 +278,7 @@ app.confirmReservation = function(reservationId){
 
 app.logout = function(){
     return app.ajax("GET", "/api/user/logout", {}).success(function(){
-        sessionStorage.removeItem('token');
+        localStorage.removeItem('token');
         app.addFlashMsg('success', "wylogowano pomyślnie");
         window.location.href = '/login';
     }).fail(app.ajaxFail);
@@ -195,7 +293,7 @@ app.login = function(email, password){
             password: password,
         }
     ).success(function(data){
-        window.sessionStorage.token = data.auth_token;
+        app.storeToken(data.auth_token);
         app.addFlashMsg('success', "zalogowano");
         window.location.href = '/dashboard';
     }).fail(app.ajaxFail);
@@ -217,11 +315,23 @@ app.registerUser = function(name, email, phone, password, password_confirmation)
     }).fail(app.ajaxFail);
 };
 
+app.getAllReservationsForDate = function(date, container){
+    return app.ajax("GET", "/api/plane/reservation/date/" + date, {}).success(function(data){
+        container.html('');
+        for(var planeRegistration in data){
+            let component = app.html.getReservationAdminColumnComponent(planeRegistration, data[planeRegistration])
+            container.append(component);
+        }
+
+        app.html.activateTooltip();
+    }).fail(app.ajaxFail);
+};
+
 app.ajax = function(method, url, data){
     return $.ajax({
         type: method,
         url: url,
-        headers: {"Authorization": 'Bearer ' + sessionStorage.getItem('token')},
+        headers: {"Authorization": 'Bearer ' + app.getToken()},
         dataType: 'json',
         data: data
     });
@@ -231,7 +341,7 @@ app.ajaxFail = function(response){
     let msg = response.responseJSON.error || response.responseJSON.message || 'undefined error';
     app.addFlashMsg('error', msg);
     if(401 == response.status){
-        sessionStorage.removeItem('token');
+        app.removeToken();
         window.location = '/login';
         return;
     }
@@ -243,13 +353,13 @@ app.flashMsgGetFirstVisibleContainer = function(){
 };
 
 app.addFlashMsg = function(level, msg){
-    let flashMsg = JSON.parse(sessionStorage.flashMsg);
+    let flashMsg = JSON.parse(localStorage.flashMsg);
     flashMsg[level].push(msg);
-    sessionStorage.flashMsg = JSON.stringify(flashMsg);
+    localStorage.flashMsg = JSON.stringify(flashMsg);
 };
 
 app.showFlashMessages = function(container){
-    let flashMsg = JSON.parse(sessionStorage.flashMsg);
+    let flashMsg = JSON.parse(localStorage.flashMsg);
 
     flashMsg.success.forEach(function(message){
         container.append(`<div class="alert alert-success alert-dismissible fade show d-flex align-items-center shadow" role="alert">
@@ -267,10 +377,13 @@ app.showFlashMessages = function(container){
     });
     setTimeout(function(){
         container.find('button.btn-close').click();
-     },2000);
+     },1500);
      
-    sessionStorage.flashMsg = JSON.stringify({
+    localStorage.flashMsg = JSON.stringify({
         'success': [],
         'error': [],
     });
 };
+
+app.storage.init();
+app.initFlashMsg();
