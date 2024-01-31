@@ -1,16 +1,13 @@
 // import './bootstrap.js';
 
-
 window.app = {};
 window.app.planeRegistration = '';
 window.app.reservationDate = '';
-
 app.storage = {};
+
+
 app.storage.init = function(){
     window.localStorage.aeroklubostrowski = window.localStorage.aeroklubostrowski || '';
-    app.storage.internal = window.localStorage.aeroklubostrowski || '';
-
-    app.storage
 }
 
 app.initFlashMsg = function(){
@@ -22,23 +19,25 @@ app.initFlashMsg = function(){
 }
 
 app.storage.storeItem = function(key, value){
-    app.storage.internal = JSON.stringify({[key]: value});
+    let storage = JSON.parse(window.localStorage.aeroklubostrowski);
+    storage[key] = value;
+    window.localStorage.aeroklubostrowski = JSON.stringify(storage);
 }
 app.storage.getItem = function(key){
-    return JSON.parse(app.storage.internal)[key];
+    return JSON.parse(window.localStorage.aeroklubostrowski)[key];
 }
 app.storage.removeItem = function(key){
-    app.storage.internal = JSON.stringify({[key]: null});
+    window.localStorage.aeroklubostrowski = JSON.stringify({[key]: null});
 }
 
 app.storeToken = function(token){
-    window.localStorage.aeroklubostrowski = JSON.stringify({token: token});
+    app.storage.storeItem('token', token);
 }
 app.getToken = function(){
-    return JSON.parse(window.localStorage.aeroklubostrowski).token;
+    return app.storage.getItem('token');
 }
 app.removeToken = function(){
-    window.localStorage.aeroklubostrowski = JSON.stringify({token: null});
+    app.storage.removeItem('token');
 }
 
 app.loadPlanes = function(planeSelectField){
@@ -295,7 +294,7 @@ app.login = function(email, password){
     ).success(function(data){
         app.storeToken(data.auth_token);
         app.addFlashMsg('success', "zalogowano");
-        window.location.href = '/dashboard';
+        window.location.href = '/reservation';
     }).fail(app.ajaxFail);
 };
 app.registerUser = function(name, email, phone, password, password_confirmation){
@@ -384,6 +383,3 @@ app.showFlashMessages = function(container){
         'error': [],
     });
 };
-
-app.storage.init();
-app.initFlashMsg();

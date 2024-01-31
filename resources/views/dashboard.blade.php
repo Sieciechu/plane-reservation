@@ -48,7 +48,7 @@ https://templatemo.com/tm-590-topic-listing
     <main>
 
         <div id="sticky-wrapper" class="sticky-wrapper" style="height: 78px;">
-            <nav class="navbar navbar-expand-lg" style="">
+            <div id="sticky-wrapper" class="sticky-wrapper is-sticky" style="height: 126px;"><nav class="navbar navbar-expand-lg" style="width: 1680px; position: fixed; top: 0px;">
                 <div class="container">
                     <a class="navbar-brand" href="/">
                         <i class="bi-back"></i>
@@ -66,13 +66,13 @@ https://templatemo.com/tm-590-topic-listing
                     <div class="navbar-collapse collapse" id="navbarNav" style="">
                         <ul class="navbar-nav ms-lg-5 me-lg-auto">
                             <li class="nav-item">
-                                <a class="nav-link click-scroll" href="#" onclick="app.logout()">Wyloguj się</a>
+                                <a class="nav-link click-scroll active" href="#" onclick="app.logout()">Wyloguj się</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link click-scroll" href="/dashboard">Rezerwacje</a>
+                                <a class="nav-link click-scroll inactive" href="/reservation">Rezerwacje</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link click-scroll" href="/dashboard2">Tabele rezerwacji</a>
+                                <a class="nav-link click-scroll inactive" href="/dashboard">Tabele rezerwacji</a>
                             </li>
                         </ul>
 
@@ -81,7 +81,7 @@ https://templatemo.com/tm-590-topic-listing
                         </div>
                     </div>
                 </div>
-            </nav>
+            </nav></div>
         </div>
 
 
@@ -90,28 +90,16 @@ https://templatemo.com/tm-590-topic-listing
                 <div class="row">
                     
                     <div class="col-lg-8 col-12 mx-auto">
-                        <section id="section_flash_top" class="flash-messages"><!-- here flash messages will be shown with js script --></section>
+                        <section id="section_flash_top" class="flash-messages d-none"><!-- here flash messages will be shown with js script --></section>
                     
-                        <h1 class="text-white text-center">Wybierz samolot</h1>
+                        <h1 class="text-white text-center">Wybierz datę</h1>
 
                         <form method="get" class="custom-form mt-4 pt-2 mb-lg-0 mb-5" role="search" action="#">
                             <div class="input-group input-group-lg">
                                 <span class="input-group-text bi-search" id="basic-addon1">
                                 </span>
 
-                                <select id="planeList" class="form-select form-select-lg mb-3" aria-label=".form-select-lg example"
-                                    style="box-shadow: none;border: 0; margin-bottom: 0 !important; text-align: center;" name="plane">
-                                    <option selected>--</option>
-                                </select>
-                            </div>
-                            <h6 class="text-center text-white">wybierz datę</h6>
-                            <div class="input-group input-group-lg">
-                                <span class="input-group-text bi-search" id="basic-addon1">
-                                </span>
-
-                                <input id="date" name="date" type="date" class="form-control"
-                                    style="box-shadow: none;border: 0; text-indent: 1ex;margin-bottom: 0; text-align: center;" id="keyword"
-                                    value="" aria-label="Search">
+                                <input id="date" name="date" type="date" class="form-control" style="box-shadow: none;border: 0; text-indent: 1ex;margin-bottom: 0; text-align: center;" value="" aria-label="Search">
                             </div>
                         </form>
                     </div>
@@ -120,28 +108,580 @@ https://templatemo.com/tm-590-topic-listing
             </div>
         </section>
 
-        <section class="explore-section section-padding d-none" id="section_plane_reservation">
+        <section class="explore-section section-padding" id="section_plane_reservation" style="padding-bottom: 5ex;">
             <div class="container">
                 <div class="col-12 text-center">
-                    <h2 id="reservationListHeading" class="mb-4"><!-- Tabela godzin SP-KYS 2023-11-06 --></h1>
+                    <h2 id="reservationListHeading" class="mb-4">Tabele godzin 2024-01-16</h2>
                 </div>
             </div>
 
-            <div class="container">
-                <section id="section_flash_bottom" class="flash-messages d-none"><!-- here flash messages will be shown with js script --></section>
-                    <div class="planesboard row mb-3">
-                    
-                        <div class="col-12 themed-grid-col">
-                            <div class="custom-block bg-white shadow-lg">
-                                <div class="planeheader">
-                                    <h3 class="mb-2">Zarezerwowane</h3>
-                                </div>
-                                <div id="dailyReservations"><!-- here reservations will be loaded by js --></div>
+            <div class="container-fluid">
+                <section id="section_flash_bottom" class="flash-messages"><!-- here flash messages will be shown with js script --></section>
+                    <div class="planesboard row mb-3" style="justify-content: center;" id="planesboard">
+                    <div class="col-12 col-md-6 col-sm-12 col-xl-3 themed-grid-col">
+                        <div class="custom-block bg-white shadow-lg">
+                            <div class="planeheader">
+                                <h3 class="mb-2">SP-ARR</h3>
                             </div>
-                        
+                            <div class="">
+                                
+                                <div class="reservation-entry-row">
+                                    <div class="col-1 col-md-1 col-sm-1 col-xl-1 themed-grid-col">
+                                        <p><i class="bi bi-check-circle-fill" style="color: var(--primary-color);" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Rezerwacja potwierdzona"></i></p>
+                                    </div>
+                                    <div class="col-4 col-md-4 col-sm-4 col-xl-4 themed-grid-col">
+                                        <p class="">10:00 - 11:15</p>
+                                    </div>
+                                    <div class="col-6 col-md-6 col-sm-6 col-xl-6 themed-grid-col">
+                                        <p>Krzysztof Kolberger</p>
+                                    </div>
+                                    <div style="/*! margin-bottom: 0px; */" class="col-12 col-md-12 col-sm-12 col-xl-12 themed-grid-col">
+                                        
+                                        <p style="margin-bottom: 0px;">zadanie A/3 , trasa EPOM-AAAA-BBBB-CCCC-DDDD-EEEE-EPOM. Poczytaj o lotnisku BBBB, przygotuj coś tam, plus jakiekolwiek długie notatki żeby zobaczyć jak to się mieści na ekranie </p>
+                                    </div>
+                                    <div style="text-align: right;" class="col-12 col-md-8 col-sm-12 col-xl-12 themed-grid-col">
+                                        <p style="margin-bottom: 0.5rem;"><button type="button" class="btn btn-primary confirmReservation" data-id="9b03e4cd-0be1-4ae0-b502-1007228da163">potwierdź</button>&nbsp;
+<button type="button" class="btn btn-danger removeReservation" data-id="9b03e694-1a52-48da-a474-d529ee1c7ddd">anuluj</button> </p>
+                                    </div>
+                                </div><div class="reservation-entry-row">
+                                    <div class="col-1 col-md-1 col-sm-1 col-xl-1 themed-grid-col">
+                                        <p><i class="bi bi-check-circle-fill" style="color: var(--primary-color);" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Rezerwacja potwierdzona"></i></p>
+                                    </div>
+                                    <div class="col-4 col-md-4 col-sm-4 col-xl-4 themed-grid-col">
+                                        <p style="/*! font-weight: bold; */">10:00 - 11:15</p>
+                                    </div>
+                                    <div class="col-6 col-md-6 col-sm-6 col-xl-6 themed-grid-col">
+                                        <p>Krzysztof Kolberger</p>
+                                    </div>
+                                    <div style="/*! margin-bottom: 0px; */" class="col-12 col-md-12 col-sm-12 col-xl-12 themed-grid-col">
+                                        
+                                        <p style="margin-bottom: 0px;">zadanie A/16</p>
+                                    </div>
+                                    <div style="text-align: right;" class="col-12 col-md-8 col-sm-12 col-xl-12 themed-grid-col">
+                                        <p style="margin-bottom: 0.5rem;"><button type="button" class="btn btn-primary confirmReservation" data-id="9b03e4cd-0be1-4ae0-b502-1007228da163">potwierdź</button>&nbsp;
+<button type="button" class="btn btn-danger removeReservation" data-id="9b03e694-1a52-48da-a474-d529ee1c7ddd">anuluj</button> </p>
+                                    </div>
+                                </div><div class="reservation-entry-row">
+                                    <div class="col-1 col-md-1 col-sm-1 col-xl-1 themed-grid-col">
+                                        <p><i class="bi bi-check-circle-fill" style="color: var(--primary-color);" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Rezerwacja potwierdzona"></i></p>
+                                    </div>
+                                    <div class="col-4 col-md-4 col-sm-4 col-xl-4 themed-grid-col">
+                                        <p style="/*! font-weight: bold; */">10:00 - 11:15</p>
+                                    </div>
+                                    <div class="col-6 col-md-6 col-sm-6 col-xl-6 themed-grid-col">
+                                        <p>Krzysztof Kolberger</p>
+                                    </div>
+                                    <div style="/*! margin-bottom: 0px; */" class="col-12 col-md-12 col-sm-12 col-xl-12 themed-grid-col">
+                                        
+                                        <p style="margin-bottom: 0px;"></p>
+                                    </div>
+                                    <div style="text-align: right;" class="col-12 col-md-8 col-sm-12 col-xl-12 themed-grid-col">
+                                        <p style="margin-bottom: 0.5rem;"><button type="button" class="btn btn-primary confirmReservation" data-id="9b03e4cd-0be1-4ae0-b502-1007228da163">potwierdź</button>&nbsp;
+<button type="button" class="btn btn-danger removeReservation" data-id="9b03e694-1a52-48da-a474-d529ee1c7ddd">anuluj</button> </p>
+                                    </div>
+                                </div><div class="reservation-entry-row">
+                                    <div class="col-1 col-md-1 col-sm-1 col-xl-1 themed-grid-col">
+                                        <p><i class="bi bi-check-circle-fill" style="color: var(--primary-color);" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Rezerwacja potwierdzona"></i></p>
+                                    </div>
+                                    <div class="col-4 col-md-4 col-sm-4 col-xl-4 themed-grid-col">
+                                        <p style="/*! font-weight: bold; */">10:00 - 11:15</p>
+                                    </div>
+                                    <div class="col-6 col-md-6 col-sm-6 col-xl-6 themed-grid-col">
+                                        <p>Krzysztof Kolberger</p>
+                                    </div>
+                                    <div style="/*! margin-bottom: 0px; */" class="col-12 col-md-12 col-sm-12 col-xl-12 themed-grid-col">
+                                        
+                                        <p style="margin-bottom: 0px;">zadanie A/16</p>
+                                    </div>
+                                    <div style="text-align: right;" class="col-12 col-md-8 col-sm-12 col-xl-12 themed-grid-col">
+                                        <p style="margin-bottom: 0.5rem;"><button type="button" class="btn btn-primary confirmReservation" data-id="9b03e4cd-0be1-4ae0-b502-1007228da163">potwierdź</button>&nbsp;
+<button type="button" class="btn btn-danger removeReservation" data-id="9b03e694-1a52-48da-a474-d529ee1c7ddd">anuluj</button> </p>
+                                    </div>
+                                </div><div class="reservation-entry-row">
+                                    <div class="col-1 col-md-1 col-sm-1 col-xl-1 themed-grid-col">
+                                        <p><i class="bi bi-check-circle-fill" style="color: var(--primary-color);" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Rezerwacja potwierdzona"></i></p>
+                                    </div>
+                                    <div class="col-4 col-md-4 col-sm-4 col-xl-4 themed-grid-col">
+                                        <p style="/*! font-weight: bold; */">10:00 - 11:15</p>
+                                    </div>
+                                    <div class="col-6 col-md-6 col-sm-6 col-xl-6 themed-grid-col">
+                                        <p>Krzysztof Kolberger</p>
+                                    </div>
+                                    <div style="/*! margin-bottom: 0px; */" class="col-12 col-md-12 col-sm-12 col-xl-12 themed-grid-col">
+                                        
+                                        <p style="margin-bottom: 0px;">zadanie A/16</p>
+                                    </div>
+                                    <div style="text-align: right;" class="col-12 col-md-8 col-sm-12 col-xl-12 themed-grid-col">
+                                        <p style="margin-bottom: 0.5rem;"><button type="button" class="btn btn-primary confirmReservation" data-id="9b03e4cd-0be1-4ae0-b502-1007228da163">potwierdź</button>&nbsp;
+<button type="button" class="btn btn-danger removeReservation" data-id="9b03e694-1a52-48da-a474-d529ee1c7ddd">anuluj</button> </p>
+                                    </div>
+                                </div><div class="reservation-entry-row">
+                                    <div class="col-1 col-md-1 col-sm-1 col-xl-1 themed-grid-col">
+                                        <p><i class="bi bi-check-circle-fill" style="color: var(--primary-color);" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Rezerwacja potwierdzona"></i></p>
+                                    </div>
+                                    <div class="col-4 col-md-4 col-sm-4 col-xl-4 themed-grid-col">
+                                        <p style="/*! font-weight: bold; */">10:00 - 11:15</p>
+                                    </div>
+                                    <div class="col-6 col-md-6 col-sm-6 col-xl-6 themed-grid-col">
+                                        <p>Krzysztof Kolberger</p>
+                                    </div>
+                                    <div style="/*! margin-bottom: 0px; */" class="col-12 col-md-12 col-sm-12 col-xl-12 themed-grid-col">
+                                        
+                                        <p style="margin-bottom: 0px;">zadanie A/16</p>
+                                    </div>
+                                    <div style="text-align: right;" class="col-12 col-md-8 col-sm-12 col-xl-12 themed-grid-col">
+                                        <p style="margin-bottom: 0.5rem;"><button type="button" class="btn btn-primary confirmReservation" data-id="9b03e4cd-0be1-4ae0-b502-1007228da163">potwierdź</button>&nbsp;
+<button type="button" class="btn btn-danger removeReservation" data-id="9b03e694-1a52-48da-a474-d529ee1c7ddd">anuluj</button> </p>
+                                    </div>
+                                </div><div class="reservation-entry-row">
+                                    <div class="col-1 col-md-1 col-sm-1 col-xl-1 themed-grid-col">
+                                        <p><i class="bi bi-check-circle-fill" style="color: var(--primary-color);" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Rezerwacja potwierdzona"></i></p>
+                                    </div>
+                                    <div class="col-4 col-md-4 col-sm-4 col-xl-4 themed-grid-col">
+                                        <p style="/*! font-weight: bold; */">10:00 - 11:15</p>
+                                    </div>
+                                    <div class="col-6 col-md-6 col-sm-6 col-xl-6 themed-grid-col">
+                                        <p>Krzysztof Kolberger</p>
+                                    </div>
+                                    <div style="/*! margin-bottom: 0px; */" class="col-12 col-md-12 col-sm-12 col-xl-12 themed-grid-col">
+                                        
+                                        <p style="margin-bottom: 0px;">zadanie A/16</p>
+                                    </div>
+                                    <div style="text-align: right;" class="col-12 col-md-8 col-sm-12 col-xl-12 themed-grid-col">
+                                        <p style="margin-bottom: 0.5rem;"><button type="button" class="btn btn-primary confirmReservation" data-id="9b03e4cd-0be1-4ae0-b502-1007228da163">potwierdź</button>&nbsp;
+<button type="button" class="btn btn-danger removeReservation" data-id="9b03e694-1a52-48da-a474-d529ee1c7ddd">anuluj</button> </p>
+                                    </div>
+                                </div><div class="reservation-entry-row">
+                                    <div class="col-1 col-md-1 col-sm-1 col-xl-1 themed-grid-col">
+                                        <p><i class="bi bi-check-circle-fill" style="color: var(--primary-color);" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Rezerwacja potwierdzona"></i></p>
+                                    </div>
+                                    <div class="col-4 col-md-4 col-sm-4 col-xl-4 themed-grid-col">
+                                        <p style="/*! font-weight: bold; */">10:00 - 11:15</p>
+                                    </div>
+                                    <div class="col-6 col-md-6 col-sm-6 col-xl-6 themed-grid-col">
+                                        <p>Krzysztof Kolberger</p>
+                                    </div>
+                                    <div style="/*! margin-bottom: 0px; */" class="col-12 col-md-12 col-sm-12 col-xl-12 themed-grid-col">
+                                        
+                                        <p style="margin-bottom: 0px;">zadanie A/16</p>
+                                    </div>
+                                    <div style="text-align: right;" class="col-12 col-md-8 col-sm-12 col-xl-12 themed-grid-col">
+                                        <p style="margin-bottom: 0.5rem;"><button type="button" class="btn btn-primary confirmReservation" data-id="9b03e4cd-0be1-4ae0-b502-1007228da163">potwierdź</button>&nbsp;
+<button type="button" class="btn btn-danger removeReservation" data-id="9b03e694-1a52-48da-a474-d529ee1c7ddd">anuluj</button> </p>
+                                    </div>
+                                </div><div class="reservation-entry-row">
+                                    <div class="col-1 col-md-1 col-sm-1 col-xl-1 themed-grid-col">
+                                        <p><i class="bi bi-check-circle-fill" style="color: var(--primary-color);" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Rezerwacja potwierdzona"></i></p>
+                                    </div>
+                                    <div class="col-4 col-md-4 col-sm-4 col-xl-4 themed-grid-col">
+                                        <p style="/*! font-weight: bold; */">10:00 - 11:15</p>
+                                    </div>
+                                    <div class="col-6 col-md-6 col-sm-6 col-xl-6 themed-grid-col">
+                                        <p>Krzysztof Kolberger</p>
+                                    </div>
+                                    <div style="/*! margin-bottom: 0px; */" class="col-12 col-md-12 col-sm-12 col-xl-12 themed-grid-col">
+                                        
+                                        <p style="margin-bottom: 0px;">zadanie A/16</p>
+                                    </div>
+                                    <div style="text-align: right;" class="col-12 col-md-8 col-sm-12 col-xl-12 themed-grid-col">
+                                        <p style="margin-bottom: 0.5rem;"><button type="button" class="btn btn-primary confirmReservation" data-id="9b03e4cd-0be1-4ae0-b502-1007228da163">potwierdź</button>&nbsp;
+<button type="button" class="btn btn-danger removeReservation" data-id="9b03e694-1a52-48da-a474-d529ee1c7ddd">anuluj</button> </p>
+                                    </div>
+                                </div>
+                                
+                                
+                            </div>
                         </div>
-                    
+                    </div><div class="col-12 col-md-6 col-sm-12 col-xl-3 themed-grid-col">
+                        <div class="custom-block bg-white shadow-lg">
+                            <div class="d-flex" style="border-bottom: 1px solid;">
+                                <h5 class="mb-2">SP-ARR</h5>
+                            </div>
+                            <div class="">
+                                
+                                <div class="reservation-entry-row">
+                                    <div class="col-1 col-md-1 col-sm-1 col-xl-1 themed-grid-col">
+                                        <p><i class="bi bi-check-circle-fill" style="color: var(--primary-color);" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Rezerwacja potwierdzona"></i></p>
+                                    </div>
+                                    <div class="col-4 col-md-4 col-sm-4 col-xl-4 themed-grid-col">
+                                        <p style="/*! font-weight: bold; */">10:00 - 11:15</p>
+                                    </div>
+                                    <div class="col-6 col-md-6 col-sm-6 col-xl-6 themed-grid-col">
+                                        <p>Krzysztof Kolberger</p>
+                                    </div>
+                                    <div style="/*! margin-bottom: 0px; */" class="col-12 col-md-12 col-sm-12 col-xl-12 themed-grid-col">
+                                        
+                                        <p style="margin-bottom: 0px;"></p>
+                                    </div>
+                                    <div style="text-align: right;" class="col-12 col-md-8 col-sm-12 col-xl-12 themed-grid-col">
+                                        <p style="margin-bottom: 0.5rem;"><button type="button" class="btn btn-primary confirmReservation" data-id="9b03e4cd-0be1-4ae0-b502-1007228da163">potwierdź</button>&nbsp;
+<button type="button" class="btn btn-danger removeReservation" data-id="9b03e694-1a52-48da-a474-d529ee1c7ddd">anuluj</button> </p>
+                                    </div>
+                                </div><div class="reservation-entry-row">
+                                    <div class="col-1 col-md-1 col-sm-1 col-xl-1 themed-grid-col">
+                                        <p><i class="bi bi-check-circle-fill" style="color: var(--primary-color);" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Rezerwacja potwierdzona"></i></p>
+                                    </div>
+                                    <div class="col-4 col-md-4 col-sm-4 col-xl-4 themed-grid-col">
+                                        <p style="/*! font-weight: bold; */">10:00 - 11:15</p>
+                                    </div>
+                                    <div class="col-6 col-md-6 col-sm-6 col-xl-6 themed-grid-col">
+                                        <p>Krzysztof Kolberger</p>
+                                    </div>
+                                    <div style="/*! margin-bottom: 0px; */" class="col-12 col-md-12 col-sm-12 col-xl-12 themed-grid-col">
+                                        
+                                        <p style="margin-bottom: 0px;">zadanie A/16</p>
+                                    </div>
+                                    <div style="text-align: right;" class="col-12 col-md-8 col-sm-12 col-xl-12 themed-grid-col">
+                                        <p style="margin-bottom: 0.5rem;"><button type="button" class="btn btn-primary confirmReservation" data-id="9b03e4cd-0be1-4ae0-b502-1007228da163">potwierdź</button>&nbsp;
+<button type="button" class="btn btn-danger removeReservation" data-id="9b03e694-1a52-48da-a474-d529ee1c7ddd">anuluj</button> </p>
+                                    </div>
+                                </div><div class="reservation-entry-row">
+                                    <div class="col-1 col-md-1 col-sm-1 col-xl-1 themed-grid-col">
+                                        <p><i class="bi bi-check-circle-fill" style="color: var(--primary-color);" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Rezerwacja potwierdzona"></i></p>
+                                    </div>
+                                    <div class="col-4 col-md-4 col-sm-4 col-xl-4 themed-grid-col">
+                                        <p style="/*! font-weight: bold; */">10:00 - 11:15</p>
+                                    </div>
+                                    <div class="col-6 col-md-6 col-sm-6 col-xl-6 themed-grid-col">
+                                        <p>Krzysztof Kolberger</p>
+                                    </div>
+                                    <div style="/*! margin-bottom: 0px; */" class="col-12 col-md-12 col-sm-12 col-xl-12 themed-grid-col">
+                                        
+                                        <p style="margin-bottom: 0px;">zadanie A/16</p>
+                                    </div>
+                                    <div style="text-align: right;" class="col-12 col-md-8 col-sm-12 col-xl-12 themed-grid-col">
+                                        <p style="margin-bottom: 0.5rem;"><button type="button" class="btn btn-primary confirmReservation" data-id="9b03e4cd-0be1-4ae0-b502-1007228da163">potwierdź</button>&nbsp;
+<button type="button" class="btn btn-danger removeReservation" data-id="9b03e694-1a52-48da-a474-d529ee1c7ddd">anuluj</button> </p>
+                                    </div>
+                                </div><div class="reservation-entry-row">
+                                    <div class="col-1 col-md-1 col-sm-1 col-xl-1 themed-grid-col">
+                                        <p><i class="bi bi-check-circle-fill" style="color: var(--primary-color);" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Rezerwacja potwierdzona"></i></p>
+                                    </div>
+                                    <div class="col-4 col-md-4 col-sm-4 col-xl-4 themed-grid-col">
+                                        <p style="/*! font-weight: bold; */">10:00 - 11:15</p>
+                                    </div>
+                                    <div class="col-6 col-md-6 col-sm-6 col-xl-6 themed-grid-col">
+                                        <p>Krzysztof Kolberger</p>
+                                    </div>
+                                    <div style="/*! margin-bottom: 0px; */" class="col-12 col-md-12 col-sm-12 col-xl-12 themed-grid-col">
+                                        
+                                        <p style="margin-bottom: 0px;">zadanie A/16</p>
+                                    </div>
+                                    <div style="text-align: right;" class="col-12 col-md-8 col-sm-12 col-xl-12 themed-grid-col">
+                                        <p style="margin-bottom: 0.5rem;"><button type="button" class="btn btn-primary confirmReservation" data-id="9b03e4cd-0be1-4ae0-b502-1007228da163">potwierdź</button>&nbsp;
+<button type="button" class="btn btn-danger removeReservation" data-id="9b03e694-1a52-48da-a474-d529ee1c7ddd">anuluj</button> </p>
+                                    </div>
+                                </div>
+                                
+                                
+                            </div>
+                        </div>
+                    </div><div class="col-12 col-md-6 col-sm-12 col-xl-3 themed-grid-col">
+                        <div class="custom-block bg-white shadow-lg">
+                            <div class="d-flex" style="border-bottom: 1px solid;">
+                                <h5 class="mb-2">SP-ARR</h5>
+                            </div>
+                            <div class="">
+                                
+                                <div class="reservation-entry-row">
+                                    <div class="col-1 col-md-1 col-sm-1 col-xl-1 themed-grid-col">
+                                        <p><i class="bi bi-check-circle-fill" style="color: var(--primary-color);" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Rezerwacja potwierdzona"></i></p>
+                                    </div>
+                                    <div class="col-4 col-md-4 col-sm-4 col-xl-4 themed-grid-col">
+                                        <p style="/*! font-weight: bold; */">10:00 - 11:15</p>
+                                    </div>
+                                    <div class="col-6 col-md-6 col-sm-6 col-xl-6 themed-grid-col">
+                                        <p>Krzysztof Kolberger</p>
+                                    </div>
+                                    <div style="/*! margin-bottom: 0px; */" class="col-12 col-md-12 col-sm-12 col-xl-12 themed-grid-col">
+                                        
+                                        <p style="margin-bottom: 0px;">zadanie A/3 , trasa EPOM-AAAA-BBBB-CCCC-DDDD-EEEE-EPOM. Poczytaj o lotnisku BBBB, przygotuj coś tam, plus jakiekolwiek długie notatki żeby zobaczyć jak to się mieści na ekranie </p>
+                                    </div>
+                                    <div style="text-align: right;" class="col-12 col-md-8 col-sm-12 col-xl-12 themed-grid-col">
+                                        <p style="margin-bottom: 0.5rem;"><button type="button" class="btn btn-primary confirmReservation" data-id="9b03e4cd-0be1-4ae0-b502-1007228da163">potwierdź</button>&nbsp;
+<button type="button" class="btn btn-danger removeReservation" data-id="9b03e694-1a52-48da-a474-d529ee1c7ddd">anuluj</button> </p>
+                                    </div>
+                                </div><div class="reservation-entry-row">
+                                    <div class="col-1 col-md-1 col-sm-1 col-xl-1 themed-grid-col">
+                                        <p><i class="bi bi-check-circle-fill" style="color: var(--primary-color);" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Rezerwacja potwierdzona"></i></p>
+                                    </div>
+                                    <div class="col-4 col-md-4 col-sm-4 col-xl-4 themed-grid-col">
+                                        <p style="/*! font-weight: bold; */">10:00 - 11:15</p>
+                                    </div>
+                                    <div class="col-6 col-md-6 col-sm-6 col-xl-6 themed-grid-col">
+                                        <p>Krzysztof Kolberger</p>
+                                    </div>
+                                    <div style="/*! margin-bottom: 0px; */" class="col-12 col-md-12 col-sm-12 col-xl-12 themed-grid-col">
+                                        
+                                        <p style="margin-bottom: 0px;">zadanie A/16</p>
+                                    </div>
+                                    <div style="text-align: right;" class="col-12 col-md-8 col-sm-12 col-xl-12 themed-grid-col">
+                                        <p style="margin-bottom: 0.5rem;"><button type="button" class="btn btn-primary confirmReservation" data-id="9b03e4cd-0be1-4ae0-b502-1007228da163">potwierdź</button>&nbsp;
+<button type="button" class="btn btn-danger removeReservation" data-id="9b03e694-1a52-48da-a474-d529ee1c7ddd">anuluj</button> </p>
+                                    </div>
+                                </div><div class="reservation-entry-row">
+                                    <div class="col-1 col-md-1 col-sm-1 col-xl-1 themed-grid-col">
+                                        <p><i class="bi bi-check-circle-fill" style="color: var(--primary-color);" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Rezerwacja potwierdzona"></i></p>
+                                    </div>
+                                    <div class="col-4 col-md-4 col-sm-4 col-xl-4 themed-grid-col">
+                                        <p style="/*! font-weight: bold; */">10:00 - 11:15</p>
+                                    </div>
+                                    <div class="col-6 col-md-6 col-sm-6 col-xl-6 themed-grid-col">
+                                        <p>Krzysztof Kolberger</p>
+                                    </div>
+                                    <div style="/*! margin-bottom: 0px; */" class="col-12 col-md-12 col-sm-12 col-xl-12 themed-grid-col">
+                                        
+                                        <p style="margin-bottom: 0px;"></p>
+                                    </div>
+                                    <div style="text-align: right;" class="col-12 col-md-8 col-sm-12 col-xl-12 themed-grid-col">
+                                        <p style="margin-bottom: 0.5rem;"><button type="button" class="btn btn-primary confirmReservation" data-id="9b03e4cd-0be1-4ae0-b502-1007228da163">potwierdź</button>&nbsp;
+<button type="button" class="btn btn-danger removeReservation" data-id="9b03e694-1a52-48da-a474-d529ee1c7ddd">anuluj</button> </p>
+                                    </div>
+                                </div><div class="reservation-entry-row">
+                                    <div class="col-1 col-md-1 col-sm-1 col-xl-1 themed-grid-col">
+                                        <p><i class="bi bi-check-circle-fill" style="color: var(--primary-color);" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Rezerwacja potwierdzona"></i></p>
+                                    </div>
+                                    <div class="col-4 col-md-4 col-sm-4 col-xl-4 themed-grid-col">
+                                        <p style="/*! font-weight: bold; */">10:00 - 11:15</p>
+                                    </div>
+                                    <div class="col-6 col-md-6 col-sm-6 col-xl-6 themed-grid-col">
+                                        <p>Krzysztof Kolberger</p>
+                                    </div>
+                                    <div style="/*! margin-bottom: 0px; */" class="col-12 col-md-12 col-sm-12 col-xl-12 themed-grid-col">
+                                        
+                                        <p style="margin-bottom: 0px;">zadanie A/16</p>
+                                    </div>
+                                    <div style="text-align: right;" class="col-12 col-md-8 col-sm-12 col-xl-12 themed-grid-col">
+                                        <p style="margin-bottom: 0.5rem;"><button type="button" class="btn btn-primary confirmReservation" data-id="9b03e4cd-0be1-4ae0-b502-1007228da163">potwierdź</button>&nbsp;
+<button type="button" class="btn btn-danger removeReservation" data-id="9b03e694-1a52-48da-a474-d529ee1c7ddd">anuluj</button> </p>
+                                    </div>
+                                </div><div class="reservation-entry-row">
+                                    <div class="col-1 col-md-1 col-sm-1 col-xl-1 themed-grid-col">
+                                        <p><i class="bi bi-check-circle-fill" style="color: var(--primary-color);" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Rezerwacja potwierdzona"></i></p>
+                                    </div>
+                                    <div class="col-4 col-md-4 col-sm-4 col-xl-4 themed-grid-col">
+                                        <p style="/*! font-weight: bold; */">10:00 - 11:15</p>
+                                    </div>
+                                    <div class="col-6 col-md-6 col-sm-6 col-xl-6 themed-grid-col">
+                                        <p>Krzysztof Kolberger</p>
+                                    </div>
+                                    <div style="/*! margin-bottom: 0px; */" class="col-12 col-md-12 col-sm-12 col-xl-12 themed-grid-col">
+                                        
+                                        <p style="margin-bottom: 0px;">zadanie A/16</p>
+                                    </div>
+                                    <div style="text-align: right;" class="col-12 col-md-8 col-sm-12 col-xl-12 themed-grid-col">
+                                        <p style="margin-bottom: 0.5rem;"><button type="button" class="btn btn-primary confirmReservation" data-id="9b03e4cd-0be1-4ae0-b502-1007228da163">potwierdź</button>&nbsp;
+<button type="button" class="btn btn-danger removeReservation" data-id="9b03e694-1a52-48da-a474-d529ee1c7ddd">anuluj</button> </p>
+                                    </div>
+                                </div><div class="reservation-entry-row">
+                                    <div class="col-1 col-md-1 col-sm-1 col-xl-1 themed-grid-col">
+                                        <p><i class="bi bi-check-circle-fill" style="color: var(--primary-color);" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Rezerwacja potwierdzona"></i></p>
+                                    </div>
+                                    <div class="col-4 col-md-4 col-sm-4 col-xl-4 themed-grid-col">
+                                        <p style="/*! font-weight: bold; */">10:00 - 11:15</p>
+                                    </div>
+                                    <div class="col-6 col-md-6 col-sm-6 col-xl-6 themed-grid-col">
+                                        <p>Krzysztof Kolberger</p>
+                                    </div>
+                                    <div style="/*! margin-bottom: 0px; */" class="col-12 col-md-12 col-sm-12 col-xl-12 themed-grid-col">
+                                        
+                                        <p style="margin-bottom: 0px;">zadanie A/16</p>
+                                    </div>
+                                    <div style="text-align: right;" class="col-12 col-md-8 col-sm-12 col-xl-12 themed-grid-col">
+                                        <p style="margin-bottom: 0.5rem;"><button type="button" class="btn btn-primary confirmReservation" data-id="9b03e4cd-0be1-4ae0-b502-1007228da163">potwierdź</button>&nbsp;
+<button type="button" class="btn btn-danger removeReservation" data-id="9b03e694-1a52-48da-a474-d529ee1c7ddd">anuluj</button> </p>
+                                    </div>
+                                </div>
+                                
+                                
+                            </div>
+                        </div>
+                    </div><div class="col-12 col-md-6 col-sm-12 col-xl-3 themed-grid-col">
+                        <div class="custom-block bg-white shadow-lg">
+                            <div class="d-flex" style="border-bottom: 1px solid;">
+                                <h5 class="mb-2">SP-ARR</h5>
+                            </div>
+                            <div class="">
+                                
+                                <div class="reservation-entry-row">
+                                    <div class="col-1 col-md-1 col-sm-1 col-xl-1 themed-grid-col">
+                                        <p><i class="bi bi-check-circle-fill" style="color: var(--primary-color);" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Rezerwacja potwierdzona"></i></p>
+                                    </div>
+                                    <div class="col-4 col-md-4 col-sm-4 col-xl-4 themed-grid-col">
+                                        <p style="/*! font-weight: bold; */">10:00 - 11:15</p>
+                                    </div>
+                                    <div class="col-6 col-md-6 col-sm-6 col-xl-6 themed-grid-col">
+                                        <p>Krzysztof Kolberger</p>
+                                    </div>
+                                    <div style="/*! margin-bottom: 0px; */" class="col-12 col-md-12 col-sm-12 col-xl-12 themed-grid-col">
+                                        
+                                        <p style="margin-bottom: 0px;">zadanie A/3 , trasa EPOM-AAAA-BBBB-CCCC-DDDD-EEEE-EPOM. Poczytaj o lotnisku BBBB, przygotuj coś tam, plus jakiekolwiek długie notatki żeby zobaczyć jak to się mieści na ekranie </p>
+                                    </div>
+                                    <div style="text-align: right;" class="col-12 col-md-8 col-sm-12 col-xl-12 themed-grid-col">
+                                        <p style="margin-bottom: 0.5rem;"><button type="button" class="btn btn-primary confirmReservation" data-id="9b03e4cd-0be1-4ae0-b502-1007228da163">potwierdź</button>&nbsp;
+<button type="button" class="btn btn-danger removeReservation" data-id="9b03e694-1a52-48da-a474-d529ee1c7ddd">anuluj</button> </p>
+                                    </div>
+                                </div><div class="reservation-entry-row">
+                                    <div class="col-1 col-md-1 col-sm-1 col-xl-1 themed-grid-col">
+                                        <p><i class="bi bi-check-circle-fill" style="color: var(--primary-color);" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Rezerwacja potwierdzona"></i></p>
+                                    </div>
+                                    <div class="col-4 col-md-4 col-sm-4 col-xl-4 themed-grid-col">
+                                        <p style="/*! font-weight: bold; */">10:00 - 11:15</p>
+                                    </div>
+                                    <div class="col-6 col-md-6 col-sm-6 col-xl-6 themed-grid-col">
+                                        <p>Krzysztof Kolberger</p>
+                                    </div>
+                                    <div style="/*! margin-bottom: 0px; */" class="col-12 col-md-12 col-sm-12 col-xl-12 themed-grid-col">
+                                        
+                                        <p style="margin-bottom: 0px;">zadanie A/16</p>
+                                    </div>
+                                    <div style="text-align: right;" class="col-12 col-md-8 col-sm-12 col-xl-12 themed-grid-col">
+                                        <p style="margin-bottom: 0.5rem;"><button type="button" class="btn btn-primary confirmReservation" data-id="9b03e4cd-0be1-4ae0-b502-1007228da163">potwierdź</button>&nbsp;
+<button type="button" class="btn btn-danger removeReservation" data-id="9b03e694-1a52-48da-a474-d529ee1c7ddd">anuluj</button> </p>
+                                    </div>
+                                </div><div class="reservation-entry-row">
+                                    <div class="col-1 col-md-1 col-sm-1 col-xl-1 themed-grid-col">
+                                        <p><i class="bi bi-check-circle-fill" style="color: var(--primary-color);" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Rezerwacja potwierdzona"></i></p>
+                                    </div>
+                                    <div class="col-4 col-md-4 col-sm-4 col-xl-4 themed-grid-col">
+                                        <p style="/*! font-weight: bold; */">10:00 - 11:15</p>
+                                    </div>
+                                    <div class="col-6 col-md-6 col-sm-6 col-xl-6 themed-grid-col">
+                                        <p>Krzysztof Kolberger</p>
+                                    </div>
+                                    <div style="/*! margin-bottom: 0px; */" class="col-12 col-md-12 col-sm-12 col-xl-12 themed-grid-col">
+                                        
+                                        <p style="margin-bottom: 0px;"></p>
+                                    </div>
+                                    <div style="text-align: right;" class="col-12 col-md-8 col-sm-12 col-xl-12 themed-grid-col">
+                                        <p style="margin-bottom: 0.5rem;"><button type="button" class="btn btn-primary confirmReservation" data-id="9b03e4cd-0be1-4ae0-b502-1007228da163">potwierdź</button>&nbsp;
+<button type="button" class="btn btn-danger removeReservation" data-id="9b03e694-1a52-48da-a474-d529ee1c7ddd">anuluj</button> </p>
+                                    </div>
+                                </div><div class="reservation-entry-row">
+                                    <div class="col-1 col-md-1 col-sm-1 col-xl-1 themed-grid-col">
+                                        <p><i class="bi bi-check-circle-fill" style="color: var(--primary-color);" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Rezerwacja potwierdzona"></i></p>
+                                    </div>
+                                    <div class="col-4 col-md-4 col-sm-4 col-xl-4 themed-grid-col">
+                                        <p style="/*! font-weight: bold; */">10:00 - 11:15</p>
+                                    </div>
+                                    <div class="col-6 col-md-6 col-sm-6 col-xl-6 themed-grid-col">
+                                        <p>Krzysztof Kolberger</p>
+                                    </div>
+                                    <div style="/*! margin-bottom: 0px; */" class="col-12 col-md-12 col-sm-12 col-xl-12 themed-grid-col">
+                                        
+                                        <p style="margin-bottom: 0px;">zadanie A/16</p>
+                                    </div>
+                                    <div style="text-align: right;" class="col-12 col-md-8 col-sm-12 col-xl-12 themed-grid-col">
+                                        <p style="margin-bottom: 0.5rem;"><button type="button" class="btn btn-primary confirmReservation" data-id="9b03e4cd-0be1-4ae0-b502-1007228da163">potwierdź</button>&nbsp;
+<button type="button" class="btn btn-danger removeReservation" data-id="9b03e694-1a52-48da-a474-d529ee1c7ddd">anuluj</button> </p>
+                                    </div>
+                                </div><div class="reservation-entry-row">
+                                    <div class="col-1 col-md-1 col-sm-1 col-xl-1 themed-grid-col">
+                                        <p><i class="bi bi-check-circle-fill" style="color: var(--primary-color);" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Rezerwacja potwierdzona"></i></p>
+                                    </div>
+                                    <div class="col-4 col-md-4 col-sm-4 col-xl-4 themed-grid-col">
+                                        <p style="/*! font-weight: bold; */">10:00 - 11:15</p>
+                                    </div>
+                                    <div class="col-6 col-md-6 col-sm-6 col-xl-6 themed-grid-col">
+                                        <p>Krzysztof Kolberger</p>
+                                    </div>
+                                    <div style="/*! margin-bottom: 0px; */" class="col-12 col-md-12 col-sm-12 col-xl-12 themed-grid-col">
+                                        
+                                        <p style="margin-bottom: 0px;">zadanie A/16</p>
+                                    </div>
+                                    <div style="text-align: right;" class="col-12 col-md-8 col-sm-12 col-xl-12 themed-grid-col">
+                                        <p style="margin-bottom: 0.5rem;"><button type="button" class="btn btn-primary confirmReservation" data-id="9b03e4cd-0be1-4ae0-b502-1007228da163">potwierdź</button>&nbsp;
+<button type="button" class="btn btn-danger removeReservation" data-id="9b03e694-1a52-48da-a474-d529ee1c7ddd">anuluj</button> </p>
+                                    </div>
+                                </div><div class="reservation-entry-row">
+                                    <div class="col-1 col-md-1 col-sm-1 col-xl-1 themed-grid-col">
+                                        <p><i class="bi bi-check-circle-fill" style="color: var(--primary-color);" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Rezerwacja potwierdzona"></i></p>
+                                    </div>
+                                    <div class="col-4 col-md-4 col-sm-4 col-xl-4 themed-grid-col">
+                                        <p style="/*! font-weight: bold; */">10:00 - 11:15</p>
+                                    </div>
+                                    <div class="col-6 col-md-6 col-sm-6 col-xl-6 themed-grid-col">
+                                        <p>Krzysztof Kolberger</p>
+                                    </div>
+                                    <div style="/*! margin-bottom: 0px; */" class="col-12 col-md-12 col-sm-12 col-xl-12 themed-grid-col">
+                                        
+                                        <p style="margin-bottom: 0px;">zadanie A/16</p>
+                                    </div>
+                                    <div style="text-align: right;" class="col-12 col-md-8 col-sm-12 col-xl-12 themed-grid-col">
+                                        <p style="margin-bottom: 0.5rem;"><button type="button" class="btn btn-primary confirmReservation" data-id="9b03e4cd-0be1-4ae0-b502-1007228da163">potwierdź</button>&nbsp;
+<button type="button" class="btn btn-danger removeReservation" data-id="9b03e694-1a52-48da-a474-d529ee1c7ddd">anuluj</button> </p>
+                                    </div>
+                                </div><div class="reservation-entry-row">
+                                    <div class="col-1 col-md-1 col-sm-1 col-xl-1 themed-grid-col">
+                                        <p><i class="bi bi-check-circle-fill" style="color: var(--primary-color);" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Rezerwacja potwierdzona"></i></p>
+                                    </div>
+                                    <div class="col-4 col-md-4 col-sm-4 col-xl-4 themed-grid-col">
+                                        <p style="/*! font-weight: bold; */">10:00 - 11:15</p>
+                                    </div>
+                                    <div class="col-6 col-md-6 col-sm-6 col-xl-6 themed-grid-col">
+                                        <p>Krzysztof Kolberger</p>
+                                    </div>
+                                    <div style="/*! margin-bottom: 0px; */" class="col-12 col-md-12 col-sm-12 col-xl-12 themed-grid-col">
+                                        
+                                        <p style="margin-bottom: 0px;">zadanie A/16</p>
+                                    </div>
+                                    <div style="text-align: right;" class="col-12 col-md-8 col-sm-12 col-xl-12 themed-grid-col">
+                                        <p style="margin-bottom: 0.5rem;"><button type="button" class="btn btn-primary confirmReservation" data-id="9b03e4cd-0be1-4ae0-b502-1007228da163">potwierdź</button>&nbsp;
+<button type="button" class="btn btn-danger removeReservation" data-id="9b03e694-1a52-48da-a474-d529ee1c7ddd">anuluj</button> </p>
+                                    </div>
+                                </div><div class="reservation-entry-row">
+                                    <div class="col-1 col-md-1 col-sm-1 col-xl-1 themed-grid-col">
+                                        <p><i class="bi bi-check-circle-fill" style="color: var(--primary-color);" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Rezerwacja potwierdzona"></i></p>
+                                    </div>
+                                    <div class="col-4 col-md-4 col-sm-4 col-xl-4 themed-grid-col">
+                                        <p style="/*! font-weight: bold; */">10:00 - 11:15</p>
+                                    </div>
+                                    <div class="col-6 col-md-6 col-sm-6 col-xl-6 themed-grid-col">
+                                        <p>Krzysztof Kolberger</p>
+                                    </div>
+                                    <div style="/*! margin-bottom: 0px; */" class="col-12 col-md-12 col-sm-12 col-xl-12 themed-grid-col">
+                                        
+                                        <p style="margin-bottom: 0px;">zadanie A/16</p>
+                                    </div>
+                                    <div style="text-align: right;" class="col-12 col-md-8 col-sm-12 col-xl-12 themed-grid-col">
+                                        <p style="margin-bottom: 0.5rem;"><button type="button" class="btn btn-primary confirmReservation" data-id="9b03e4cd-0be1-4ae0-b502-1007228da163">potwierdź</button>&nbsp;
+<button type="button" class="btn btn-danger removeReservation" data-id="9b03e694-1a52-48da-a474-d529ee1c7ddd">anuluj</button> </p>
+                                    </div>
+                                </div><div class="reservation-entry-row">
+                                    <div class="col-1 col-md-1 col-sm-1 col-xl-1 themed-grid-col">
+                                        <p><i class="bi bi-check-circle-fill" style="color: var(--primary-color);" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Rezerwacja potwierdzona"></i></p>
+                                    </div>
+                                    <div class="col-4 col-md-4 col-sm-4 col-xl-4 themed-grid-col">
+                                        <p style="/*! font-weight: bold; */">10:00 - 11:15</p>
+                                    </div>
+                                    <div class="col-6 col-md-6 col-sm-6 col-xl-6 themed-grid-col">
+                                        <p>Krzysztof Kolberger</p>
+                                    </div>
+                                    <div style="/*! margin-bottom: 0px; */" class="col-12 col-md-12 col-sm-12 col-xl-12 themed-grid-col">
+                                        
+                                        <p style="margin-bottom: 0px;">zadanie A/16</p>
+                                    </div>
+                                    <div style="text-align: right;" class="col-12 col-md-8 col-sm-12 col-xl-12 themed-grid-col">
+                                        <p style="margin-bottom: 0.5rem;"><button type="button" class="btn btn-primary confirmReservation" data-id="9b03e4cd-0be1-4ae0-b502-1007228da163">potwierdź</button>&nbsp;
+<button type="button" class="btn btn-danger removeReservation" data-id="9b03e694-1a52-48da-a474-d529ee1c7ddd">anuluj</button> </p>
+                                    </div>
+                                </div>
+                                
+                                
+                            </div>
+                        </div>
                     </div>
+                </div>
+            </div>
+               
+            
+        </section>
+        <section id="lower-section" class="contact-section section-padding section-bg">
+            
+
+            <div class="container-fluid">
+                
+                
 
                 <div class="row mb-3">
                     <div class="col-md-4 themed-grid-col">
@@ -153,59 +693,24 @@ https://templatemo.com/tm-590-topic-listing
                             </div>
                             <div class="d-flex">
                                 <div>
-                                    <p id="sunrise"></p>
+                                    <p id="sunrise">Wschód słońca: 06:52 <span class="utc-warning">UTC</span></p>
                                 </div>
                             </div>
                             <div class="d-flex">
                                 <div>
-                                    <p id="sunset"></p>
+                                    <p id="sunset">Zachód słońca: 14:54 <span class="utc-warning">UTC</span></p>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="col-md-4 themed-grid-col">
-                        <div class="custom-block bg-white shadow-lg">
-                            <div class="d-flex">
-                                <div>
-                                    <h5 class="mb-2">Rezerwuj</h5>
-                                    <span class="mb-2 utc-warning">podaj czas utc</span>
-                                </div>
-                            </div>
-
-                            <form id="makeReservationForm" method="post" class="custom-form mt-4 pt-2 mb-lg-0 mb-5" role="search" action="#">
-                                <div class="input-group input-group-lg">
-                                    <input name="starts_at" type="time" class="form-control" 
-                                    style="text-indent: 1ex;"
-                                    id="starts_at" aria-label="Search"
-                                    title="UTC Time in format: HH:MM"
-                                    value=""
-                                    >
-                                </div>
-                                <div class="input-group input-group-lg">
-                                    <input name="ends_at" type="time" class="form-control" 
-                                    style="text-indent: 1ex;"
-                                    id="ends_at" aria-label="Search"
-                                    title="UTC Time in format: HH:MM"
-                                    value=""
-                                >
-                                </div><div class="input-group input-group-lg">
-                                    <input name="comment" type="input" class="form-control" 
-                                    style="text-indent: 1ex;"
-                                    id="comment" placeholder="opcjonalny komentarz" aria-label="Search"
-                                    value=""
-                                >
-                                </div>
-                                <button type="submit" class="form-control">Rezerwuj</button>
-                            </form>
-                        </div>
-                    </div>
+                    
   
                 </div>
                     
                 </div>
                
-            </div>
+            
         </section>
 
     </main>
