@@ -186,7 +186,8 @@ app.loadDailyPlaneReservations = function(planeRegistration, date, dailyReservat
 };
 
 app.planeSelectionInit = function(){
-    app.reservationDate = new Date().toISOString().split('T')[0];
+    app.reservationDate = app.storage.getItem('reservationDate') || new Date().toISOString().split('T')[0];
+    app.storage.storeItem('reservationDate', app.reservationDate);
     let selectedDateField = $('#date');
     selectedDateField.val(app.reservationDate);
 
@@ -222,6 +223,8 @@ app.reservationInit = function(){
             app.reservationDate, 
             jQuery('#dailyReservations')
         );
+
+        app.storage.storeItem('reservationDate', app.reservationDate);
     };
 
     planeSelectField.on('change', changedFieldsHandler);
@@ -240,6 +243,8 @@ app.dashboardInit = function(){
     let sectionPlaneReservation = $('#section_plane_reservation');
     let planeSelectField = $('#planeList');
 
+    app.getAllReservationsForDate(app.reservationDate, jQuery('#adminPlanesboard'));
+
     let changedFieldsHandler = function(){
         app.planeRegistration = planeSelectField.find("option:selected" ).text();
         app.reservationDate = selectedDateField.val();
@@ -255,7 +260,9 @@ app.dashboardInit = function(){
 
         sectionPlaneReservation.removeClass('d-none');
 
-        app.getAllReservationsForDate(app.reservationDate, jQuery('#adminPlanesboard'))
+        app.getAllReservationsForDate(app.reservationDate, jQuery('#adminPlanesboard'));
+
+        app.storage.storeItem('reservationDate', app.reservationDate);
     };
 
     planeSelectField.on('change', changedFieldsHandler);
