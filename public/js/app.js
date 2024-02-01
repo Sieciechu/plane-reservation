@@ -185,16 +185,22 @@ app.loadDailyPlaneReservations = function(planeRegistration, date, dailyReservat
     }).fail(app.ajaxFail);
 };
 
-app.dashboardInit = function(){
+app.planeSelectionInit = function(){
     app.reservationDate = new Date().toISOString().split('T')[0];
     let selectedDateField = $('#date');
     selectedDateField.val(app.reservationDate);
 
     let planeSelectField = $('#planeList');
-
     app.loadPlanes(planeSelectField);
+}
 
+app.reservationInit = function(){
+
+    app.planeSelectionInit();
+
+    let selectedDateField = $('#date');
     let sectionPlaneReservation = $('#section_plane_reservation');
+    let planeSelectField = $('#planeList');
 
     let changedFieldsHandler = function(){
         app.planeRegistration = planeSelectField.find("option:selected" ).text();
@@ -216,6 +222,40 @@ app.dashboardInit = function(){
             app.reservationDate, 
             jQuery('#dailyReservations')
         );
+    };
+
+    planeSelectField.on('change', changedFieldsHandler);
+    selectedDateField.on('change', function(){
+        $('html, body').animate({
+            scrollTop: sectionPlaneReservation.offset().top
+        }, 300);
+        changedFieldsHandler();
+    });
+};
+
+app.dashboardInit = function(){
+    app.planeSelectionInit();
+
+    let selectedDateField = $('#date');
+    let sectionPlaneReservation = $('#section_plane_reservation');
+    let planeSelectField = $('#planeList');
+
+    let changedFieldsHandler = function(){
+        app.planeRegistration = planeSelectField.find("option:selected" ).text();
+        app.reservationDate = selectedDateField.val();
+
+        $('#reservationListHeading').html(`Tabela godzin ${app.planeRegistration} ${app.reservationDate}`);
+
+        if(app.planeRegistration == '--'){
+            sectionPlaneReservation.addClass('d-none');
+            return;
+        }
+
+        app.loadDailySunriseSunset(app.reservationDate, $('#sunrise'), $('#sunset'));
+
+        sectionPlaneReservation.removeClass('d-none');
+
+        app.getAllReservationsForDate(app.reservationDate, jQuery('#adminPlanesboard'))
     };
 
     planeSelectField.on('change', changedFieldsHandler);

@@ -82,6 +82,13 @@ https://templatemo.com/tm-590-topic-listing
         <script src="js/jquery.sticky.js"></script>
         <script src="js/click-scroll.js"></script>
         <script src="js/custom.js"></script>
+        <script src="js/app.js"></script>
+        <script type="text/javascript">
+            let app = window.app;
+            app.storage.init();
+            app.initFlashMsg();
+            app.showFlashMessages(app.flashMsgGetFirstVisibleContainer());
+        </script>
 
         {{ $customScript ?? ''}}
 

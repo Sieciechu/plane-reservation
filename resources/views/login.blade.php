@@ -25,11 +25,8 @@
     </form>
 
     <x-slot:customScript>
-        <script src="js/app.js"></script>
         <script type="text/javascript">
         $(document).ready(function() {
-            app.showFlashMessages(app.flashMsgGetFirstVisibleContainer());
-
             $("form").on("submit", function(event) {
                 event.preventDefault();
                 app.login($('#email').val(), $('#password').val())

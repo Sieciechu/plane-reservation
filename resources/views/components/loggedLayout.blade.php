@@ -103,6 +103,7 @@ https://templatemo.com/tm-590-topic-listing
         let app = window.app;
         app.storage.init();
         app.initFlashMsg();
+        app.showFlashMessages(app.flashMsgGetFirstVisibleContainer());
     </script>
     {{ $customScript ?? ''}}
 
