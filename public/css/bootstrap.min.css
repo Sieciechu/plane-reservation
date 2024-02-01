@@ -624,6 +624,15 @@ progress {
     align-items: flex-start;
     justify-content: center;
 }
+
+.adminPlanesboard, .adminPlanesboard p, .adminPlanesboard button{
+    font-size: 0.7rem;
+}
+
+.adminPlanesboard h3 {
+    font-size: 1rem;
+}
+
 .planesboard.row {
     --bs-gutter-x: 1.5rem;
     --bs-gutter-y: 0;

@@ -34,7 +34,7 @@
             <section id="section_flash_bottom" class="flash-messages">
                 <!-- here flash messages will be shown with js script -->
             </section>
-            <div class="adminPlanesboard row mb-3" style="justify-content: center;" id="adminPlanesboard">
+            <div class="adminPlanesboard planesboard row mb-3" style="justify-content: center;" id="adminPlanesboard">
                 <!-- here reservations will be loaded by js -->
             </div>
         </div>
