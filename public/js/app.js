@@ -7,38 +7,57 @@ app.storage = {};
 
 
 app.storage.init = function(){
-    window.localStorage.aeroklubostrowski = window.localStorage.aeroklubostrowski || '';
-}
+    window.localStorage.aeroklubostrowski = window.localStorage.aeroklubostrowski || '{}';
+};
+app.getFlashMessages = function(){
+    return app.storage.getItem('flashMsg');
+};
 
 app.initFlashMsg = function(){
-    let flashMsg = app.storage.getItem('flashMsg') || JSON.stringify({
+    var flashMsg = app.storage.getItem('flashMsg');
+    if(typeof(flashMsg) === "undefined" || flashMsg === null){
+        flashMsg = {
+            'success': [],
+            'error': [],
+        };
+    }
+
+    app.storage.storeItem('flashMsg', flashMsg);
+};
+
+app.clearFlashMsg = function(){
+    app.storage.storeItem('flashMsg', {
         'success': [],
         'error': [],
     });
-    app.storage.storeItem('flashMsg', flashMsg);
-}
+};
 
 app.storage.storeItem = function(key, value){
     let storage = JSON.parse(window.localStorage.aeroklubostrowski);
     storage[key] = value;
     window.localStorage.aeroklubostrowski = JSON.stringify(storage);
-}
+};
 app.storage.getItem = function(key){
     return JSON.parse(window.localStorage.aeroklubostrowski)[key];
+};
+app.storage.getAll = function(){
+    return JSON.parse(window.localStorage.aeroklubostrowski);
 }
 app.storage.removeItem = function(key){
-    window.localStorage.aeroklubostrowski = JSON.stringify({[key]: null});
-}
+    let storage = app.storage.getAll();
+    storage[key] = null;
+    window.localStorage.aeroklubostrowski = JSON.stringify(storage);
+};
 
 app.storeToken = function(token){
     app.storage.storeItem('token', token);
-}
+};
 app.getToken = function(){
     return app.storage.getItem('token');
-}
+};
 app.removeToken = function(){
     app.storage.removeItem('token');
-}
+};
 
 app.loadPlanes = function(planeSelectField){
     return app.ajax("GET", "/api/plane", {}).success(function(data){
@@ -63,7 +82,7 @@ app.html = {};
 app.html.activateTooltip = function(){
     const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
     const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
-}
+};
 
 app.html.getDailyReservationComponent = function(item){
     let notConfirmedIcon = '<i class="bi bi-question-circle" style="color: var(--bs-danger);" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Rezerwacja niepotwierdzona"></i>';
@@ -150,14 +169,12 @@ app.html.getReservationAdminColumnComponent = function(planeRegistration, reserv
         reservationList += app.html.getAdminReservationComponent(item);
     });
     return header.replace('[reservationList]', reservationList);
-}
+};
 
 app.loadDailyPlaneReservations = function(planeRegistration, date, dailyReservationsView){
     return app.ajax("GET", "/api/plane/" + planeRegistration + "/reservation/" + date, {}).success(function(data){
         let dailyReservations = data;
         dailyReservationsView.html('');
-        let notConfirmedIcon = '<i class="bi bi-question-circle" style="color: var(--bs-danger);" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Rezerwacja niepotwierdzona"></i>';
-        let confirmedIcon = '<i class="bi bi-check-circle-fill" style="color: var(--primary-color);" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Rezerwacja potwierdzona"></i>';
 
         dailyReservations.forEach(function(item){
             let row = app.html.getDailyReservationComponent(item);
@@ -177,9 +194,15 @@ app.loadDailyPlaneReservations = function(planeRegistration, date, dailyReservat
         }
 
         $('button.removeReservation').on('click', function(){
+            if(false == confirm('Czy na pewno chcesz usunąć rezerwację?')){
+                return;
+            }
             app.removeReservation(this.dataset.id);
         });
         $('button.confirmReservation').on('click', function(){
+            if(false == confirm('Czy na pewno chcesz potwierdzić rezerwację?')){
+                return;
+            }
             app.confirmReservation(this.dataset.id);
         });
     }).fail(app.ajaxFail);
@@ -193,7 +216,7 @@ app.planeSelectionInit = function(){
 
     let planeSelectField = $('#planeList');
     app.loadPlanes(planeSelectField);
-}
+};
 
 app.reservationInit = function(){
 
@@ -370,6 +393,18 @@ app.getAllReservationsForDate = function(date, container){
         }
 
         app.html.activateTooltip();
+        $('button.removeReservation').on('click', function(){
+            if(false == confirm('Czy na pewno chcesz usunąć rezerwację?')){
+                return;
+            }
+            app.removeReservation(this.dataset.id);
+        });
+        $('button.confirmReservation').on('click', function(){
+            if(false == confirm('Czy na pewno chcesz potwierdzić rezerwację?')){
+                return;
+            }
+            app.confirmReservation(this.dataset.id);
+        });
     }).fail(app.ajaxFail);
 };
 
@@ -388,8 +423,11 @@ app.ajaxFail = function(response){
     app.addFlashMsg('error', msg);
     if(401 == response.status){
         app.removeToken();
-        window.location = '/login';
-        return;
+
+        if('/login' != window.location.pathname){
+            window.location.href = '/login';
+            return;
+        }
     }
     app.showFlashMessages(app.flashMsgGetFirstVisibleContainer());
 };
@@ -399,13 +437,13 @@ app.flashMsgGetFirstVisibleContainer = function(){
 };
 
 app.addFlashMsg = function(level, msg){
-    let flashMsg = JSON.parse(localStorage.flashMsg);
+    let flashMsg = app.getFlashMessages();
     flashMsg[level].push(msg);
-    localStorage.flashMsg = JSON.stringify(flashMsg);
+    app.storage.storeItem('flashMsg', flashMsg);
 };
 
 app.showFlashMessages = function(container){
-    let flashMsg = JSON.parse(localStorage.flashMsg);
+    let flashMsg = app.getFlashMessages();
 
     flashMsg.success.forEach(function(message){
         container.append(`<div class="alert alert-success alert-dismissible fade show d-flex align-items-center shadow" role="alert">
@@ -425,8 +463,5 @@ app.showFlashMessages = function(container){
         container.find('button.btn-close').click();
      },1500);
      
-    localStorage.flashMsg = JSON.stringify({
-        'success': [],
-        'error': [],
-    });
+     app.clearFlashMsg();
 };
