@@ -19,6 +19,6 @@ use Illuminate\Support\Facades\Route;
 Route::get('/login', [UserController::class, 'login'])->name('login');
 Route::get('/register', [UserController::class, 'register']);
 
-Route::get('/reservation', [PlaneReservationController::class, 'reservation'])->middleware('auth');
-Route::get('/dashboard', [PlaneReservationController::class, 'dashboard'])->middleware('auth');
-Route::get('/', [PlaneReservationController::class, 'reservation'])->middleware('auth');
+Route::get('/reservation', [PlaneReservationController::class, 'reservation']);
+Route::get('/dashboard', [PlaneReservationController::class, 'dashboard']);
+Route::get('/', [PlaneReservationController::class, 'reservation']);
