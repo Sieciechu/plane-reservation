@@ -667,8 +667,9 @@ progress {
 }
 
 .flash-messages {
-    position: sticky;
-    top: 5.5rem;
+    position: fixed;
+    bottom: 0;
+    right: 0.8rem;
     z-index: 1000;
 }
 

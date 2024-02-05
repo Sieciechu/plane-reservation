@@ -84,6 +84,9 @@ https://templatemo.com/tm-590-topic-listing
             </nav>
         </div>
 
+        <section id="section_flash_top" class="flash-messages">
+            <!-- here flash messages will be shown with js script -->
+        </section>
 
         <section class="hero-section d-flex justify-content-center align-items-center" id="section_1">
             {{ $section1 ?? '' }}

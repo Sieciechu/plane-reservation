@@ -183,16 +183,6 @@ app.loadDailyPlaneReservations = function(planeRegistration, date, dailyReservat
 
         app.html.activateTooltip();
 
-        let isPlaneReservationSectionVisible = false == $('#section_plane_reservation').hasClass('d-none')
-        
-        if(isPlaneReservationSectionVisible) {
-            $('#section_flash_top').addClass('d-none');
-            $('#section_flash_bottom').removeClass('d-none');
-        } else {
-            $('#section_flash_top').removeClass('d-none');
-            $('#section_flash_bottom').addClass('d-none');
-        }
-
         $('button.removeReservation').on('click', function(){
             if(false == confirm('Czy na pewno chcesz usunąć rezerwację?')){
                 return;
@@ -461,7 +451,7 @@ app.showFlashMessages = function(container){
     });
     setTimeout(function(){
         container.find('button.btn-close').click();
-     },1500);
+    },1500);
      
      app.clearFlashMsg();
 };

@@ -5,8 +5,6 @@
     <div class="row">
         
         <div class="col-lg-8 col-12 mx-auto">
-            <section id="section_flash_top" class="flash-messages"><!-- here flash messages will be shown with js script --></section>
-        
             <h1 class="text-white text-center">Wybierz samolot</h1>
 
             <form method="get" class="custom-form mt-4 pt-2 mb-lg-0 mb-5" role="search" action="#">
@@ -44,9 +42,6 @@
     </div>
 
     <div class="container">
-        <section id="section_flash_bottom" class="flash-messages d-none">
-            <!-- here flash messages will be shown with js script -->
-        </section>
         <div class="planesboard row mb-3">
         
             <div class="col-12 themed-grid-col">
