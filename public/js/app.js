@@ -85,9 +85,7 @@ app.html.activateTooltip = function(){
 };
 
 app.html.getDailyReservationComponent = function(item){
-    let notConfirmedIcon = '<i class="bi bi-question-circle" style="color: var(--bs-danger);" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Rezerwacja niepotwierdzona"></i>';
-    let confirmedIcon = '<i class="bi bi-check-circle-fill" style="color: var(--primary-color);" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Rezerwacja potwierdzona"></i>';
-    let isConfirmed = item.is_confirmed == true ? confirmedIcon : notConfirmedIcon;
+    let isConfirmed = app.html.getConfirmationTooltipComponent(item.is_confirmed);
     let canConfirm = item.can_confirm == true
         ? `<button type="button" class="btn btn-primary confirmReservation" data-id="${item.id}">potwierdź</button>`
         : '';
@@ -97,7 +95,7 @@ app.html.getDailyReservationComponent = function(item){
     let component = `
 <div class="reservation-entry-row">
 <div class="col-1 col-md-1 col-sm-1 col-lg-1 col-xl-1 themed-grid-col">
-    <p>${isConfirmed}</p>
+    <p class="confirmation-tooltip">${isConfirmed}</p>
 </div>
 <div class="col-4 col-md-4 col-sm-4 col-lg-2 col-xl-2 themed-grid-col">
     <p>${item.starts_at} - ${item.ends_at}</p>
@@ -117,10 +115,14 @@ app.html.getDailyReservationComponent = function(item){
     return component;
 };
 
-app.html.getAdminReservationComponent = function(item){
+app.html.getConfirmationTooltipComponent = function(isConfirmed){
     let notConfirmedIcon = '<i class="bi bi-question-circle" style="color: var(--bs-danger);" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Rezerwacja niepotwierdzona"></i>';
     let confirmedIcon = '<i class="bi bi-check-circle-fill" style="color: var(--primary-color);" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Rezerwacja potwierdzona"></i>';
-    let isConfirmed = item.is_confirmed == true ? confirmedIcon : notConfirmedIcon;
+    return isConfirmed == true ? confirmedIcon : notConfirmedIcon;
+}
+
+app.html.getAdminReservationComponent = function(item){
+    let isConfirmed = app.html.getConfirmationTooltipComponent(item.is_confirmed);
     let canConfirm = item.can_confirm == true
         ? `<button type="button" class="btn btn-primary confirmReservation" data-id="${item.id}">potwierdź</button>`
         : '';
@@ -130,7 +132,7 @@ app.html.getAdminReservationComponent = function(item){
     let component = `
 <div class="reservation-entry-row">
 <div class="col-1 col-md-1 col-sm-1 col-xl-1 themed-grid-col">
-    <p>${isConfirmed}</p>
+    <p class="confirmation-tooltip">${isConfirmed}</p>
 </div>
 <div class="col-4 col-md-4 col-sm-4 col-xl-4 themed-grid-col">
     <p>${item.starts_at} - ${item.ends_at}</p>
@@ -205,7 +207,9 @@ app.planeSelectionInit = function(){
     selectedDateField.val(app.reservationDate);
 
     let planeSelectField = $('#planeList');
-    app.loadPlanes(planeSelectField);
+    if(planeSelectField.length != 0){
+        app.loadPlanes(planeSelectField);
+    }
 };
 
 app.reservationInit = function(){
@@ -309,11 +313,7 @@ app.makeReservation = function(starts_at_value, ends_at_value, comment){
 
 app.removeReservation = function(reservationId){
     return app.ajax("DELETE", `/api/plane/reservation/${reservationId}`).success(function(){
-        app.loadDailyPlaneReservations(
-            app.planeRegistration, 
-            app.reservationDate, 
-            jQuery('#dailyReservations')
-        );
+        jQuery(`button.removeReservation[data-id="${reservationId}"]`).closest('div.reservation-entry-row').remove(); 
         app.addFlashMsg('success', "rezerwacja została usunięta");
         app.showFlashMessages(app.flashMsgGetFirstVisibleContainer());
     }).fail(app.ajaxFail);
@@ -324,11 +324,11 @@ app.confirmReservation = function(reservationId){
         "PATCH",
         `/api/plane/reservation/${reservationId}/confirm`
     ).success(function(){
-        app.loadDailyPlaneReservations(
-            app.planeRegistration, 
-            app.reservationDate, 
-            jQuery('#dailyReservations')
-        );
+        jQuery(`button.removeReservation[data-id="${reservationId}"]`)
+            .closest('div.reservation-entry-row')
+            .find('p.confirmation-tooltip').html(app.html.getConfirmationTooltipComponent(true));
+
+        app.html.activateTooltip();
             
         app.addFlashMsg('success', "rezerwacja została potwierdzona");
         app.showFlashMessages(app.flashMsgGetFirstVisibleContainer());
