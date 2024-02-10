@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 /**
  * @property string $id
  * @property string $user_id
+ * @property string|null $user2_id
  * @property string $plane_id
  * @property CarbonImmutable $starts_at
  * @property CarbonImmutable $ends_at
@@ -42,6 +43,7 @@ class PlaneReservation extends Model
     protected $fillable = [
         'id',
         'user_id',
+        'user2_id',
         'plane_id',
         'starts_at',
         'ends_at',
@@ -55,5 +57,10 @@ class PlaneReservation extends Model
     public function user(): HasOne
     {
         return $this->hasOne(User::class, 'id', 'user_id');
+    }
+
+    public function user2(): HasOne
+    {
+        return $this->hasOne(User::class, 'id', 'user2_id');
     }
 }

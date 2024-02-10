@@ -23,6 +23,7 @@
     <link href="css/bootstrap-icons.css" rel="stylesheet">
 
     <link href="css/templatemo-topic-listing.css" rel="stylesheet">
+    <link href="css/app.css" rel="stylesheet">
     <!--
 
 TemplateMo 590 topic listing

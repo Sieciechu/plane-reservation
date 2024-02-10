@@ -24,6 +24,7 @@ class PlaneReservationMakeRequest extends FormRequest
         return [
             'plane_registration' => 'required|exists:planes,registration',
             'user_id' => 'exists:users,id',
+            'user2_id' => 'exists:users,id|nullable',
             'starts_at' => 'required|date_format:Y-m-d H:i:s',
             'ends_at' => 'required|date_format:Y-m-d H:i:s|after:time_from',
             'comment' => 'nullable|string|max:255',

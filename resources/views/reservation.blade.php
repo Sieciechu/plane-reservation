@@ -89,25 +89,33 @@
                     <form id="makeReservationForm" method="post" class="custom-form mt-4 pt-2 mb-lg-0 mb-5" role="search" action="#">
                         <div class="input-group input-group-lg">
                             <input name="starts_at" type="time" class="form-control" 
-                            style="text-indent: 1ex;"
-                            id="starts_at" aria-label="Search"
-                            title="UTC Time in format: HH:MM"
-                            value=""
+                                style="text-indent: 1ex;"
+                                id="starts_at" aria-label="Search"
+                                title="UTC Time in format: HH:MM"
+                                value=""
                             >
                         </div>
                         <div class="input-group input-group-lg">
                             <input name="ends_at" type="time" class="form-control" 
-                            style="text-indent: 1ex;"
-                            id="ends_at" aria-label="Search"
-                            title="UTC Time in format: HH:MM"
-                            value=""
-                        >
-                        </div><div class="input-group input-group-lg">
+                                style="text-indent: 1ex;"
+                                id="ends_at" aria-label="Search"
+                                title="UTC Time in format: HH:MM"
+                                value=""
+                            >
+                        </div>
+                        <div class="input-group input-group-lg">
                             <input name="comment" type="input" class="form-control" 
-                            style="text-indent: 1ex;"
-                            id="comment" placeholder="opcjonalny komentarz" aria-label="Search"
-                            value=""
-                        >
+                                style="text-indent: 1ex;"
+                                id="comment" placeholder="opcjonalny komentarz" aria-label="Search"
+                                value=""
+                            >
+                        </div>
+                        <div class="input-group input-group-lg">
+                            <input name="user2" type="input" class="form-control" 
+                                style="text-indent: 1ex;"
+                                id="user2" placeholder="drugi pilot" aria-label="Search"
+                                value=""
+                            >
                         </div>
                         <button type="submit" class="form-control">Rezerwuj</button>
                     </form>
@@ -120,17 +128,25 @@
 </x-slot:section2>
 
 <x-slot:customScript>
+<script src="js/typeahead.bundle.js"></script>
 <script type="text/javascript">
 $(document).ready(function() {
     app.reservationInit();
+    app.initSecondUserAutocomplete(jQuery('#user2'));
 
     $("#makeReservationForm").on("submit", function(event) {
         event.preventDefault();
         app.makeReservation(
             jQuery('#starts_at').val(),
             jQuery('#ends_at').val(),
-            jQuery('#comment').val()
-        );
+            jQuery('#comment').val(),
+            app.userNamesToIdsMap[jQuery('#user2').val()]
+        ).success(function() {
+            jQuery('#starts_at').val('');
+            jQuery('#ends_at').val('');
+            jQuery('#comment').val('');
+            jQuery('#user2').val('');
+        });
     });
 });
 </script>

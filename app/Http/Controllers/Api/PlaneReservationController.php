@@ -59,6 +59,7 @@ class PlaneReservationController extends Controller
                 'can_confirm' => $r->confirmed_at === null && $user->isAdmin(),
                 'can_remove' => $r->user_id === $user->id || $user->isAdmin(),
                 'user_name' => $r->user->name,
+                'user2_name' => $r?->user2?->name ?? '',
                 'comment' => $r->comment ?? '',
             ])->values();
             
@@ -72,35 +73,35 @@ class PlaneReservationController extends Controller
      */
     public function make(PlaneReservationMakeRequest $request): JsonResponse
     {
-        /** @var array<string, mixed> $validated */
-        $validated = $request->validated();
+        /** @var array<string, mixed> $reservationDto */
+        $reservationDto = $request->validated();
         
         /** @var User $user */
         $user = $request->user();
         
-        if (!($user->isAdmin() && isset($validated['user_id']))) {
-            $validated['user_id'] = $user->id;
+        if (!$user->isAdmin() || !isset($reservationDto['user_id'])) {
+            $reservationDto['user_id'] = $user->id;
         }
 
         /** @var string $planeRegistration */
-        $planeRegistration = $validated['plane_registration'];
+        $planeRegistration = $reservationDto['plane_registration'];
         $plane = Plane::where('registration', $planeRegistration)->firstOrFail();
 
-        unset($validated['plane_registration']);
-        $validated['plane_id'] = $plane->id;
+        unset($reservationDto['plane_registration']);
+        $reservationDto['plane_id'] = $plane->id;
         
-        $startsAt = CarbonImmutable::parse($validated['starts_at'])->seconds(0)->milliseconds(0); // @phpstan-ignore-line
-        $endsAt = CarbonImmutable::parse($validated['ends_at'])->seconds(0)->milliseconds(0); // @phpstan-ignore-line
+        $startsAt = CarbonImmutable::parse($reservationDto['starts_at'])->seconds(0)->milliseconds(0); // @phpstan-ignore-line
+        $endsAt = CarbonImmutable::parse($reservationDto['ends_at'])->seconds(0)->milliseconds(0); // @phpstan-ignore-line
         $endsAt = $startsAt->setTimeFromTimeString($endsAt->toTimeString());
-        $validated['time'] = $startsAt->diffInMinutes($endsAt);
+        $reservationDto['time'] = $startsAt->diffInMinutes($endsAt);
 
         try {
-            $this->reservationChecker->checkAll($validated);
+            $this->reservationChecker->checkAll($reservationDto);
         } catch (Exception $e) {
             return response()->json(['error' => $e->getMessage()], 422);
         }
 
-        $planeReservation = PlaneReservation::create($validated);
+        $planeReservation = PlaneReservation::create($reservationDto);
 
         // send mail to user
         // $user = User::where('id', $validated['user_id'])->firstOrFail();

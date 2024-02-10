@@ -7,8 +7,12 @@ namespace App\Services\PlaneReservationCheck;
 use App\Models\User;
 use Carbon\CarbonImmutable;
 
-class EndsSameMonthCheck implements Checker
+class SecondPilotByAdminOnlyCheck implements Checker
 {
+    public function __construct(
+    ) {
+    }
+
     /** @throws Exception */
     public function check(
         CarbonImmutable $startsAt,
@@ -17,8 +21,8 @@ class EndsSameMonthCheck implements Checker
         string $planeId,
         ?User $user2 = null,
     ): void {
-        if ($startsAt->month !== $endsAt->month) {
-            throw new Exception('reservation must end in the same month');
+        if (!$user->isAdmin() && null !== $user2) {
+            throw new Exception('only admin can add second pilot');
         }
     }
 }

@@ -1,6 +1,7 @@
 // import './bootstrap.js';
 
 window.app = {};
+window.app.userNamesToIdsMap = {};
 window.app.planeRegistration = '';
 window.app.reservationDate = '';
 app.storage = {};
@@ -101,7 +102,7 @@ app.html.getDailyReservationComponent = function(item){
     <p>${item.starts_at} - ${item.ends_at}</p>
 </div>
 <div class="col-6 col-md-6 col-sm-6 col-lg-2 col-xl-2 themed-grid-col">
-    <p>${item.user_name}</p>
+    <p>${item.user_name}, ${item.user2_name}</p>
 </div>
 <div class="col-12 col-md-12 col-sm-12 col-lg-8 col-xl-5 themed-grid-col">
     <p class="mb-0">${item.comment}</p>
@@ -291,14 +292,15 @@ app.dashboardInit = function(){
     });
 };
 
-app.makeReservation = function(starts_at_value, ends_at_value, comment){
+app.makeReservation = function(starts_at_value, ends_at_value, comment, user2_id){
     return app.ajax(
         "POST",
         "/api/plane/" + app.planeRegistration + "/reservation/" + app.reservationDate,
         {
             starts_at: app.reservationDate + ' ' + starts_at_value + ':00',
             ends_at: app.reservationDate + ' ' + ends_at_value + ':00',
-            comment: comment
+            comment: comment,
+            user2_id: user2_id
         }
     ).success(function(){
         app.loadDailyPlaneReservations(
@@ -356,6 +358,9 @@ app.login = function(email, password){
         app.addFlashMsg('success', "zalogowano");
         window.location.href = '/reservation';
     }).fail(app.ajaxFail);
+};
+app.getUsers = function(){
+    return app.ajax("GET", "/api/user", {}).fail(app.ajaxFail);
 };
 app.registerUser = function(name, email, phone, password, password_confirmation){
     return app.ajax(
@@ -454,4 +459,52 @@ app.showFlashMessages = function(container){
     },1500);
      
      app.clearFlashMsg();
+};
+
+app.initSecondUserAutocomplete = function(inputElement){
+    app.getUsers().success(function(data){
+        let models = data.data;
+        let userNames = [];
+        let userNamesToIdsMap = {};
+        models.forEach(function(model){
+            userNames.push(model.name);
+            userNamesToIdsMap[model.name] = model.id;
+        });
+
+        app.userNamesToIdsMap = userNamesToIdsMap;
+
+        inputElement.typeahead({
+            hint: true,
+            highlight: true,
+            minLength: 1
+          },
+          {
+            name: 'userNames',
+            source: substringMatcher(userNames)
+          });
+
+    });
+
+};
+
+var substringMatcher = function (strs) {
+    return function findMatches(q, cb) {
+        var matches, substringRegex;
+
+        // an array that will be populated with substring matches
+        matches = [];
+
+        // regex used to determine if a string contains the substring `q`
+        substrRegex = new RegExp(q, 'i');
+
+        // iterate through the pool of strings and for any string that
+        // contains the substring `q`, add it to the `matches` array
+        $.each(strs, function (i, str) {
+            if (substrRegex.test(str)) {
+                matches.push(str);
+            }
+        });
+
+        cb(matches);
+    };
 };
