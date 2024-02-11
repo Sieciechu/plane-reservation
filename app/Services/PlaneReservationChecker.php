@@ -20,6 +20,7 @@ class PlaneReservationChecker
      * @param $params array {
      *     plane_registration: string,
      *     user_id: string,
+     *     user2_id: string,
      *     starts_at: string,
      *     ends_at: string,
      *     time: int,
@@ -36,6 +37,9 @@ class PlaneReservationChecker
         $startDate = CarbonImmutable::parse($params['starts_at']);
         $endDate = CarbonImmutable::parse($params['ends_at']);
         
-        $this->checker->check($startDate, $endDate, $user, $plane->id);
+        /** @var User|null $user2 */
+        $user2 = isset($params['user2_id']) ? User::find($params['user2_id']) : null;
+
+        $this->checker->check($startDate, $endDate, $user, $plane->id, $user2);
     }
 }

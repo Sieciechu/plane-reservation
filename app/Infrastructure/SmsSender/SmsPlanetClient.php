@@ -32,10 +32,14 @@ class SmsPlanetClient implements SmsSender
             throw new SmsException("Message cannot be empty");
         }
 
-        $this->client->sendSimpleSMS([
-            'from' => $from,
-            'to' => $to,
-            'msg' => $msg,
-        ]);
+        try {
+            $this->client->sendSimpleSMS([
+                'from' => $from,
+                'to' => $to,
+                'msg' => $msg,
+            ]);
+        } catch (\Throwable $e) {
+            throw new SmsException("Error while sending SMS: " . $e->getMessage());
+        }
     }
 }

@@ -663,4 +663,52 @@ class PlaneReservationControllerTest extends TestCase
             ],
         ]);
     }
+
+
+    public function testAdminShouldBeAbleToReserveWithSecondUser(): void
+    {
+        // given
+        $admin = User::factory()->create([
+            'role' => UserRole::Admin,
+        ]);
+        Sanctum::actingAs($admin, ['*']);
+
+        $user = User::factory()->create([
+            'role' => UserRole::User,
+        ]);
+
+        $plane = Plane::factory()->create([
+            'name' => 'PZL Koliber 150',
+            'registration' => 'SP-ABC',
+        ]);
+
+        // when
+        Carbon::setTestNow('2023-10-28 12:13:14');
+        CarbonImmutable::setTestNow('2023-10-28 12:13:14');
+
+        $response = $this->post('/api/plane/SP-ABC/reservation/2023-11-01', [
+            'user_id' => $admin->id,
+            'starts_at' => '2023-11-01 10:00:00',
+            'ends_at' => '2023-11-01 11:59:00',
+            'comment' => 'some comment',
+            'user2_id' => $user->id,
+        ]);
+        
+        // then
+        $response->assertStatus(201);
+
+        $this->assertDatabaseCount('plane_reservations', 1);
+        $this->assertDatabaseHas('plane_reservations', [
+            'user_id' => $admin->id,
+            'user2_id' => $user->id,
+            'plane_id' => $plane->id,
+            'starts_at' => '2023-11-01 10:00:00',
+            'ends_at' => '2023-11-01 11:59:00',
+            'time' => 119,
+            'confirmed_at' => null,
+            'confirmed_by' => null,
+            'deleted_at' => null,
+            'comment' => 'some comment',
+        ]);
+    }
 }

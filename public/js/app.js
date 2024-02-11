@@ -1,6 +1,7 @@
 // import './bootstrap.js';
 
 window.app = {};
+window.app.userNamesToIdsMap = {};
 window.app.planeRegistration = '';
 window.app.reservationDate = '';
 app.storage = {};
@@ -8,6 +9,9 @@ app.storage = {};
 
 app.storage.init = function(){
     window.localStorage.aeroklubostrowski = window.localStorage.aeroklubostrowski || '{}';
+};
+app.storage.clear = function(){
+    window.localStorage.aeroklubostrowski = '{}';
 };
 app.getFlashMessages = function(){
     return app.storage.getItem('flashMsg');
@@ -92,6 +96,12 @@ app.html.getDailyReservationComponent = function(item){
     let canRemove = item.can_remove == true
         ? `<button type="button" class="btn btn-danger removeReservation" data-id="${item.id}">usuń</button>`
         : '';
+    
+    let users = item.user_name;
+    if(item.user2_name){
+        users += ', ' + item.user2_name;
+    }
+
     let component = `
 <div class="reservation-entry-row">
 <div class="col-1 col-md-1 col-sm-1 col-lg-1 col-xl-1 themed-grid-col">
@@ -100,10 +110,10 @@ app.html.getDailyReservationComponent = function(item){
 <div class="col-4 col-md-4 col-sm-4 col-lg-2 col-xl-2 themed-grid-col">
     <p>${item.starts_at} - ${item.ends_at}</p>
 </div>
-<div class="col-6 col-md-6 col-sm-6 col-lg-2 col-xl-2 themed-grid-col">
-    <p>${item.user_name}</p>
+<div class="col-6 col-md-6 col-sm-6 col-lg-3 col-xl-3 themed-grid-col">
+    <p>${users}</p>
 </div>
-<div class="col-12 col-md-12 col-sm-12 col-lg-8 col-xl-5 themed-grid-col">
+<div class="col-12 col-md-12 col-sm-12 col-lg-8 col-xl-4 themed-grid-col">
     <p class="mb-0">${item.comment}</p>
 
 </div>
@@ -129,6 +139,12 @@ app.html.getAdminReservationComponent = function(item){
     let canRemove = item.can_remove == true
         ? `<button type="button" class="btn btn-danger removeReservation" data-id="${item.id}">usuń</button>`
         : '';
+
+    let users = item.user_name;
+    if(item.user2_name){
+        users += ', ' + item.user2_name;
+    }
+
     let component = `
 <div class="reservation-entry-row">
 <div class="col-1 col-md-1 col-sm-1 col-xl-1 themed-grid-col">
@@ -138,7 +154,7 @@ app.html.getAdminReservationComponent = function(item){
     <p>${item.starts_at} - ${item.ends_at}</p>
 </div>
 <div class="col-6 col-md-6 col-sm-6 col-xl-6 themed-grid-col">
-    <p>${item.user_name}</p>
+    <p>${users}</p>
 </div>
 <div class="col-12 col-md-12 col-sm-12 col-xl-12 themed-grid-col">
     <p class="mb-0">${item.comment}</p>
@@ -291,14 +307,15 @@ app.dashboardInit = function(){
     });
 };
 
-app.makeReservation = function(starts_at_value, ends_at_value, comment){
+app.makeReservation = function(starts_at_value, ends_at_value, comment, user2_id){
     return app.ajax(
         "POST",
         "/api/plane/" + app.planeRegistration + "/reservation/" + app.reservationDate,
         {
             starts_at: app.reservationDate + ' ' + starts_at_value + ':00',
             ends_at: app.reservationDate + ' ' + ends_at_value + ':00',
-            comment: comment
+            comment: comment,
+            user2_id: user2_id
         }
     ).success(function(){
         app.loadDailyPlaneReservations(
@@ -324,9 +341,10 @@ app.confirmReservation = function(reservationId){
         "PATCH",
         `/api/plane/reservation/${reservationId}/confirm`
     ).success(function(){
-        jQuery(`button.removeReservation[data-id="${reservationId}"]`)
-            .closest('div.reservation-entry-row')
-            .find('p.confirmation-tooltip').html(app.html.getConfirmationTooltipComponent(true));
+        let reservationRow = jQuery(`button.removeReservation[data-id="${reservationId}"]`)
+            .closest('div.reservation-entry-row');
+        reservationRow.find('p.confirmation-tooltip').html(app.html.getConfirmationTooltipComponent(true));
+        reservationRow.find('button.confirmReservation').remove();
 
         app.html.activateTooltip();
             
@@ -337,7 +355,8 @@ app.confirmReservation = function(reservationId){
 
 app.logout = function(){
     return app.ajax("GET", "/api/user/logout", {}).success(function(){
-        localStorage.removeItem('token');
+        app.storage.clear();
+        app.initFlashMsg();
         app.addFlashMsg('success', "wylogowano pomyślnie");
         window.location.href = '/login';
     }).fail(app.ajaxFail);
@@ -356,6 +375,9 @@ app.login = function(email, password){
         app.addFlashMsg('success', "zalogowano");
         window.location.href = '/reservation';
     }).fail(app.ajaxFail);
+};
+app.getUsers = function(){
+    return app.ajax("GET", "/api/user", {}).fail(app.ajaxFail);
 };
 app.registerUser = function(name, email, phone, password, password_confirmation){
     return app.ajax(
@@ -454,4 +476,52 @@ app.showFlashMessages = function(container){
     },1500);
      
      app.clearFlashMsg();
+};
+
+app.initSecondUserAutocomplete = function(inputElement){
+    app.getUsers().success(function(data){
+        let models = data.data;
+        let userNames = [];
+        let userNamesToIdsMap = {};
+        models.forEach(function(model){
+            userNames.push(model.name);
+            userNamesToIdsMap[model.name] = model.id;
+        });
+
+        app.userNamesToIdsMap = userNamesToIdsMap;
+
+        inputElement.typeahead({
+            hint: true,
+            highlight: true,
+            minLength: 1
+          },
+          {
+            name: 'userNames',
+            source: substringMatcher(userNames)
+          });
+
+    });
+
+};
+
+var substringMatcher = function (strs) {
+    return function findMatches(q, cb) {
+        var matches, substringRegex;
+
+        // an array that will be populated with substring matches
+        matches = [];
+
+        // regex used to determine if a string contains the substring `q`
+        substrRegex = new RegExp(q, 'i');
+
+        // iterate through the pool of strings and for any string that
+        // contains the substring `q`, add it to the `matches` array
+        $.each(strs, function (i, str) {
+            if (substrRegex.test(str)) {
+                matches.push(str);
+            }
+        });
+
+        cb(matches);
+    };
 };

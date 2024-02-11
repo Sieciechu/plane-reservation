@@ -18,8 +18,13 @@ class MultipleCheck implements Checker
     }
 
     /** @throws Exception */
-    public function check(CarbonImmutable $startsAt, CarbonImmutable $endsAt, User $user, string $planeId): void
-    {
+    public function check(
+        CarbonImmutable $startsAt,
+        CarbonImmutable $endsAt,
+        User $user,
+        string $planeId,
+        ?User $user2 = null,
+    ): void {
         foreach ($this->checkers as $checker) {
             $checker->check($startsAt, $endsAt, $user, $planeId);
         }

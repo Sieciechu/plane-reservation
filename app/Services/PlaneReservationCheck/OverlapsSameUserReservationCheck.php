@@ -10,8 +10,13 @@ use Carbon\CarbonImmutable;
 
 class OverlapsSameUserReservationCheck implements Checker
 {
-    public function check(CarbonImmutable $startsAt, CarbonImmutable $endsAt, User $user, string $planeId): void
-    {
+    public function check(
+        CarbonImmutable $startsAt,
+        CarbonImmutable $endsAt,
+        User $user,
+        string $planeId,
+        ?User $user2 = null,
+    ): void {
         if ($user->isAdmin()) {
             return;
         }

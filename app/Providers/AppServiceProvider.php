@@ -19,6 +19,7 @@ use App\Services\PlaneReservationCheck\MonthlyLimitCheck;
 use App\Services\PlaneReservationCheck\MultipleCheck;
 use App\Services\PlaneReservationCheck\OverlapsConfirmedReservationCheck;
 use App\Services\PlaneReservationCheck\OverlapsSameUserReservationCheck;
+use App\Services\PlaneReservationCheck\SecondPilotByAdminOnlyCheck;
 use App\Services\PlaneReservationCheck\SunriseCheck;
 use App\Services\PlaneReservationCheck\SunsetCheck;
 use App\Services\PlaneReservationChecker;
@@ -26,6 +27,7 @@ use App\Services\SmsSender\SmsSender;
 use App\Services\SmsSender\SmsService;
 use App\Services\SunTimeService;
 use Illuminate\Support\ServiceProvider;
+use Psr\Log\LoggerInterface;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -57,6 +59,7 @@ class AppServiceProvider extends ServiceProvider
 
             return new PlaneReservationChecker(
                 new MultipleCheck(
+                    new SecondPilotByAdminOnlyCheck(),
                     new SunriseCheck($sunTimeService),
                     new SunsetCheck($sunTimeService),
                     new DailyTimeLimitCheck($dailyLimit),
@@ -78,10 +81,14 @@ class AppServiceProvider extends ServiceProvider
             /** @var PlaneReservationService $planeReservationService */
             $planeReservationService = $this->app->get(PlaneReservationService::class);
 
+            /** @var PlaneRepository $planeRepo */
+            $planeRepo = $this->app->get(PlaneRepository::class);
+
             return new PlaneReservationController(
                 reservationChecker: $checker,
                 smsService: $epomSmsService,
                 planeReservationService: $planeReservationService,
+                planeRepository: $planeRepo,
             );
         });
         $this->app->bind(SunTimeController::class, function () {
@@ -93,11 +100,13 @@ class AppServiceProvider extends ServiceProvider
         });
 
         $this->app->bind('epomSmsService', function () {
-            /** @var string $from */
-            $from = config('planereservation.airport.EPOM.sms.from');
+            /** @var string $titleFrom */
+            $titleFrom = config('planereservation.airport.EPOM.sms.titleFrom');
+            /** @var string $footerFrom */
+            $footerFrom = config('planereservation.airport.EPOM.sms.footerFrom');
             /** @var SmsSender $smsSender */
             $smsSender = $this->app->get(SmsSender::class);
-            return new SmsService(smsSender: $smsSender, smsSenderName: $from);
+            return new SmsService(smsSender: $smsSender, smsTitleSenderName: $titleFrom, smsFooterSenderName: $footerFrom);
         });
 
         $this->app->bind(SmsPlanetClient::class, function () {
@@ -114,14 +123,18 @@ class AppServiceProvider extends ServiceProvider
         });
 
         $this->app->bind(SmsSender::class, function () {
-            if (App::isProduction()) {
+            if (App::isProduction() ||
+                'true' === getenv('SMS_SERVICE_SEND_REAL_SMS')
+            ) {
                 return $this->app->get(SmsPlanetClient::class);
             }
             return $this->app->get(DummySmsClient::class);
         });
 
         $this->app->singleton(DummySmsClient::class, function () {
-            return new DummySmsClient();
+            /** @var LoggerInterface $logger */
+            $logger = $this->app->get(LoggerInterface::class);
+            return new DummySmsClient($logger);
         });
 
         $this->app->bind(PlaneRepository::class, function () {

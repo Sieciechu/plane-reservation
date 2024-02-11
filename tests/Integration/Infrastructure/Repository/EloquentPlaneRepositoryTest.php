@@ -56,4 +56,33 @@ class EloquentPlaneRepositoryTest extends TestCase
         $this->assertEquals('SP-DEF', $result[1]->registration);
         $this->assertEquals('PZL Wilga 2000', $result[1]->name);
     }
+
+    public function testGetPlaneByRegistration(): void
+    {
+        // given
+        Plane::factory()->create([
+            'name' => 'PZL Koliber 150',
+            'registration' => 'SP-ABC',
+        ]);
+        Plane::factory()->create([
+            'name' => 'PZL Wilga 2000',
+            'registration' => 'SP-DEF',
+        ]);
+
+        // when
+        $result = $this->repo->getByRegistration('SP-DEF');
+
+        // then
+        $this->assertEquals('SP-DEF', $result->registration);
+        $this->assertEquals('PZL Wilga 2000', $result->name);
+    }
+
+    public function whenPlaneNotFoundGetByRegistrationShouldReturnNull(): void
+    {
+        // when
+        $result = $this->repo->getByRegistration('SP-DEF');
+
+        // then
+        $this->assertNull($result);
+    }
 }

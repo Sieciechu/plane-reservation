@@ -20,4 +20,12 @@ class EloquentPlaneRepository implements PlaneRepository
     {
         return Plane::query()->orderBy('registration')->get();
     }
+
+    /**
+     * @return Plane|null
+     */
+    public function getByRegistration(string $registration): ?Plane
+    {
+        return Plane::where('registration', $registration)->first();
+    }
 }

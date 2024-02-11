@@ -6,11 +6,13 @@ namespace App\Infrastructure\SmsSender;
 
 use App\Services\SmsSender\SmsException;
 use App\Services\SmsSender\SmsSender;
+use Psr\Log\LoggerInterface;
 
 class DummySmsClient implements SmsSender
 {
     public array $smses = [];
     public function __construct(
+        private LoggerInterface $logger,
     ) {
     }
 
@@ -36,5 +38,11 @@ class DummySmsClient implements SmsSender
             'to' => $to,
             'msg' => $msg,
         ];
+
+        $this->logger->info("DummySmsClient: SMS sent", [
+            'from' => $from,
+            'to' => $to,
+            'msg' => $msg,
+        ]);
     }
 }
