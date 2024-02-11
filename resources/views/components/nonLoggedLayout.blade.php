@@ -22,6 +22,7 @@
         <link href="css/bootstrap-icons.css" rel="stylesheet">
 
         <link href="css/templatemo-topic-listing.css" rel="stylesheet">      
+        <link href="css/app.css" rel="stylesheet">
 <!--
 
 TemplateMo 590 topic listing
@@ -50,7 +51,7 @@ https://templatemo.com/tm-590-topic-listing
             <nav class="navbar navbar-expand-lg">
                 <div class="container">
                     <a class="navbar-brand" href="/">
-                        <i class="bi-back"></i>
+                        <img src="/images/ao_logo_2017.svg" alt="Aeroklub Ostrowski Logo">
                         <span>Aeroklub Ostrowski</span>
                     </a>
 

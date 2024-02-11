@@ -153,7 +153,7 @@ app.html.getAdminReservationComponent = function(item){
 <div class="col-4 col-md-4 col-sm-4 col-xl-4 themed-grid-col">
     <p>${item.starts_at} - ${item.ends_at}</p>
 </div>
-<div class="col-6 col-md-6 col-sm-6 col-xl-6 themed-grid-col">
+<div class="col-6 col-md-6 col-sm-6 col-xl-7 themed-grid-col">
     <p>${users}</p>
 </div>
 <div class="col-12 col-md-12 col-sm-12 col-xl-12 themed-grid-col">

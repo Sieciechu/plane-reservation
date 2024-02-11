@@ -52,7 +52,7 @@ https://templatemo.com/tm-590-topic-listing
             <nav class="navbar navbar-expand-lg" style="">
                 <div class="container">
                     <a class="navbar-brand" href="/">
-                        <i class="bi-back"></i>
+                        <img src="/images/ao_logo_2017.svg" alt="Aeroklub Ostrowski Logo">
                         <span>Aeroklub Ostrowski</span>
                     </a>
 
@@ -100,7 +100,6 @@ https://templatemo.com/tm-590-topic-listing
     <script src="js/jquery.min.js"></script>
     <script src="js/bootstrap.bundle.min.js"></script>
     <script src="js/jquery.sticky.js"></script>
-    <script src="js/click-scroll.js"></script>
     <script src="js/custom.js"></script>
     <script src="js/app.js"></script>
     <script type="text/javascript">
