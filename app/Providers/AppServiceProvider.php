@@ -96,11 +96,13 @@ class AppServiceProvider extends ServiceProvider
         });
 
         $this->app->bind('epomSmsService', function () {
-            /** @var string $from */
-            $from = config('planereservation.airport.EPOM.sms.from');
+            /** @var string $titleFrom */
+            $titleFrom = config('planereservation.airport.EPOM.sms.titleFrom');
+            /** @var string $footerFrom */
+            $footerFrom = config('planereservation.airport.EPOM.sms.footerFrom');
             /** @var SmsSender $smsSender */
             $smsSender = $this->app->get(SmsSender::class);
-            return new SmsService(smsSender: $smsSender, smsSenderName: $from);
+            return new SmsService(smsSender: $smsSender, smsTitleSenderName: $titleFrom, smsFooterSenderName: $footerFrom);
         });
 
         $this->app->bind(SmsPlanetClient::class, function () {

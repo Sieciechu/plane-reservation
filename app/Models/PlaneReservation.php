@@ -21,6 +21,8 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property string $confirmed_by
  * @property string $comment
  * @property User $user
+ * @property User|null $user2
+ * @property Plane $plane
  */
 class PlaneReservation extends Model
 {
@@ -62,5 +64,10 @@ class PlaneReservation extends Model
     public function user2(): HasOne
     {
         return $this->hasOne(User::class, 'id', 'user2_id');
+    }
+
+    public function plane(): HasOne
+    {
+        return $this->hasOne(Plane::class, 'id', 'plane_id');
     }
 }

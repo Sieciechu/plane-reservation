@@ -10,7 +10,8 @@ return [
             'longitude' => 17.84688,
             'timezone' => 'UTC',
             'sms' => [
-                'from' => 'Samoloty AO',
+                'titleFrom' => 'A.Ostrowski',
+                'footerFrom' => 'Aeroklub Ostrowski',
             ]
         ]
     ],

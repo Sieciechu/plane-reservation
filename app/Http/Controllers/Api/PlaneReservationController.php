@@ -125,10 +125,7 @@ class PlaneReservationController extends Controller
         $planeReservation->delete();
         // TODO: add removed by
 
-        $isAuthorOfReservation = $user->id === $planeReservation->user_id;
-        if (!$isAuthorOfReservation) {
-            $this->smsService->sendReservationCancellation($planeReservation);
-        }
+        $this->smsService->sendReservationCancellation($planeReservation);
 
         return response()->json([], 200);
     }

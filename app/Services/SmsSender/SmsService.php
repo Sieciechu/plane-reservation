@@ -4,38 +4,35 @@ declare(strict_types=1);
 
 namespace App\Services\SmsSender;
 
-use App\Models\Plane;
 use App\Models\PlaneReservation;
-use App\Models\User;
 
 class SmsService
 {
     public function __construct(
         private SmsSender $smsSender,
-        private readonly string $smsSenderName,
+        private readonly string $smsTitleSenderName,
+        private readonly string $smsFooterSenderName,
     ) {
     }
 
     public function sendReservationConfirmation(PlaneReservation $reservation): void
     {
-        /** @var Plane $plane */
-        $plane = Plane::where('id', $reservation->plane_id)->firstOrFail();
-
-        $sendSms = function (string $toPhone) use ($reservation, $plane): void {
+        $sendSms = function (string $toPhone) use ($reservation): void {
             $this->smsSender->sendSms(
-                $this->smsSenderName,
+                $this->smsTitleSenderName,
                 $toPhone,
                 sprintf(
                     <<<'END'
-    Rezerwacja samolotu %s na dzień %s %s-%s DMT została potwierdzona.
-    W razie wątpliwości prosimy o kontakt z instruktorem lub szefem wyszkolenia.
-    Pozdrawiamy,
-    Aeroklub Ostrowski
-    END,
-                    $plane->registration,
+Rezerwacja samolotu %s na dzień %s %s-%s DMT została potwierdzona.
+W razie wątpliwości prosimy o kontakt z instruktorem lub szefem wyszkolenia.
+Pozdrawiamy,
+%s
+END,
+                    $reservation->plane->registration,
                     $reservation->starts_at->format('Y-m-d'),
                     $reservation->starts_at->timezone('Europe/Warsaw')->format('H:i'),
-                    $reservation->ends_at->timezone('Europe/Warsaw')->format('H:i')
+                    $reservation->ends_at->timezone('Europe/Warsaw')->format('H:i'),
+                    $this->smsFooterSenderName
                 )
             );
         };
@@ -49,26 +46,30 @@ class SmsService
 
     public function sendReservationCancellation(PlaneReservation $reservation): void
     {
-        /** @var Plane $plane */
-        $plane = Plane::where('id', $reservation->plane_id)->firstOrFail();
-        /** @var User $reservationUser */
-        $reservationUser = User::where('id', $reservation->user_id)->firstOrFail();
-
-        $this->smsSender->sendSms(
-            $this->smsSenderName,
-            $reservationUser->phone,
-            sprintf(
-                <<<'END'
+        $sendSms = function (string $toPhone) use ($reservation): void {
+            $this->smsSender->sendSms(
+                $this->smsTitleSenderName,
+                $toPhone,
+                sprintf(
+                    <<<'END'
 Rezerwacja samolotu %s na dzień %s %s-%s DMT została usunięta.
 W razie wątpliwości prosimy o kontakt z instruktorem lub szefem wyszkolenia.
 Pozdrawiamy,
-Aeroklub Ostrowski
+%s
 END,
-                $plane->registration,
-                $reservation->starts_at->format('Y-m-d'),
-                $reservation->starts_at->timezone('Europe/Warsaw')->format('H:i'),
-                $reservation->ends_at->timezone('Europe/Warsaw')->format('H:i')
-            )
-        );
+                    $reservation->plane->registration,
+                    $reservation->starts_at->format('Y-m-d'),
+                    $reservation->starts_at->timezone('Europe/Warsaw')->format('H:i'),
+                    $reservation->ends_at->timezone('Europe/Warsaw')->format('H:i'),
+                    $this->smsFooterSenderName
+                )
+            );
+        };
+
+        $sendSms($reservation->user->phone);
+
+        if ($reservation->user2 !== null) {
+            $sendSms($reservation->user2->phone);
+        }
     }
 }
