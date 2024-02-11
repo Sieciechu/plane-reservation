@@ -13,6 +13,7 @@ use App\Http\Requests\PlaneReservationRemoveRequest;
 use App\Models\Plane;
 use App\Models\PlaneReservation;
 use App\Models\User;
+use App\Services\PlaneRepository;
 use App\Services\PlaneReservation\PlaneReservationService;
 use App\Services\PlaneReservationChecker;
 use App\Services\SmsSender\SmsService;
@@ -26,6 +27,7 @@ class PlaneReservationController extends Controller
         private PlaneReservationChecker $reservationChecker,
         private SmsService $smsService,
         private PlaneReservationService $planeReservationService,
+        private PlaneRepository $planeRepository,
     ) {
     }
 
@@ -40,29 +42,18 @@ class PlaneReservationController extends Controller
         /** @var User $user */
         $user = $request->user();
 
-        $plane = Plane::where('registration', $validated['plane_registration'])->firstOrFail();
+        /** @var string $planeRegistration */
+        $planeRegistration = $validated['plane_registration'];
+        $plane = $this->planeRepository->getByRegistration($planeRegistration);
 
-        $startsAt = CarbonImmutable::parse($validated['starts_at_date'])->startOfDay(); // @phpstan-ignore-line
+        if ($plane === null) {
+            return response()->json(['error' => 'Plane not found'], 422);
+        }
 
-        $planeReservations = PlaneReservation::query()
-            ->where('plane_id', $plane->id)
-            ->whereYear('starts_at', $startsAt->format('Y'))
-            ->whereMonth('starts_at', $startsAt->format('m'))
-            ->whereDay('starts_at', $startsAt->format('d'))
-            ->get()
-            ->sortBy('starts_at')
-            ->map(fn (PlaneReservation $r): array => [
-                'id' => $r->id,
-                'starts_at' => $r->starts_at->format('H:i'),
-                'ends_at' => $r->ends_at->format('H:i'),
-                'is_confirmed' => $r->confirmed_at !== null,
-                'can_confirm' => $r->confirmed_at === null && $user->isAdmin(),
-                'can_remove' => $r->user_id === $user->id || $user->isAdmin(),
-                'user_name' => $r->user->name,
-                'user2_name' => $r?->user2?->name ?? '',
-                'comment' => $r->comment ?? '',
-            ])->values();
-            
+        $date = CarbonImmutable::parse($validated['starts_at_date'])->startOfDay(); // @phpstan-ignore-line
+
+        $planeReservations = $this->planeReservationService->getReservationsWithActionsForPlaneAndDate($plane, $date, $user);
+
         return response()->json(
             $planeReservations,
         );

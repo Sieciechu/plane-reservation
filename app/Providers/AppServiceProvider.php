@@ -81,10 +81,14 @@ class AppServiceProvider extends ServiceProvider
             /** @var PlaneReservationService $planeReservationService */
             $planeReservationService = $this->app->get(PlaneReservationService::class);
 
+            /** @var PlaneRepository $planeRepo */
+            $planeRepo = $this->app->get(PlaneRepository::class);
+
             return new PlaneReservationController(
                 reservationChecker: $checker,
                 smsService: $epomSmsService,
                 planeReservationService: $planeReservationService,
+                planeRepository: $planeRepo,
             );
         });
         $this->app->bind(SunTimeController::class, function () {

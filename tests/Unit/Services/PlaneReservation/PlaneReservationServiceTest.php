@@ -104,6 +104,7 @@ class PlaneReservationServiceTest extends TestCase
                 'can_remove' => true,
                 'user_name' => 'John Doe',
                 'comment' => '',
+                'user2_name' => '',
             ],
             $result['SP-KYS'][0]
         );
@@ -117,6 +118,7 @@ class PlaneReservationServiceTest extends TestCase
                 'can_remove' => true,
                 'user_name' => 'John Doe',
                 'comment' => '',
+                'user2_name' => '',
             ],
             $result['SP-IGA'][0]
         );
@@ -198,6 +200,7 @@ class PlaneReservationServiceTest extends TestCase
                 'can_remove' => true,
                 'user_name' => 'John Doe',
                 'comment' => '',
+                'user2_name' => '',
             ],
             $result['SP-KYS'][0]
         );
@@ -211,6 +214,7 @@ class PlaneReservationServiceTest extends TestCase
                 'can_remove' => true,
                 'user_name' => 'John Doe',
                 'comment' => '',
+                'user2_name' => '',
             ],
             $result['SP-IGA'][0]
         );
@@ -296,6 +300,7 @@ class PlaneReservationServiceTest extends TestCase
                 'can_remove' => false,
                 'user_name' => 'John Doe',
                 'comment' => '',
+                'user2_name' => '',
             ],
             $result['SP-KYS'][0]
         );
@@ -309,8 +314,157 @@ class PlaneReservationServiceTest extends TestCase
                 'can_remove' => false,
                 'user_name' => 'John Doe',
                 'comment' => '',
+                'user2_name' => '',
             ],
             $result['SP-IGA'][0]
         );
+    }
+
+    public function testGetAllReservationsForDateWithActionsShouldShowSecondUser(): void
+    {
+        // given
+        $date = CarbonImmutable::parse('2023-10-29');
+
+        $user = User::factory()->make([
+            'role' => UserRole::User,
+            'name' => 'John Doe',
+        ]);
+        $user2 = User::factory()->make([
+            'role' => UserRole::User,
+            'name' => 'Some Other User',
+        ]);
+
+        $plane1 = Plane::factory()->make([
+            'name' => 'PZL Koliber 150',
+            'registration' => 'SP-KYS',
+        ]);
+
+        $reservation1 = PlaneReservation::make([
+            'id' => '6b4066f9-4e2a-406b-a516-cfc9b35c4b6d',
+            'user_id' => $user->id,
+            'user2_id' => $user2->id,
+            'plane_id' => $plane1->id,
+            'starts_at' => '2023-10-29 10:00:00',
+            'ends_at' => '2023-10-29 12:00:00',
+            'time' => 120,
+            'confirmed_at' => null,
+            'confirmed_by' => null,
+        ]);
+        $reservation1->user = $user;
+        $reservation1->user2 = $user2;
+
+        $this->planeRepo->expects($this->once())->method('getAll')->willReturn([$plane1]);
+        $this->planeReservationRepo->expects($this->once())->method('getAllReservationsForDate')
+            ->with(CarbonImmutable::parse('2023-10-29'))
+            ->willReturn([$reservation1]);
+        
+        // when
+        $result = $this->service->getAllReservationsWithActionsForDate($date, $user);
+
+        // then
+        $this->assertCount(1, $result);
+        $this->assertArrayHasKey('SP-KYS', $result);
+
+        $this->assertCount(1, $result['SP-KYS']);
+
+        $this->assertEquals(
+            [
+                'id' => '6b4066f9-4e2a-406b-a516-cfc9b35c4b6d',
+                'starts_at' => '10:00',
+                'ends_at' => '12:00',
+                'is_confirmed' => false,
+                'can_confirm' => false,
+                'can_remove' => true,
+                'user_name' => 'John Doe',
+                'user2_name' => 'Some Other User',
+                'comment' => '',
+            ],
+            $result['SP-KYS'][0]
+        );
+    }
+
+    public function testGetReservationsWithActionsForPlaneAndDate(): void
+    {
+        // given
+        $date = CarbonImmutable::parse('2023-10-29');
+
+        $user = User::factory()->make([
+            'role' => UserRole::User,
+            'name' => 'John Doe',
+        ]);
+
+        $user2 = User::factory()->make([
+            'role' => UserRole::User,
+            'name' => 'Some Other User',
+        ]);
+
+        $plane = Plane::factory()->make([
+            'name' => 'PZL Koliber 150',
+            'registration' => 'SP-KYS',
+        ]);
+
+        $reservation1 = PlaneReservation::make([
+            'id' => '6b4066f9-4e2a-406b-a516-cfc9b35c4b6d',
+            'user_id' => $user->id,
+            'user2_id' => $user2->id,
+            'plane_id' => $plane->id,
+            'starts_at' => '2023-10-29 10:00:00',
+            'ends_at' => '2023-10-29 12:00:00',
+            'time' => 120,
+            'confirmed_at' => null,
+            'confirmed_by' => null,
+        ]);
+        $reservation1->user = $user;
+        $reservation1->user2 = $user2;
+
+        $this->planeReservationRepo->expects($this->once())->method('getReservationsForPlaneAndDate')
+            ->with($plane, CarbonImmutable::parse('2023-10-29'))
+            ->willReturn([$reservation1]);
+        
+        // when
+        $result = $this->service->getReservationsWithActionsForPlaneAndDate($plane, $date, $user);
+
+        // then
+        $this->assertCount(1, $result);
+
+        $this->assertEquals(
+            [
+                'id' => '6b4066f9-4e2a-406b-a516-cfc9b35c4b6d',
+                'starts_at' => '10:00',
+                'ends_at' => '12:00',
+                'is_confirmed' => false,
+                'can_confirm' => false,
+                'can_remove' => true,
+                'user_name' => 'John Doe',
+                'user2_name' => 'Some Other User',
+                'comment' => '',
+            ],
+            $result[0]
+        );
+    }
+    public function testWhenNothingFoundGetReservationsWithActionsForPlaneAndDateShouldReturnEmptyResult(): void
+    {
+        // given
+        $date = CarbonImmutable::parse('2023-10-29');
+
+        $user = User::factory()->make([
+            'role' => UserRole::User,
+            'name' => 'John Doe',
+        ]);
+
+        $plane = Plane::factory()->make([
+            'name' => 'PZL Koliber 150',
+            'registration' => 'SP-KYS',
+        ]);
+
+        $this->planeReservationRepo->expects($this->once())->method('getReservationsForPlaneAndDate')
+            ->with($plane, CarbonImmutable::parse('2023-10-29'))
+            ->willReturn([]);
+        
+        // when
+        $result = $this->service->getReservationsWithActionsForPlaneAndDate($plane, $date, $user);
+
+        // then
+        $this->assertCount(0, $result);
     }
 }

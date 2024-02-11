@@ -12,4 +12,6 @@ interface PlaneRepository
      * @return iterable<Plane>
      */
     public function getAll(): iterable;
+
+    public function getByRegistration(string $registration): ?Plane;
 }
