@@ -148,10 +148,7 @@ class PlaneReservationController extends Controller
         $planeReservation->confirmed_by = $user->id;
         $planeReservation->save();
 
-        $isAuthorOfReservation = $user->id === $planeReservation->user_id;
-        if (!$isAuthorOfReservation) {
-            $this->smsService->sendReservationConfirmation($planeReservation);
-        }
+        $this->smsService->sendReservationConfirmation($planeReservation);
 
         return response()->json([], 200);
     }

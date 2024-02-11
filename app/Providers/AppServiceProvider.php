@@ -27,6 +27,7 @@ use App\Services\SmsSender\SmsSender;
 use App\Services\SmsSender\SmsService;
 use App\Services\SunTimeService;
 use Illuminate\Support\ServiceProvider;
+use Psr\Log\LoggerInterface;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -116,14 +117,18 @@ class AppServiceProvider extends ServiceProvider
         });
 
         $this->app->bind(SmsSender::class, function () {
-            if (App::isProduction()) {
+            if (App::isProduction() ||
+                'true' === getenv('SMS_SERVICE_SEND_REAL_SMS')
+            ) {
                 return $this->app->get(SmsPlanetClient::class);
             }
             return $this->app->get(DummySmsClient::class);
         });
 
         $this->app->singleton(DummySmsClient::class, function () {
-            return new DummySmsClient();
+            /** @var LoggerInterface $logger */
+            $logger = $this->app->get(LoggerInterface::class);
+            return new DummySmsClient($logger);
         });
 
         $this->app->bind(PlaneRepository::class, function () {

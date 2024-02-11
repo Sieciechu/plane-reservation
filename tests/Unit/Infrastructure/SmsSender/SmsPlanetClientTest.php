@@ -45,6 +45,17 @@ class SmsPlanetClientTest extends TestCase
         $this->client->sendSms('', '1234567890', 'Test message');
     }
 
+    public function testWhenSmsPlanetThrowsExceptionThenSmsExceptionIsThrown(): void
+    {
+        $this->vendorMock->expects($this->once())
+            ->method('sendSimpleSMS')
+            ->willThrowException(new \Exception('Some error'));
+
+        $this->expectException(SmsException::class);
+
+        $this->client->sendSms('some sender', '1234567890', 'Test message');
+    }
+
     public function testSmsIsSent(): void
     {
         // assert
