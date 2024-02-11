@@ -7,6 +7,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
+/**
+ * @property string $id
+ * @property string $name
+ * @property string $registration
+ * @property string $deleted_at
+ */
 class Plane extends Model
 {
     use HasFactory, SoftDeletes, HasUuids;
