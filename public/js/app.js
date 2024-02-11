@@ -10,6 +10,9 @@ app.storage = {};
 app.storage.init = function(){
     window.localStorage.aeroklubostrowski = window.localStorage.aeroklubostrowski || '{}';
 };
+app.storage.clear = function(){
+    window.localStorage.aeroklubostrowski = '{}';
+};
 app.getFlashMessages = function(){
     return app.storage.getItem('flashMsg');
 };
@@ -93,6 +96,12 @@ app.html.getDailyReservationComponent = function(item){
     let canRemove = item.can_remove == true
         ? `<button type="button" class="btn btn-danger removeReservation" data-id="${item.id}">usuń</button>`
         : '';
+    
+    let users = item.user_name;
+    if(item.user2_name){
+        users += ', ' + item.user2_name;
+    }
+
     let component = `
 <div class="reservation-entry-row">
 <div class="col-1 col-md-1 col-sm-1 col-lg-1 col-xl-1 themed-grid-col">
@@ -101,10 +110,10 @@ app.html.getDailyReservationComponent = function(item){
 <div class="col-4 col-md-4 col-sm-4 col-lg-2 col-xl-2 themed-grid-col">
     <p>${item.starts_at} - ${item.ends_at}</p>
 </div>
-<div class="col-6 col-md-6 col-sm-6 col-lg-2 col-xl-2 themed-grid-col">
-    <p>${item.user_name}, ${item.user2_name}</p>
+<div class="col-6 col-md-6 col-sm-6 col-lg-3 col-xl-3 themed-grid-col">
+    <p>${users}</p>
 </div>
-<div class="col-12 col-md-12 col-sm-12 col-lg-8 col-xl-5 themed-grid-col">
+<div class="col-12 col-md-12 col-sm-12 col-lg-8 col-xl-4 themed-grid-col">
     <p class="mb-0">${item.comment}</p>
 
 </div>
@@ -130,6 +139,12 @@ app.html.getAdminReservationComponent = function(item){
     let canRemove = item.can_remove == true
         ? `<button type="button" class="btn btn-danger removeReservation" data-id="${item.id}">usuń</button>`
         : '';
+
+    let users = item.user_name;
+    if(item.user2_name){
+        users += ', ' + item.user2_name;
+    }
+
     let component = `
 <div class="reservation-entry-row">
 <div class="col-1 col-md-1 col-sm-1 col-xl-1 themed-grid-col">
@@ -139,7 +154,7 @@ app.html.getAdminReservationComponent = function(item){
     <p>${item.starts_at} - ${item.ends_at}</p>
 </div>
 <div class="col-6 col-md-6 col-sm-6 col-xl-6 themed-grid-col">
-    <p>${item.user_name}</p>
+    <p>${users}</p>
 </div>
 <div class="col-12 col-md-12 col-sm-12 col-xl-12 themed-grid-col">
     <p class="mb-0">${item.comment}</p>
@@ -326,9 +341,10 @@ app.confirmReservation = function(reservationId){
         "PATCH",
         `/api/plane/reservation/${reservationId}/confirm`
     ).success(function(){
-        jQuery(`button.removeReservation[data-id="${reservationId}"]`)
-            .closest('div.reservation-entry-row')
-            .find('p.confirmation-tooltip').html(app.html.getConfirmationTooltipComponent(true));
+        let reservationRow = jQuery(`button.removeReservation[data-id="${reservationId}"]`)
+            .closest('div.reservation-entry-row');
+        reservationRow.find('p.confirmation-tooltip').html(app.html.getConfirmationTooltipComponent(true));
+        reservationRow.find('button.confirmReservation').remove();
 
         app.html.activateTooltip();
             
@@ -339,7 +355,8 @@ app.confirmReservation = function(reservationId){
 
 app.logout = function(){
     return app.ajax("GET", "/api/user/logout", {}).success(function(){
-        localStorage.removeItem('token');
+        app.storage.clear();
+        app.initFlashMsg();
         app.addFlashMsg('success', "wylogowano pomyślnie");
         window.location.href = '/login';
     }).fail(app.ajaxFail);
