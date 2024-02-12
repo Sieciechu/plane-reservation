@@ -38,6 +38,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/plane/reservation/{reservation_id}', [PlaneReservationController::class, 'removeReservation']);
     Route::patch('/plane/reservation/{reservation_id}/confirm', [PlaneReservationController::class, 'confirmReservation']);
     Route::get('/plane/reservation/date/{date}', [PlaneReservationController::class, 'getAllReservationsForDate']);
+    Route::get('/plane/reservation/user/starting_from_date/{date}', [PlaneReservationController::class, 'getAllUpcomingReservationsStartingFromDate']);
 
     Route::get('/suntimes/{starts_at_date}', [SunTimeController::class, 'getSunriseAndSunsetTimes']);
 });

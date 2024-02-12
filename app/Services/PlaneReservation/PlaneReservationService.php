@@ -14,6 +14,7 @@ class PlaneReservationService
     public function __construct(
         private PlaneRepository $planeRepo,
         private PlaneReservationRepository $planeReservationRepo,
+        private PlaneReservationActionDecorator $actionDecor,
     ) {
     }
 
@@ -34,17 +35,8 @@ class PlaneReservationService
         /** @var \App\Models\PlaneReservation $r */
         foreach ($reservations as $r) {
             $registration = $planeIdToRegistrationMap[$r->plane_id];
-            $reservationsWithActions[$registration][] = [
-                'id' => $r->id,
-                'starts_at' => $r->starts_at->format('H:i'),
-                'ends_at' => $r->ends_at->format('H:i'),
-                'is_confirmed' => $r->confirmed_at !== null,
-                'can_confirm' => $r->confirmed_at === null && $actingUser->isAdmin(),
-                'can_remove' => $r->user_id === $actingUser->id || $actingUser->isAdmin(),
-                'user_name' => $r->user->name,
-                'user2_name' => $r->user2?->name ?? '',
-                'comment' => $r->comment ?? '',
-            ];
+            $this->actionDecor->setup($r, $actingUser);
+            $reservationsWithActions[$registration][] = $this->actionDecor->decorWithActions()->get();
         }
         return $reservationsWithActions;
     }
@@ -57,17 +49,25 @@ class PlaneReservationService
         $reservations = $this->planeReservationRepo->getReservationsForPlaneAndDate($plane, $date);
         $reservationsWithActions = [];
         foreach ($reservations as $r) {
-            $reservationsWithActions[] = [
-                'id' => $r->id,
-                'starts_at' => $r->starts_at->format('H:i'),
-                'ends_at' => $r->ends_at->format('H:i'),
-                'is_confirmed' => $r->confirmed_at !== null,
-                'can_confirm' => $r->confirmed_at === null && $actingUser->isAdmin(),
-                'can_remove' => $r->user_id === $actingUser->id || $actingUser->isAdmin(),
-                'user_name' => $r->user->name,
-                'user2_name' => $r->user2?->name ?? '',
-                'comment' => $r->comment ?? '',
-            ];
+            $this->actionDecor->setup($r, $actingUser);
+            $reservationsWithActions[] = $this->actionDecor->decorWithActions()->get();
+        }
+        return $reservationsWithActions;
+    }
+
+    /**
+     * @return array<int, array>
+     */
+    public function getUserAllUpcomingReservationsStartingFromDate(User $user, CarbonImmutable $startsAt, User $actingUser): iterable
+    {
+        $reservations = $this->planeReservationRepo->getUserAllUpcomingReservationsStartingFromDate($user, $startsAt);
+        $reservationsWithActions = [];
+        foreach ($reservations as $r) {
+            $this->actionDecor->setup($r, $actingUser);
+            $reservationsWithActions[] = $this->actionDecor->decorWithActions()
+                ->decorWithDates()
+                ->decorWithPlaneRegistration()
+                ->get();
         }
         return $reservationsWithActions;
     }

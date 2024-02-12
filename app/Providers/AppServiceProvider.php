@@ -10,6 +10,7 @@ use App\Infrastructure\Repository\EloquentPlaneReservationRepository;
 use App\Infrastructure\SmsSender\DummySmsClient;
 use App\Infrastructure\SmsSender\SmsPlanetClient;
 use App\Services\PlaneRepository;
+use App\Services\PlaneReservation\PlaneReservationActionDecorator;
 use App\Services\PlaneReservation\PlaneReservationRepository;
 use App\Services\PlaneReservation\PlaneReservationService;
 use App\Services\PlaneReservationCheck\DailyTimeLimitCheck;
@@ -153,6 +154,7 @@ class AppServiceProvider extends ServiceProvider
             return new PlaneReservationService(
                 planeRepo: $planeRepository,
                 planeReservationRepo: $planeReservationRepository,
+                actionDecor: new PlaneReservationActionDecorator(),
             );
         });
     }

@@ -154,4 +154,18 @@ class PlaneReservationController extends Controller
 
         return response()->json($reservations);
     }
+
+    public function getAllUpcomingReservationsStartingFromDate(PlaneReservationGetAllForDate $request): JsonResponse
+    {
+        /** @var array<string, mixed> $validated */
+        $validated = $request->validated();
+
+        /** @var User $user */
+        $user = $request->user();
+
+        $startsAt = CarbonImmutable::parse($validated['date'])->startOfDay(); // @phpstan-ignore-line
+        $reservations = $this->planeReservationService->getUserAllUpcomingReservationsStartingFromDate($user, $startsAt, $user);
+
+        return response()->json($reservations);
+    }
 }
