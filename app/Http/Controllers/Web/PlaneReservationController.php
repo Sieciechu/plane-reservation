@@ -9,16 +9,6 @@ use Illuminate\View\View;
 
 class PlaneReservationController extends Controller
 {
-    public function reservation(): View
-    {
-        return view('reservation');
-    }
-
-    public function dashboard(): View
-    {
-        return view('dashboard');
-    }
-
     public function empty(): View
     {
         return view('empty');
