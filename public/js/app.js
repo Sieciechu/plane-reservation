@@ -1,6 +1,7 @@
 // import './bootstrap.js';
 
 window.app = {};
+window.app.action = {};
 window.app.userNamesToIdsMap = {};
 window.app.planeRegistration = '';
 window.app.reservationDate = '';
@@ -194,6 +195,10 @@ app.loadDailyPlaneReservations = function(planeRegistration, date, dailyReservat
         let dailyReservations = data;
         dailyReservationsView.html('');
 
+        if (!dailyReservations) {
+            return;
+        }
+
         dailyReservations.forEach(function(item){
             let row = app.html.getDailyReservationComponent(item);
             $('#dailyReservations').append(row);
@@ -373,7 +378,7 @@ app.login = function(email, password){
     ).success(function(data){
         app.storeToken(data.auth_token);
         app.addFlashMsg('success', "zalogowano");
-        window.location.href = '/reservation';
+        window.location.href = '/#myreservations';
     }).fail(app.ajaxFail);
 };
 app.getUsers = function(){
@@ -417,6 +422,12 @@ app.getAllReservationsForDate = function(date, container){
             }
             app.confirmReservation(this.dataset.id);
         });
+    }).fail(app.ajaxFail);
+};
+
+app.getAllReservationsForUserStartingFromDate = function(date, container){
+    return app.ajax("GET", '/api/plane/reservation/user/starting_from_date/' + date, {}).success(function(data){
+        window.xxx = data;
     }).fail(app.ajaxFail);
 };
 
@@ -525,3 +536,5 @@ var substringMatcher = function (strs) {
         cb(matches);
     };
 };
+
+

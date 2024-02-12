@@ -21,4 +21,4 @@ Route::get('/register', [UserController::class, 'register']);
 
 Route::get('/reservation', [PlaneReservationController::class, 'reservation']);
 Route::get('/dashboard', [PlaneReservationController::class, 'dashboard']);
-Route::get('/', [PlaneReservationController::class, 'reservation']);
+Route::get('/', [PlaneReservationController::class, 'empty']);

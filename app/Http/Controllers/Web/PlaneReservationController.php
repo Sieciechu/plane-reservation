@@ -18,4 +18,9 @@ class PlaneReservationController extends Controller
     {
         return view('dashboard');
     }
+
+    public function empty(): View
+    {
+        return view('empty');
+    }
 }
