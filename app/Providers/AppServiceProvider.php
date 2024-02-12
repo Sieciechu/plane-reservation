@@ -85,11 +85,15 @@ class AppServiceProvider extends ServiceProvider
             /** @var PlaneRepository $planeRepo */
             $planeRepo = $this->app->get(PlaneRepository::class);
 
+            /** @var LoggerInterface $logger */
+            $logger = $this->app->get(LoggerInterface::class);
+
             return new PlaneReservationController(
                 reservationChecker: $checker,
                 smsService: $epomSmsService,
                 planeReservationService: $planeReservationService,
                 planeRepository: $planeRepo,
+                logger: $logger,
             );
         });
         $this->app->bind(SunTimeController::class, function () {

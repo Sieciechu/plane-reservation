@@ -334,9 +334,14 @@ app.makeReservation = function(starts_at_value, ends_at_value, comment, user2_id
 };
 
 app.removeReservation = function(reservationId){
-    return app.ajax("DELETE", `/api/plane/reservation/${reservationId}`).success(function(){
+    return app.ajax("DELETE", `/api/plane/reservation/${reservationId}`).success(function(data){
         jQuery(`button.removeReservation[data-id="${reservationId}"]`).closest('div.reservation-entry-row').remove(); 
         app.addFlashMsg('success', "rezerwacja została usunięta");
+        
+        if(data.msg){
+            app.addFlashMsg('success', data.msg);
+        }
+
         app.showFlashMessages(app.flashMsgGetFirstVisibleContainer());
     }).fail(app.ajaxFail);
 };
@@ -345,7 +350,7 @@ app.confirmReservation = function(reservationId){
     return app.ajax(
         "PATCH",
         `/api/plane/reservation/${reservationId}/confirm`
-    ).success(function(){
+    ).success(function(data){
         let reservationRow = jQuery(`button.removeReservation[data-id="${reservationId}"]`)
             .closest('div.reservation-entry-row');
         reservationRow.find('p.confirmation-tooltip').html(app.html.getConfirmationTooltipComponent(true));
@@ -354,6 +359,11 @@ app.confirmReservation = function(reservationId){
         app.html.activateTooltip();
             
         app.addFlashMsg('success', "rezerwacja została potwierdzona");
+        
+        if(data.msg){
+            app.addFlashMsg('success', data.msg);
+        }
+
         app.showFlashMessages(app.flashMsgGetFirstVisibleContainer());
     }).fail(app.ajaxFail);
 };
@@ -482,9 +492,13 @@ app.showFlashMessages = function(container){
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>`);
     });
+    let timeoutMiliseconds = 2500;
+    if (flashMsg.error.length > 0) {
+        timeoutMiliseconds = 3000;
+    }
     setTimeout(function(){
         container.find('button.btn-close').click();
-    },1500);
+    },timeoutMiliseconds);
      
      app.clearFlashMsg();
 };

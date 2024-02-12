@@ -16,10 +16,12 @@ use App\Models\User;
 use App\Services\PlaneRepository;
 use App\Services\PlaneReservation\PlaneReservationService;
 use App\Services\PlaneReservationChecker;
+use App\Services\SmsSender\SmsException;
 use App\Services\SmsSender\SmsService;
 use Carbon\CarbonImmutable;
 use Exception;
 use Illuminate\Http\JsonResponse;
+use Psr\Log\LoggerInterface;
 
 class PlaneReservationController extends Controller
 {
@@ -28,6 +30,7 @@ class PlaneReservationController extends Controller
         private SmsService $smsService,
         private PlaneReservationService $planeReservationService,
         private PlaneRepository $planeRepository,
+        private LoggerInterface $logger,
     ) {
     }
 
@@ -116,9 +119,18 @@ class PlaneReservationController extends Controller
         $planeReservation->delete();
         // TODO: add removed by
 
-        $this->smsService->sendReservationCancellation($planeReservation);
+        $msg = '';
+        try {
+            $this->smsService->sendReservationCancellation($planeReservation);
+        } catch(SmsException $e) {
+            $this->logger->error('[PlaneReservationController] sms send failed', [
+                'action' => 'removeReservation',
+                'msg' => $e->getMessage(),
+            ]);
+            $msg = $e->getMessage();
+        }
 
-        return response()->json([], 200);
+        return response()->json(['msg' => $msg], 200);
     }
 
     public function confirmReservation(PlaneReservationConfirmRequest $request): JsonResponse
@@ -136,9 +148,18 @@ class PlaneReservationController extends Controller
         $planeReservation->confirmed_by = $user->id;
         $planeReservation->save();
 
-        $this->smsService->sendReservationConfirmation($planeReservation);
+        $msg = '';
+        try {
+            $this->smsService->sendReservationConfirmation($planeReservation);
+        } catch(SmsException $e) {
+            $this->logger->error('[PlaneReservationController] sms send failed', [
+                'action' => 'confirmReservation',
+                'msg' => $e->getMessage(),
+            ]);
+            $msg = $e->getMessage();
+        }
 
-        return response()->json([], 200);
+        return response()->json(['msg' => $msg], 200);
     }
 
     public function getAllReservationsForDate(PlaneReservationGetAllForDate $request): JsonResponse
