@@ -7,25 +7,28 @@ app.html.getMyReservationComponent = function(item){
 
     let users = item.user_name;
     if(item.user2_name){
-        users += ', ' + item.user2_name;
+        users += ', ' + `<span class="fw-bolder">${item.user2_name}</span>`;
     }
 
     let component = `
 <div class="reservation-entry-row">
-<div class="col-1 col-md-1 col-sm-1 col-xl-1 themed-grid-col">
+<div class="themed-grid-col">
     <p class="confirmation-tooltip">${isConfirmed}</p>
 </div>
-<div class="col-4 col-md-4 col-sm-4 col-xl-4 themed-grid-col">
+<div class="themed-grid-col">
     <p>${item.starts_at} - ${item.ends_at}</p>
 </div>
-<div class="col-6 col-md-6 col-sm-6 col-xl-7 themed-grid-col">
+<div class="themed-grid-col">
     <p>${item.plane_registration}</p>
 </div>
-<div class="col-12 col-md-12 col-sm-12 col-xl-12 themed-grid-col">
+<div class="themed-grid-col">
+    <p>${users}</p>
+</div>
+<div class="themed-grid-col">
     <p class="mb-0">${item.comment}</p>
 
 </div>
-<div style="text-align: right;" class="col-12 col-md-8 col-sm-12 col-xl-12 themed-grid-col">
+<div class="text-end themed-grid-col" class="themed-grid-col">
     <p class="mt-1">${canRemove}</p>
 </div>
 </div>
@@ -68,7 +71,7 @@ app.action.myreservationsSite = function(){
     jQuery('#section_2').html(`
 <section class="explore-section section-padding" id="section_plane_reservation" style="padding-bottom: 5ex;">
     <div class="container-fluid">
-        <div class="adminPlanesboard planesboard row mb-3" style="justify-content: center;" id="myReservationsBoard">
+        <div class="myPlanesboard planesboard row mb-3" style="justify-content: center;" id="myReservationsBoard">
             <!-- here reservations will be loaded by js -->
         </div>
     </div>
@@ -93,10 +96,12 @@ app.action.myreservationsSite = function(){
                 continue;
             }
             if(date != data[i].date){
-                date = data[i].starts_at_date;
                 let html = app.html.getMyReservationsDateComponent(date, reservationsByDate);
                 container.append(html);
                 reservationsByDate = [];
+
+                date = data[i].starts_at_date;
+                reservationsByDate.push(data[i]);
             }
         }
         if(reservationsByDate.length > 0){

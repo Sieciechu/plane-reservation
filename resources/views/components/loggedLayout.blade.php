@@ -75,7 +75,7 @@ https://templatemo.com/tm-590-topic-listing
                             <a class="nav-link click-scroll" id="makereservation" href="#makereservation">Rezerwuj</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link click-scroll" href="/dashboard">Tabele rezerwacji</a>
+                            <a class="nav-link click-scroll" id="dashboard" href="#dashboard">Tabele rezerwacji</a>
                         </li>
                     </ul>
 
@@ -105,9 +105,10 @@ https://templatemo.com/tm-590-topic-listing
     <script src="js/jquery.sticky.js"></script>
     <script src="js/typeahead.bundle.js"></script>
     <script src="js/custom.js"></script>
-    <script src="js/app.js"></script>
-    <script src="js/myreservations.js"></script>
-    <script src="js/makereservation.js"></script>
+    <script src="js/app.js?ver=1.0"></script>
+    <script src="js/myreservations.js?ver=1.0"></script>
+    <script src="js/makereservation.js?ver=1.0"></script>
+    <script src="js/dashboard.js?ver=1.0"></script>
     <script type="text/javascript">
         let app = window.app;
         app.storage.init();

@@ -118,7 +118,7 @@ app.html.getDailyReservationComponent = function(item){
     <p class="mb-0">${item.comment}</p>
 
 </div>
-<div style="text-align: left;" class="col-12 col-md-8 col-sm-12 col-lg-3 col-xl-2 themed-grid-col">
+<div class="text-end col-12 col-md-8 col-sm-12 col-lg-3 col-xl-2 themed-grid-col">
     <p class="mt-1">${canRemove} ${canConfirm}</p>
 </div>
 </div>
