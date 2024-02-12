@@ -4,11 +4,12 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\Repository;
 
-use App\Models\Plane;
-use App\Models\PlaneReservation;
 use App\Models\User;
-use App\Services\PlaneReservation\PlaneReservationRepository;
+use App\Models\Plane;
 use Carbon\CarbonImmutable;
+use App\Models\PlaneReservation;
+use Illuminate\Database\Eloquent\Builder;
+use App\Services\PlaneReservation\PlaneReservationRepository;
 
 class EloquentPlaneReservationRepository implements PlaneReservationRepository
 {
@@ -46,7 +47,10 @@ class EloquentPlaneReservationRepository implements PlaneReservationRepository
     public function getUserAllUpcomingReservationsStartingFromDate(User $user, CarbonImmutable $startsAt): iterable
     {
         return PlaneReservation::query()
-            ->where('user_id', $user->id)
+            ->where(function (Builder $query) use ($user) {
+                $query->where('user_id', $user->id)
+                    ->orWhere('user2_id', $user->id);
+            })
             ->where('starts_at', '>=', $startsAt)
             ->orderBy('starts_at')
             ->get();
