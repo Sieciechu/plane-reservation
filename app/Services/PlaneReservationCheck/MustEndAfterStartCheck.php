@@ -21,8 +21,8 @@ class MustEndAfterStartCheck implements Checker
         string $planeId,
         ?User $user2 = null,
     ): void {
-        // if ($endsAt->lte($startsAt)) {
-        //     throw new Exception('End date must be after start date');
-        // }
+        if ($endsAt->lte($startsAt)) {
+            throw new Exception('End date must be after start date');
+        }
     }
 }
