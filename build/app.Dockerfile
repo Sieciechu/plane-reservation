@@ -21,4 +21,8 @@ RUN echo "[XDebug]" > /etc/php83/conf.d/50_xdebug.ini \
 
 FROM planereservation:php8.3 as prod
 
-COPY . /var/www/html
+COPY --link --chown=sail:sail . /var/www/html
+
+RUN rm -Rf /var/www/html/storage/framework/cache/ \
+    && mkdir -p /var/www/html/storage/framework/cache/data \
+    && chown -R sail:sail /var/www/html/storage/framework/cache
