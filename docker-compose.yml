@@ -1,11 +1,6 @@
 services:
     app:
-        build:
-            context: ./vendor/laravel/sail/runtimes/8.2
-            dockerfile: Dockerfile
-            args:
-                WWWGROUP: '${WWWGROUP}'
-        image: sail-8.2/app
+        image: planereservation-system:php8.3
         extra_hosts:
             - 'host.docker.internal:host-gateway'
         ports:
@@ -20,8 +15,7 @@ services:
             XDEBUG_CONFIG: '${SAIL_XDEBUG_CONFIG:-client_host=host.docker.internal}'
             IGNITION_LOCAL_SITES_PATH: '${PWD}'
         volumes:
-            - '.:/var/www/html'
-            - './xdebug.ini:/etc/php/8.2/cli/conf.d/20-xdebug.ini'
+            - './xdebug.ini:/etc/php83/conf.d/50_xdebug.ini'
         networks:
             - sail
         depends_on:
