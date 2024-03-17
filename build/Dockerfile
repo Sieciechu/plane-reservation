@@ -1,4 +1,4 @@
-FROM php:8.3-alpine
+FROM alpine:edge
 
 WORKDIR /var/www/html
 
@@ -22,6 +22,7 @@ RUN apk update \
 
 # Install and configure PHP
 RUN apk --no-cache add \
+        php83 \
         php83-common \
         php83-fpm \
         php83-pdo \
@@ -48,7 +49,7 @@ RUN apk --no-cache add \
         php83-ctype \
         php83-gd \
         php83-xmlreader \
-    && ln -s /usr/bin/php8 /usr/bin/php \
+    && ln -s /usr/bin/php83 /usr/bin/php \
 `# install usermod` \
     && echo http://dl-2.alpinelinux.org/alpine/edge/community/ >> /etc/apk/repositories \
     && apk add -U shadow
