@@ -67,7 +67,7 @@ class EloquentPlaneReservationRepositoryTest extends TestCase
 
         // should be second as it starts later
         PlaneReservation::create([
-            'id' => '01HEBWJJGFE9WXK4SPQ8XXWGPB',
+            'id' => '43950b1e-cabd-413c-bd1e-c6c10dd9fbab',
             'user_id' => $user->id,
             'plane_id' => $plane->id,
             'starts_at' => '2023-10-29 10:00:00',
@@ -78,7 +78,7 @@ class EloquentPlaneReservationRepositoryTest extends TestCase
         ]);
         // different user, should be 1st as it starts first
         PlaneReservation::create([
-            'id' => '01HEBWPFCWB7FNHQTPM96QNEQJ',
+            'id' => '31ee2a45-7c99-4722-8194-e966fe24ac28',
             'user_id' => $user2->id,
             'plane_id' => $plane->id,
             'starts_at' => '2023-10-29 08:00:00',
@@ -89,7 +89,7 @@ class EloquentPlaneReservationRepositoryTest extends TestCase
         ]);
         // different plane
         PlaneReservation::create([
-            'id' => '01HNBQZ918VZ74DJ24F6R3JQNA',
+            'id' => '5c487bd8-7061-4984-bc9a-a07e9e9e067b',
             'user_id' => $user->id,
             'plane_id' => $plane2->id,
             'starts_at' => '2023-10-29 10:00:00',
@@ -130,7 +130,7 @@ class EloquentPlaneReservationRepositoryTest extends TestCase
         $this->assertCount(3, $result);
 
         // Assert the second reservation
-        $this->assertEquals('01HEBWPFCWB7FNHQTPM96QNEQJ', $result[0]->id);
+        $this->assertEquals('31ee2a45-7c99-4722-8194-e966fe24ac28', $result[0]->id);
         $this->assertEquals($user2->id, $result[0]->user_id);
         $this->assertEquals($plane->id, $result[0]->plane_id);
         $this->assertEquals('2023-10-29 08:00:00', $result[0]->starts_at);
@@ -139,7 +139,7 @@ class EloquentPlaneReservationRepositoryTest extends TestCase
         $this->assertNull($result[0]->confirmed_at);
         $this->assertNull($result[0]->confirmed_by);
         
-        $this->assertEquals('01HEBWJJGFE9WXK4SPQ8XXWGPB', $result[1]->id);
+        $this->assertEquals('43950b1e-cabd-413c-bd1e-c6c10dd9fbab', $result[1]->id);
         $this->assertEquals($user->id, $result[1]->user_id);
         $this->assertEquals($plane->id, $result[1]->plane_id);
         $this->assertEquals('2023-10-29 10:00:00', $result[1]->starts_at);
@@ -149,7 +149,7 @@ class EloquentPlaneReservationRepositoryTest extends TestCase
         $this->assertEquals($admin->id, $result[1]->confirmed_by);
 
         // Assert the third reservation
-        $this->assertEquals('01HNBQZ918VZ74DJ24F6R3JQNA', $result[2]->id);
+        $this->assertEquals('5c487bd8-7061-4984-bc9a-a07e9e9e067b', $result[2]->id);
         $this->assertEquals($user->id, $result[2]->user_id);
         $this->assertEquals($plane2->id, $result[2]->plane_id);
         $this->assertEquals('2023-10-29 10:00:00', $result[2]->starts_at);
@@ -186,7 +186,7 @@ class EloquentPlaneReservationRepositoryTest extends TestCase
 
         // should be second as it starts later
         PlaneReservation::create([
-            'id' => '01HEBWJJGFE9WXK4SPQ8XXWGPB',
+            'id' => '43950b1e-cabd-413c-bd1e-c6c10dd9fbab',
             'user_id' => $user->id,
             'plane_id' => $plane->id,
             'starts_at' => '2023-10-29 10:00:00',
@@ -197,7 +197,7 @@ class EloquentPlaneReservationRepositoryTest extends TestCase
         ]);
         // different user, should be 1st as it starts first
         PlaneReservation::create([
-            'id' => '01HEBWPFCWB7FNHQTPM96QNEQJ',
+            'id' => '31ee2a45-7c99-4722-8194-e966fe24ac28',
             'user_id' => $user2->id,
             'plane_id' => $plane->id,
             'starts_at' => '2023-10-29 08:00:00',
@@ -208,7 +208,7 @@ class EloquentPlaneReservationRepositoryTest extends TestCase
         ]);
         // different plane
         PlaneReservation::create([
-            'id' => '01HNBQZ918VZ74DJ24F6R3JQNA',
+            'id' => '5c487bd8-7061-4984-bc9a-a07e9e9e067b',
             'user_id' => $user->id,
             'plane_id' => $plane2->id,
             'starts_at' => '2023-10-29 10:00:00',
@@ -248,7 +248,7 @@ class EloquentPlaneReservationRepositoryTest extends TestCase
         // then
         $this->assertCount(2, $result);
 
-        $this->assertEquals('01HEBWPFCWB7FNHQTPM96QNEQJ', $result[0]->id);
+        $this->assertEquals('31ee2a45-7c99-4722-8194-e966fe24ac28', $result[0]->id);
         $this->assertEquals($user2->id, $result[0]->user_id);
         $this->assertEquals($plane->id, $result[0]->plane_id);
         $this->assertEquals('2023-10-29 08:00:00', $result[0]->starts_at);
@@ -257,7 +257,7 @@ class EloquentPlaneReservationRepositoryTest extends TestCase
         $this->assertNull($result[0]->confirmed_at);
         $this->assertNull($result[0]->confirmed_by);
 
-        $this->assertEquals('01HEBWJJGFE9WXK4SPQ8XXWGPB', $result[1]->id);
+        $this->assertEquals('43950b1e-cabd-413c-bd1e-c6c10dd9fbab', $result[1]->id);
         $this->assertEquals($user->id, $result[1]->user_id);
         $this->assertEquals($plane->id, $result[1]->plane_id);
         $this->assertEquals('2023-10-29 10:00:00', $result[1]->starts_at);

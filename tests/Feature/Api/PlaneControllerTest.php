@@ -18,9 +18,9 @@ class PlaneControllerTest extends TestCase
     public function test_get_the_planes_returns_the_list_ordered_by_registration(): void
     {
         // given
-        Plane::factory()->create(['id' => '01HEBKGAGQA9X8NT3AQ4H2AP7E', 'registration' => 'SP-KYS']);
-        Plane::factory()->create(['id' => '01HEBKJ24HK3H2JENKHQ9PEJQ3', 'registration' => 'SP-ARR']);
-        Plane::factory()->create(['id' => '01HEBKJ6CY71CM4FCYRGP4SC0H', 'registration' => 'SP-IGA']);
+        Plane::factory()->create(['id' => '0b03e3bc-c382-4e53-9a38-4a258d291848', 'registration' => 'SP-KYS']);
+        Plane::factory()->create(['id' => 'ea1ca369-b923-4b7b-b602-bb935b429d70', 'registration' => 'SP-ARR']);
+        Plane::factory()->create(['id' => 'c7acbbba-3808-4c5b-9856-69f445ed331d', 'registration' => 'SP-IGA']);
         $user = User::factory()->create([
             'role' => UserRole::User,
         ]);
@@ -40,15 +40,15 @@ class PlaneControllerTest extends TestCase
         ]);
         $response->assertJson([
             [
-                'id' => '01HEBKJ24HK3H2JENKHQ9PEJQ3',
+                'id' => 'ea1ca369-b923-4b7b-b602-bb935b429d70',
                 'registration' => 'SP-ARR',
             ],
             [
-                'id' => '01HEBKJ6CY71CM4FCYRGP4SC0H',
+                'id' => 'c7acbbba-3808-4c5b-9856-69f445ed331d',
                 'registration' => 'SP-IGA',
             ],
             [
-                'id' => '01HEBKGAGQA9X8NT3AQ4H2AP7E',
+                'id' => '0b03e3bc-c382-4e53-9a38-4a258d291848',
                 'registration' => 'SP-KYS',
             ],
         ]);

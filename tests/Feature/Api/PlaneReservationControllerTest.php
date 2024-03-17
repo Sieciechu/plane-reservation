@@ -43,7 +43,7 @@ class PlaneReservationControllerTest extends TestCase
         ]);
 
         PlaneReservation::create([
-            'id' => '01HEBWJJGFE9WXK4SPQ8XXWGPB',
+            'id' => '43950b1e-cabd-413c-bd1e-c6c10dd9fbab',
             'user_id' => $user->id,
             'plane_id' => $plane->id,
             'starts_at' => '2023-10-29 10:00:00',
@@ -53,7 +53,7 @@ class PlaneReservationControllerTest extends TestCase
             'confirmed_by' => $admin->id,
         ]);
         PlaneReservation::create([
-            'id' => '01HEBWPFCWB7FNHQTPM96QNEQJ',
+            'id' => '31ee2a45-7c99-4722-8194-e966fe24ac28',
             'user_id' => $admin->id,
             'plane_id' => $plane->id,
             'starts_at' => '2023-10-29 08:00:00',
@@ -101,7 +101,7 @@ class PlaneReservationControllerTest extends TestCase
         ]);
         $response->assertJson([
             [
-                'id' => '01HEBWPFCWB7FNHQTPM96QNEQJ',
+                'id' => '31ee2a45-7c99-4722-8194-e966fe24ac28',
                 'user_name' => 'Admin',
                 'starts_at' => '08:00',
                 'ends_at' => '10:00',
@@ -109,7 +109,7 @@ class PlaneReservationControllerTest extends TestCase
                 'can_remove' => false,
             ],
             [
-                'id' => '01HEBWJJGFE9WXK4SPQ8XXWGPB',
+                'id' => '43950b1e-cabd-413c-bd1e-c6c10dd9fbab',
                 'user_name' => 'John Doe',
                 'starts_at' => '10:00',
                 'ends_at' => '12:00',
@@ -130,7 +130,7 @@ class PlaneReservationControllerTest extends TestCase
 
         $user = User::factory()->create([
             'role' => $userRole,
-            'id' => '01HEDPF462PP4CR8X0RCS0X155',
+            'id' => 'd2c1c807-b793-4d99-b3f6-06a9ceb44252',
         ]);
 
         Sanctum::actingAs($user, ['*']);
@@ -153,7 +153,7 @@ class PlaneReservationControllerTest extends TestCase
 
         $this->assertDatabaseCount('plane_reservations', 1);
         $this->assertDatabaseHas('plane_reservations', [
-            'user_id' => '01HEDPF462PP4CR8X0RCS0X155',
+            'user_id' => 'd2c1c807-b793-4d99-b3f6-06a9ceb44252',
             'plane_id' => $plane->id,
             'starts_at' => '2023-10-29 10:00:00',
             'ends_at' => '2023-10-29 11:59:00',
@@ -182,7 +182,7 @@ class PlaneReservationControllerTest extends TestCase
         ]);
         $user2 = User::factory()->create([
             'role' => UserRole::User,
-            'id' => '01HEDPF462PP4CR8X0RCS0X155',
+            'id' => 'd2c1c807-b793-4d99-b3f6-06a9ceb44252',
         ]);
 
         Sanctum::actingAs($user, ['*']);
@@ -195,7 +195,7 @@ class PlaneReservationControllerTest extends TestCase
 
         // when
         $response = $this->post('/api/plane/SP-KYS/reservation/2023-10-29', [
-            'user_id' => '01HEDPF462PP4CR8X0RCS0X155',
+            'user_id' => 'd2c1c807-b793-4d99-b3f6-06a9ceb44252',
             'starts_at' => '2023-10-29 10:00:00',
             'ends_at' => '2023-10-29 11:59:00',
         ]);
@@ -212,11 +212,11 @@ class PlaneReservationControllerTest extends TestCase
 
         $admin = User::factory()->create([
             'role' => UserRole::Admin,
-            'id' => '01HEDPQRMC3DANY1MHXHTXBW37',
+            'id' => '0f2387dc-9856-43a0-945f-d9fce6e752f9',
         ]);
         $user2 = User::factory()->create([
             'role' => UserRole::User,
-            'id' => '01HEDPF462PP4CR8X0RCS0X155',
+            'id' => 'd2c1c807-b793-4d99-b3f6-06a9ceb44252',
         ]);
 
         Sanctum::actingAs($admin, ['*']);
@@ -229,7 +229,7 @@ class PlaneReservationControllerTest extends TestCase
 
         // when
         $response = $this->post('/api/plane/SP-KYS/reservation/2023-10-29', [
-            'user_id' => '01HEDPF462PP4CR8X0RCS0X155',
+            'user_id' => 'd2c1c807-b793-4d99-b3f6-06a9ceb44252',
             'starts_at' => '2023-10-29 10:00:00',
             'ends_at' => '2023-10-29 11:59:00',
         ]);
@@ -238,7 +238,7 @@ class PlaneReservationControllerTest extends TestCase
         $response->assertStatus(201);
         $this->assertDatabaseCount('plane_reservations', 1);
         $this->assertDatabaseHas('plane_reservations', [
-            'user_id' => '01HEDPF462PP4CR8X0RCS0X155',
+            'user_id' => 'd2c1c807-b793-4d99-b3f6-06a9ceb44252',
             'plane_id' => $plane->id,
             'starts_at' => '2023-10-29 10:00:00',
             'ends_at' => '2023-10-29 11:59:00',
@@ -267,7 +267,7 @@ class PlaneReservationControllerTest extends TestCase
             'registration' => 'SP-KYS',
         ]);
         PlaneReservation::factory()->create([
-            'id' => '01HE68JBYDRR96FVYZYK7D7JS2',
+            'id' => '51b87f6f-f96e-49f3-9e2d-ab7a7f782001',
             'user_id' => $user->id,
             'plane_id' => $plane->id,
             'starts_at' => '2023-10-29 10:00:00',
@@ -282,9 +282,9 @@ class PlaneReservationControllerTest extends TestCase
         Carbon::setTestNow('2023-10-28 12:13:14');
         CarbonImmutable::setTestNow('2023-10-28 12:13:14');
 
-        $response = $this->delete('/api/plane/reservation/01HE68JBYDRR96FVYZYK7D7JS2');
+        $response = $this->delete('/api/plane/reservation/51b87f6f-f96e-49f3-9e2d-ab7a7f782001');
         // when
-        $response = $this->delete('/api/plane/reservation/01HE68JBYDRR96FVYZYK7D7JS2');
+        $response = $this->delete('/api/plane/reservation/51b87f6f-f96e-49f3-9e2d-ab7a7f782001');
         
         // then
         $response->assertStatus(200);
@@ -317,7 +317,7 @@ class PlaneReservationControllerTest extends TestCase
             'registration' => 'SP-KYS',
         ]);
         PlaneReservation::factory()->create([
-            'id' => '01HE68JBYDRR96FVYZYK7D7JS2',
+            'id' => '51b87f6f-f96e-49f3-9e2d-ab7a7f782001',
             'user_id' => $user->id,
             'plane_id' => $plane->id,
             'starts_at' => '2023-10-29 10:00:00',
@@ -332,9 +332,9 @@ class PlaneReservationControllerTest extends TestCase
         Carbon::setTestNow('2023-10-28 12:13:14');
         CarbonImmutable::setTestNow('2023-10-28 12:13:14');
 
-        $response = $this->delete('/api/plane/reservation/01HE68JBYDRR96FVYZYK7D7JS2');
+        $response = $this->delete('/api/plane/reservation/51b87f6f-f96e-49f3-9e2d-ab7a7f782001');
         // when
-        $response = $this->delete('/api/plane/reservation/01HE68JBYDRR96FVYZYK7D7JS2');
+        $response = $this->delete('/api/plane/reservation/51b87f6f-f96e-49f3-9e2d-ab7a7f782001');
         
         // then
         $response->assertStatus(200);
@@ -365,7 +365,7 @@ class PlaneReservationControllerTest extends TestCase
             'registration' => 'SP-KYS',
         ]);
         PlaneReservation::factory()->create([
-            'id' => '01HE68JBYDRR96FVYZYK7D7JS2',
+            'id' => '51b87f6f-f96e-49f3-9e2d-ab7a7f782001',
             'user_id' => $user->id,
             'plane_id' => $plane->id,
             'starts_at' => '2023-10-29 10:00:00',
@@ -383,7 +383,7 @@ class PlaneReservationControllerTest extends TestCase
         CarbonImmutable::setTestNow('2023-10-28 12:13:14');
 
         // when
-        $response = $this->delete('/api/plane/reservation/01HE68JBYDRR96FVYZYK7D7JS2');
+        $response = $this->delete('/api/plane/reservation/51b87f6f-f96e-49f3-9e2d-ab7a7f782001');
         
         // then
         $response->assertStatus(403);
@@ -420,7 +420,7 @@ class PlaneReservationControllerTest extends TestCase
             'registration' => 'SP-KYS',
         ]);
         PlaneReservation::factory()->create([
-            'id' => '01HE68JBYDRR96FVYZYK7D7JS2',
+            'id' => '51b87f6f-f96e-49f3-9e2d-ab7a7f782001',
             'user_id' => $user->id,
             'plane_id' => $plane->id,
             'starts_at' => '2023-10-29 10:00:00',
@@ -432,7 +432,7 @@ class PlaneReservationControllerTest extends TestCase
         ]);
 
         // when
-        $response = $this->delete('/api/plane/reservation/01HE68XAY50PSC2WKAFS2M7NXP');
+        $response = $this->delete('/api/plane/reservation/02f85d25-e7d8-4403-a7b7-a2ff1c444465');
         
         // then
         $response->assertStatus(404);
@@ -455,13 +455,13 @@ class PlaneReservationControllerTest extends TestCase
     {
         // given
         $admin = User::factory()->create([
-            'id' => '01HE69WJM5FNFEFPV321F9240Y',
+            'id' => '90331506-c65d-438a-9d71-76386314b3ab',
             'role' => UserRole::Admin,
         ]);
         Sanctum::actingAs($admin, ['*']);
 
         User::factory()->create([
-            'id' => '01HM5ASEDHKZF8JC66FD4ZAR3S',
+            'id' => '35152525-628b-44b2-90ec-8b4101d519d2',
             'role' => UserRole::User,
         ]);
 
@@ -472,8 +472,8 @@ class PlaneReservationControllerTest extends TestCase
         ]);
 
         PlaneReservation::factory()->create([
-            'id' => '01HE68JBYDRR96FVYZYK7D7JS2',
-            'user_id' => '01HM5ASEDHKZF8JC66FD4ZAR3S',
+            'id' => '51b87f6f-f96e-49f3-9e2d-ab7a7f782001',
+            'user_id' => '35152525-628b-44b2-90ec-8b4101d519d2',
             'plane_id' => $plane->id,
             'starts_at' => '2023-10-29 10:00:00',
             'ends_at' => '2023-10-29 11:59:00',
@@ -487,7 +487,7 @@ class PlaneReservationControllerTest extends TestCase
         Carbon::setTestNow('2023-10-28 12:13:14');
         CarbonImmutable::setTestNow('2023-10-28 12:13:14');
 
-        $response = $this->patch('/api/plane/reservation/01HE68JBYDRR96FVYZYK7D7JS2/confirm');
+        $response = $this->patch('/api/plane/reservation/51b87f6f-f96e-49f3-9e2d-ab7a7f782001/confirm');
         
         // then
         $response->assertStatus(200);
@@ -499,7 +499,7 @@ class PlaneReservationControllerTest extends TestCase
             'ends_at' => '2023-10-29 11:59:00',
             'time' => 119,
             'confirmed_at' => '2023-10-28 12:13:14',
-            'confirmed_by' => '01HE69WJM5FNFEFPV321F9240Y',
+            'confirmed_by' => '90331506-c65d-438a-9d71-76386314b3ab',
             'deleted_at' => null,
         ]);
 
@@ -522,7 +522,7 @@ class PlaneReservationControllerTest extends TestCase
         ]);
 
         PlaneReservation::factory()->create([
-            'id' => '01HE68JBYDRR96FVYZYK7D7JS2',
+            'id' => '51b87f6f-f96e-49f3-9e2d-ab7a7f782001',
             'user_id' => $user->id,
             'plane_id' => $plane->id,
             'starts_at' => '2023-10-29 10:00:00',
@@ -537,7 +537,7 @@ class PlaneReservationControllerTest extends TestCase
         Carbon::setTestNow('2023-10-28 12:13:14');
         CarbonImmutable::setTestNow('2023-10-28 12:13:14');
 
-        $response = $this->patch('/api/plane/reservation/01HE68JBYDRR96FVYZYK7D7JS2/confirm');
+        $response = $this->patch('/api/plane/reservation/51b87f6f-f96e-49f3-9e2d-ab7a7f782001/confirm');
         
         // then
         $response->assertStatus(403);
@@ -569,7 +569,7 @@ class PlaneReservationControllerTest extends TestCase
         ]);
 
         PlaneReservation::factory()->create([
-            'id' => '01HE68JBYDRR96FVYZYK7D7JS2',
+            'id' => '51b87f6f-f96e-49f3-9e2d-ab7a7f782001',
             'user_id' => $user->id,
             'plane_id' => $plane->id,
             'starts_at' => '2023-10-29 10:00:00',
@@ -584,8 +584,8 @@ class PlaneReservationControllerTest extends TestCase
         Carbon::setTestNow('2023-10-28 12:13:14');
         CarbonImmutable::setTestNow('2023-10-28 12:13:14');
         
-        $response1 = $this->patch('/api/plane/reservation/01HE68JBYDRR96FVYZYK7D7JS2/confirm');
-        $response2 = $this->patch('/api/plane/reservation/01HE6AE4K6D2YYDE5GWHCK13GG/confirm');
+        $response1 = $this->patch('/api/plane/reservation/51b87f6f-f96e-49f3-9e2d-ab7a7f782001/confirm');
+        $response2 = $this->patch('/api/plane/reservation/b7113c01-db32-413d-ab60-80f691a63b41/confirm');
         
         // then
         $response1->assertStatus(404);
@@ -610,7 +610,7 @@ class PlaneReservationControllerTest extends TestCase
         ]);
 
         PlaneReservation::factory()->create([
-            'id' => '01HE68JBYDRR96FVYZYK7D7JS2',
+            'id' => '51b87f6f-f96e-49f3-9e2d-ab7a7f782001',
             'user_id' => $user->id,
             'plane_id' => $plane->id,
             'starts_at' => '2023-11-01 10:00:00',
@@ -621,7 +621,7 @@ class PlaneReservationControllerTest extends TestCase
             'deleted_at' => null,
         ]);
         PlaneReservation::factory()->create([
-            'id' => '01HE68JBYDRR96FVYZYK7D7JS3',
+            'id' => '93f1ac48-6542-476a-821c-fcf7ce1d62e9',
             'user_id' => $user->id,
             'plane_id' => $plane2->id,
             'starts_at' => '2023-11-01 12:00:00',
@@ -632,7 +632,7 @@ class PlaneReservationControllerTest extends TestCase
             'deleted_at' => null,
         ]);
         PlaneReservation::factory()->create([
-            'id' => '01HE68JBYDRR96FVYZYK7D7JS4',
+            'id' => '72ec90d9-2e7f-4adb-b9e1-93111b1a5de3',
             'user_id' => $user->id,
             'plane_id' => $plane->id,
             'starts_at' => '2023-11-01 14:00:00',

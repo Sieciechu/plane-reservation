@@ -34,23 +34,23 @@ class OverlapsConfirmedReservationCheckTest extends TestCase
     {
         // given
         $user = new User([
-            'id' => '01HE1F50RYFHQS5HCTYWHDWYKY',
+            'id' => '30a6a6bf-6669-4c84-96d7-3f824d45b74b',
             'role' => UserRole::User
         ]);
 
-        Plane::factory()->create(['id' => '01HE1GB7NJSMF037F76BVR1D1M']);
-        Plane::factory()->create(['id' => '01HE1GRM0B8RQTEX4KYFT7Q7TR']);
+        Plane::factory()->create(['id' => '34efffb9-43a8-454f-8583-be59956991c7']);
+        Plane::factory()->create(['id' => '03bac3ab-175c-4f39-92de-29f4af4370f6']);
         PlaneReservation::factory()->create([
-            'plane_id' => '01HE1GB7NJSMF037F76BVR1D1M',
-            'user_id' => '01HE1F50RYFHQS5HCTYWHDWYKY',
+            'plane_id' => '34efffb9-43a8-454f-8583-be59956991c7',
+            'user_id' => '30a6a6bf-6669-4c84-96d7-3f824d45b74b',
             'starts_at' => '2021-01-01 10:00:00',
             'ends_at' => '2021-01-01 11:00:00',
             'confirmed_at' => '2021-01-01 09:00:00',
             'time' => 60,
         ]);
         PlaneReservation::factory()->create([
-            'plane_id' => '01HE1GB7NJSMF037F76BVR1D1M',
-            'user_id' => '01HE1F50RYFHQS5HCTYWHDWYKY',
+            'plane_id' => '34efffb9-43a8-454f-8583-be59956991c7',
+            'user_id' => '30a6a6bf-6669-4c84-96d7-3f824d45b74b',
             'starts_at' => '2021-01-16 15:00:00',
             'ends_at' => '2021-01-16 16:00:00',
             'confirmed_at' => '2021-01-01 09:00:00',
@@ -58,8 +58,8 @@ class OverlapsConfirmedReservationCheckTest extends TestCase
         ]);
         // this is different plane, it should not count
         PlaneReservation::factory()->create([
-            'plane_id' => '01HE1GRM0B8RQTEX4KYFT7Q7TR',
-            'user_id' => '01HE1F50RYFHQS5HCTYWHDWYKY',
+            'plane_id' => '03bac3ab-175c-4f39-92de-29f4af4370f6',
+            'user_id' => '30a6a6bf-6669-4c84-96d7-3f824d45b74b',
             'starts_at' => '2021-01-10 13:00:00',
             'ends_at' => '2021-01-10 13:30:00',
             'confirmed_at' => '2021-01-01 09:00:00',
@@ -75,7 +75,7 @@ class OverlapsConfirmedReservationCheckTest extends TestCase
             CarbonImmutable::parse($start),
             CarbonImmutable::parse($end),
             $this->createMock(User::class),
-            '01HE1GB7NJSMF037F76BVR1D1M',
+            '34efffb9-43a8-454f-8583-be59956991c7',
         );
     }
 
@@ -96,30 +96,30 @@ class OverlapsConfirmedReservationCheckTest extends TestCase
     {
         // given
         $user = new User([
-            'id' => '01HE1F50RYFHQS5HCTYWHDWYKY',
+            'id' => '30a6a6bf-6669-4c84-96d7-3f824d45b74b',
             'role' => UserRole::User
         ]);
 
-        Plane::factory()->create(['id' => '01HE1GB7NJSMF037F76BVR1D1M']);
-        Plane::factory()->create(['id' => '01HE1GRM0B8RQTEX4KYFT7Q7TR']);
+        Plane::factory()->create(['id' => '34efffb9-43a8-454f-8583-be59956991c7']);
+        Plane::factory()->create(['id' => '03bac3ab-175c-4f39-92de-29f4af4370f6']);
         PlaneReservation::factory()->create([
-            'plane_id' => '01HE1GB7NJSMF037F76BVR1D1M',
-            'user_id' => '01HE1F50RYFHQS5HCTYWHDWYKY',
+            'plane_id' => '34efffb9-43a8-454f-8583-be59956991c7',
+            'user_id' => '30a6a6bf-6669-4c84-96d7-3f824d45b74b',
             'starts_at' => '2021-01-01 10:00:00',
             'ends_at' => '2021-01-01 11:00:00',
             'time' => 60,
         ]);
         PlaneReservation::factory()->create([
-            'plane_id' => '01HE1GB7NJSMF037F76BVR1D1M',
-            'user_id' => '01HE1F50RYFHQS5HCTYWHDWYKY',
+            'plane_id' => '34efffb9-43a8-454f-8583-be59956991c7',
+            'user_id' => '30a6a6bf-6669-4c84-96d7-3f824d45b74b',
             'starts_at' => '2021-01-16 15:00:00',
             'ends_at' => '2021-01-16 16:00:00',
             'time' => 60,
         ]);
         // this is different plane, it should not count
         PlaneReservation::factory()->create([
-            'plane_id' => '01HE1GRM0B8RQTEX4KYFT7Q7TR',
-            'user_id' => '01HE1F50RYFHQS5HCTYWHDWYKY',
+            'plane_id' => '03bac3ab-175c-4f39-92de-29f4af4370f6',
+            'user_id' => '30a6a6bf-6669-4c84-96d7-3f824d45b74b',
             'starts_at' => '2021-01-10 13:00:00',
             'ends_at' => '2021-01-10 14:00:00',
             'time' => 60,
@@ -130,7 +130,7 @@ class OverlapsConfirmedReservationCheckTest extends TestCase
             CarbonImmutable::parse($start),
             CarbonImmutable::parse($end),
             $this->createMock(User::class),
-            '01HE1GB7NJSMF037F76BVR1D1M',
+            '34efffb9-43a8-454f-8583-be59956991c7',
         );
         $this->assertTrue(true);
     }

@@ -41,14 +41,14 @@ class DailyTimeLimitCheckTest extends TestCase
     public function userShouldBeAbleToReserveDailyUpToDailyLimitWithOneGo(): void
     {
         // given
-        Plane::factory()->create(['id' => '01F9ZJZJZJZJZJZJZJZJZJZJZJ']);
+        Plane::factory()->create(['id' => '442a26b4-0f2b-42dc-ac8d-a0e18730f2a4']);
 
         $user = new User(['role' => UserRole::User]);
         $startDate = CarbonImmutable::parse('2021-01-01 10:00');
         $endDate = CarbonImmutable::parse('2021-01-01 12:00');
         
         // when
-        $this->service->check($startDate, $endDate, $user, '01F9ZJZJZJZJZJZJZJZJZJZJZJ');
+        $this->service->check($startDate, $endDate, $user, '442a26b4-0f2b-42dc-ac8d-a0e18730f2a4');
         $this->assertTrue(true);
     }
 
@@ -57,14 +57,14 @@ class DailyTimeLimitCheckTest extends TestCase
     {
         // given
         $user = new User([
-            'id' => '01HE1F50RYFHQS5HCTYWHDWYKY',
+            'id' => '30a6a6bf-6669-4c84-96d7-3f824d45b74b',
             'role' => UserRole::User
         ]);
 
-        Plane::factory()->create(['id' => '01HE1FBZEPC8SRGM7VQDQV4K9X']);
+        Plane::factory()->create(['id' => 'a8c35cc5-9dbc-4806-951a-5a3be4871f3d']);
         PlaneReservation::factory()->create([
-            'plane_id' => '01HE1FBZEPC8SRGM7VQDQV4K9X',
-            'user_id' => '01HE1F50RYFHQS5HCTYWHDWYKY',
+            'plane_id' => 'a8c35cc5-9dbc-4806-951a-5a3be4871f3d',
+            'user_id' => '30a6a6bf-6669-4c84-96d7-3f824d45b74b',
             'starts_at' => '2021-01-01 10:00:00',
             'ends_at' => '2021-01-01 11:00:00',
             'time' => 60,
@@ -75,13 +75,13 @@ class DailyTimeLimitCheckTest extends TestCase
             CarbonImmutable::parse('2021-01-01 13:00'),
             CarbonImmutable::parse('2021-01-01 14:00'),
             $user,
-            '01HE1FBZEPC8SRGM7VQDQV4K9X'
+            'a8c35cc5-9dbc-4806-951a-5a3be4871f3d'
         );
         $this->service->check(
             CarbonImmutable::parse('2021-02-01 12:00'),
             CarbonImmutable::parse('2021-02-01 14:00'),
             $user,
-            '01HE1FBZEPC8SRGM7VQDQV4K9X'
+            'a8c35cc5-9dbc-4806-951a-5a3be4871f3d'
         );
         $this->assertTrue(true);
     }
@@ -94,14 +94,14 @@ class DailyTimeLimitCheckTest extends TestCase
         $this->expectExceptionMessage('you can reserve plane for max 2 hours daily');
 
         // given
-        Plane::factory()->create(['id' => '01HE1FN3P71S3V242YXJ9XMQVT']);
+        Plane::factory()->create(['id' => '2097a341-7303-4fef-bc34-e3886863d4e4']);
 
         $user = new User(['role' => UserRole::User]);
         $startDate = CarbonImmutable::parse('2021-01-01 10:00');
         $endDate = CarbonImmutable::parse('2021-01-01 12:01');
         
         // when
-        $this->service->check($startDate, $endDate, $user, '01HE1FN3P71S3V242YXJ9XMQVT');
+        $this->service->check($startDate, $endDate, $user, '2097a341-7303-4fef-bc34-e3886863d4e4');
     }
 
     /** @test */
@@ -113,14 +113,14 @@ class DailyTimeLimitCheckTest extends TestCase
         
         // given
         $user = new User([
-            'id' => '01HE1F50RYFHQS5HCTYWHDWYKY',
+            'id' => '30a6a6bf-6669-4c84-96d7-3f824d45b74b',
             'role' => UserRole::User
         ]);
 
-        Plane::factory()->create(['id' => '01HE1FNZZX6XPBTDFTN8A66Y69']);
+        Plane::factory()->create(['id' => '93355f28-ea65-4d5a-9faa-356ecbcf8bea']);
         PlaneReservation::factory()->create([
-            'plane_id' => '01HE1FNZZX6XPBTDFTN8A66Y69',
-            'user_id' => '01HE1F50RYFHQS5HCTYWHDWYKY',
+            'plane_id' => '93355f28-ea65-4d5a-9faa-356ecbcf8bea',
+            'user_id' => '30a6a6bf-6669-4c84-96d7-3f824d45b74b',
             'starts_at' => '2021-01-01 10:00:00',
             'ends_at' => '2021-01-01 11:00:00',
             'time' => 60,
@@ -130,7 +130,7 @@ class DailyTimeLimitCheckTest extends TestCase
         $endDate = CarbonImmutable::parse('2021-01-01 14:01');
         
         // when
-        $this->service->check($startDate, $endDate, $user, '01HE1FNZZX6XPBTDFTN8A66Y69');
+        $this->service->check($startDate, $endDate, $user, '93355f28-ea65-4d5a-9faa-356ecbcf8bea');
     }
 
     /** @test */
