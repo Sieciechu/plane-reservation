@@ -122,7 +122,7 @@ class PlaneReservationController extends Controller
         $msg = '';
         try {
             $this->smsService->sendReservationCancellation($planeReservation);
-        } catch(SmsException $e) {
+        } catch (SmsException $e) {
             $this->logger->error('[PlaneReservationController] sms send failed', [
                 'action' => 'removeReservation',
                 'msg' => $e->getMessage(),
@@ -151,7 +151,7 @@ class PlaneReservationController extends Controller
         $msg = '';
         try {
             $this->smsService->sendReservationConfirmation($planeReservation);
-        } catch(SmsException $e) {
+        } catch (SmsException $e) {
             $this->logger->error('[PlaneReservationController] sms send failed', [
                 'action' => 'confirmReservation',
                 'msg' => $e->getMessage(),

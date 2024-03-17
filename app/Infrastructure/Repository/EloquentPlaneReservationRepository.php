@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App\Infrastructure\Repository;
 
-use App\Models\User;
 use App\Models\Plane;
-use Carbon\CarbonImmutable;
 use App\Models\PlaneReservation;
-use Illuminate\Database\Eloquent\Builder;
+use App\Models\User;
 use App\Services\PlaneReservation\PlaneReservationRepository;
+use Carbon\CarbonImmutable;
+use Illuminate\Database\Eloquent\Builder;
 
 class EloquentPlaneReservationRepository implements PlaneReservationRepository
 {

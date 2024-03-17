@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Services\SmsSender;
 
 use App\Models\PlaneReservation;
-use App\Services\SmsSender\SmsException;
 
 class SmsService
 {
