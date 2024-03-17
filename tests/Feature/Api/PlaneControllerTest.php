@@ -5,6 +5,7 @@ namespace Tests\Feature\Api;
 use App\Models\Plane;
 use App\Models\User;
 use App\Models\UserRole;
+use Illuminate\Foundation\Testing\DatabaseTruncation;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
@@ -12,6 +13,7 @@ use Tests\TestCase;
 class PlaneControllerTest extends TestCase
 {
     use RefreshDatabase;
+    use DatabaseTruncation;
     
     public function test_get_the_planes_returns_the_list_ordered_by_registration(): void
     {

@@ -4,6 +4,7 @@ namespace Tests\Feature\Api;
 
 use App\Models\User;
 use App\Models\UserRole;
+use Illuminate\Foundation\Testing\DatabaseTruncation;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
@@ -11,6 +12,7 @@ use Tests\TestCase;
 class UserControllerTest extends TestCase
 {
     use RefreshDatabase;
+    use DatabaseTruncation;
     
     public function test_get_the_users_returns_the_list(): void
     {

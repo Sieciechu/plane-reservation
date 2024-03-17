@@ -8,6 +8,7 @@ use App\Models\User;
 use App\Models\UserRole;
 use Carbon\Carbon;
 use Carbon\CarbonImmutable;
+use Illuminate\Foundation\Testing\DatabaseTruncation;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
@@ -15,6 +16,7 @@ use Tests\TestCase;
 class PlaneReservationControllerTest extends TestCase
 {
     use RefreshDatabase;
+    use DatabaseTruncation;
     
     public function test_get_reservations_by_plane_and_date_should_be_sorted_by_start_time(): void
     {

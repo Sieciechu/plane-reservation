@@ -6,12 +6,14 @@ namespace Tests\Feature\Services\PlaneReservationCheck;
 
 use App\Infrastructure\Repository\EloquentPlaneRepository;
 use App\Models\Plane;
+use Illuminate\Foundation\Testing\DatabaseTruncation;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
 
 class EloquentPlaneRepositoryTest extends TestCase
 {
     use RefreshDatabase;
+    use DatabaseTruncation;
 
     private EloquentPlaneRepository $repo;
 
