@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Services\SmsSender;
 
 use App\Models\PlaneReservation;
+use App\Services\SmsSender\SmsException;
 
 class SmsService
 {
@@ -15,6 +16,9 @@ class SmsService
     ) {
     }
 
+    /**
+     * @throws SmsException
+     */
     public function sendReservationConfirmation(PlaneReservation $reservation): void
     {
         $sendSms = function (string $toPhone) use ($reservation): void {
@@ -44,6 +48,9 @@ END,
         }
     }
 
+    /**
+     * @throws SmsException
+     */
     public function sendReservationCancellation(PlaneReservation $reservation): void
     {
         $sendSms = function (string $toPhone) use ($reservation): void {

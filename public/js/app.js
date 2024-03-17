@@ -1,6 +1,7 @@
 // import './bootstrap.js';
 
 window.app = {};
+window.app.action = {};
 window.app.userNamesToIdsMap = {};
 window.app.planeRegistration = '';
 window.app.reservationDate = '';
@@ -117,7 +118,7 @@ app.html.getDailyReservationComponent = function(item){
     <p class="mb-0">${item.comment}</p>
 
 </div>
-<div style="text-align: left;" class="col-12 col-md-8 col-sm-12 col-lg-3 col-xl-2 themed-grid-col">
+<div class="text-end col-12 col-md-8 col-sm-12 col-lg-3 col-xl-2 themed-grid-col">
     <p class="mt-1">${canRemove} ${canConfirm}</p>
 </div>
 </div>
@@ -193,6 +194,10 @@ app.loadDailyPlaneReservations = function(planeRegistration, date, dailyReservat
     return app.ajax("GET", "/api/plane/" + planeRegistration + "/reservation/" + date, {}).success(function(data){
         let dailyReservations = data;
         dailyReservationsView.html('');
+
+        if (!dailyReservations) {
+            return;
+        }
 
         dailyReservations.forEach(function(item){
             let row = app.html.getDailyReservationComponent(item);
@@ -329,9 +334,14 @@ app.makeReservation = function(starts_at_value, ends_at_value, comment, user2_id
 };
 
 app.removeReservation = function(reservationId){
-    return app.ajax("DELETE", `/api/plane/reservation/${reservationId}`).success(function(){
+    return app.ajax("DELETE", `/api/plane/reservation/${reservationId}`).success(function(data){
         jQuery(`button.removeReservation[data-id="${reservationId}"]`).closest('div.reservation-entry-row').remove(); 
         app.addFlashMsg('success', "rezerwacja została usunięta");
+        
+        if(data.msg){
+            app.addFlashMsg('success', data.msg);
+        }
+
         app.showFlashMessages(app.flashMsgGetFirstVisibleContainer());
     }).fail(app.ajaxFail);
 };
@@ -340,7 +350,7 @@ app.confirmReservation = function(reservationId){
     return app.ajax(
         "PATCH",
         `/api/plane/reservation/${reservationId}/confirm`
-    ).success(function(){
+    ).success(function(data){
         let reservationRow = jQuery(`button.removeReservation[data-id="${reservationId}"]`)
             .closest('div.reservation-entry-row');
         reservationRow.find('p.confirmation-tooltip').html(app.html.getConfirmationTooltipComponent(true));
@@ -349,6 +359,11 @@ app.confirmReservation = function(reservationId){
         app.html.activateTooltip();
             
         app.addFlashMsg('success', "rezerwacja została potwierdzona");
+        
+        if(data.msg){
+            app.addFlashMsg('success', data.msg);
+        }
+
         app.showFlashMessages(app.flashMsgGetFirstVisibleContainer());
     }).fail(app.ajaxFail);
 };
@@ -373,7 +388,7 @@ app.login = function(email, password){
     ).success(function(data){
         app.storeToken(data.auth_token);
         app.addFlashMsg('success', "zalogowano");
-        window.location.href = '/reservation';
+        window.location.href = '/#myreservations';
     }).fail(app.ajaxFail);
 };
 app.getUsers = function(){
@@ -417,6 +432,12 @@ app.getAllReservationsForDate = function(date, container){
             }
             app.confirmReservation(this.dataset.id);
         });
+    }).fail(app.ajaxFail);
+};
+
+app.getAllReservationsForUserStartingFromDate = function(date, container){
+    return app.ajax("GET", '/api/plane/reservation/user/starting_from_date/' + date, {}).success(function(data){
+        window.xxx = data;
     }).fail(app.ajaxFail);
 };
 
@@ -471,9 +492,13 @@ app.showFlashMessages = function(container){
             <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
         </div>`);
     });
+    let timeoutMiliseconds = 2500;
+    if (flashMsg.error.length > 0) {
+        timeoutMiliseconds = 3000;
+    }
     setTimeout(function(){
         container.find('button.btn-close').click();
-    },1500);
+    },timeoutMiliseconds);
      
      app.clearFlashMsg();
 };
@@ -525,3 +550,5 @@ var substringMatcher = function (strs) {
         cb(matches);
     };
 };
+
+

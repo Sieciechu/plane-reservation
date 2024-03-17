@@ -103,3 +103,8 @@
   --bs-alert-bg: #cc4542;
   --bs-alert-border-color: #591e1e;
 }
+@media (max-width: 576px) {
+  #section_1 {
+    margin-top: 4rem;
+  }
+}

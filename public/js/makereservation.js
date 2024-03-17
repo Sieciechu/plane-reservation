@@ -1,6 +1,7 @@
-<x-loggedLayout>
 
-<x-slot:section1>
+
+app.action.makereservationSite = function(){
+    jQuery('#section_1').html(`
 <div class="container">
     <div class="row">
         
@@ -31,10 +32,9 @@
 
     </div>
 </div>
-</x-slot:section1>
-
-<x-slot:section2>
-<section class="explore-section section-padding d-none" id="section_plane_reservation">
+`);
+    jQuery('#section_2').html(`
+    <section class="explore-section section-padding d-none" id="section_plane_reservation">
     <div class="container">
         <div class="col-12 text-center">
             <h2 id="reservationListHeading" class="mb-4"><!-- Tabela godzin SP-KYS 2023-11-06 --></h1>
@@ -113,7 +113,7 @@
                         <div class="input-group input-group-lg">
                             <input name="user2" type="input" class="form-control" 
                                 style="text-indent: 1ex;"
-                                id="user2" placeholder="drugi pilot" aria-label="Search"
+                                id="user2" placeholder="opcjonalny drugi pilot" aria-label="Search"
                                 value=""
                             >
                         </div>
@@ -125,12 +125,13 @@
         </div> <!-- end of row mb-3 -->
     </div>
 </section>
-</x-slot:section2>
+`);
+};
 
-<x-slot:customScript>
-<script src="js/typeahead.bundle.js"></script>
-<script type="text/javascript">
-$(document).ready(function() {
+jQuery('#makereservation').click(function(){
+	app.action.makereservationSite();
+    jQuery('#navbarNav').find('.active').removeClass('active');
+    jQuery(this).addClass('active');
     app.reservationInit();
     app.initSecondUserAutocomplete(jQuery('#user2'));
 
@@ -149,7 +150,3 @@ $(document).ready(function() {
         });
     });
 });
-</script>
-</x-slot:customScript>    
-
-</x-loggedLayout>

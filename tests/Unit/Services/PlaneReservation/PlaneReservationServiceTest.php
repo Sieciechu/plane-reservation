@@ -9,6 +9,7 @@ use App\Models\PlaneReservation;
 use App\Models\User;
 use App\Models\UserRole;
 use App\Services\PlaneRepository;
+use App\Services\PlaneReservation\PlaneReservationActionDecorator;
 use App\Services\PlaneReservation\PlaneReservationRepository;
 use App\Services\PlaneReservation\PlaneReservationService;
 use Carbon\CarbonImmutable;
@@ -28,7 +29,7 @@ class PlaneReservationServiceTest extends TestCase
         $this->planeRepo = $this->createMock(PlaneRepository::class);
         $this->planeReservationRepo = $this->createMock(PlaneReservationRepository::class);
 
-        $this->service = new PlaneReservationService($this->planeRepo, $this->planeReservationRepo);
+        $this->service = new PlaneReservationService($this->planeRepo, $this->planeReservationRepo, new PlaneReservationActionDecorator());
     }
 
     public function testGetAllReservationsWithActionsForDateForNonAdminCannotConfirm()

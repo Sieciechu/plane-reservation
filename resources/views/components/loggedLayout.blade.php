@@ -48,42 +48,43 @@ https://templatemo.com/tm-590-topic-listing
 
     <main>
 
-        <div id="sticky-wrapper" class="sticky-wrapper" style="height: 78px;">
-            <nav class="navbar navbar-expand-lg" style="">
-                <div class="container">
-                    <a class="navbar-brand" href="/">
-                        <img src="/images/ao_logo_2017.svg" alt="Aeroklub Ostrowski Logo">
-                        <span>Aeroklub Ostrowski</span>
-                    </a>
+        <nav class="navbar navbar-expand-lg" style="">
+            <div class="container">
+                <a class="navbar-brand" href="/">
+                    <img src="/images/ao_logo_2017.svg" alt="Aeroklub Ostrowski Logo">
+                    <span>Aeroklub Ostrowski</span>
+                </a>
 
-                    <div class="d-lg-none ms-auto me-4">
+                <div class="d-lg-none ms-auto me-4">
+                    <a href="#top" class="navbar-icon bi-person smoothscroll"></a>
+                </div>
+
+                <button class="navbar-toggler collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
+                <div class="navbar-collapse collapse" id="navbarNav" style="">
+                    <ul class="navbar-nav ms-lg-5 me-lg-auto">
+                        <li class="nav-item">
+                            <a class="nav-link click-scroll" href="#" onclick="app.logout()">Wyloguj się</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link click-scroll" id="myreservations" href="#myreservations">Moje rezerwacje</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link click-scroll" id="makereservation" href="#makereservation">Rezerwuj</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link click-scroll" id="dashboard" href="#dashboard">Tabele rezerwacji</a>
+                        </li>
+                    </ul>
+
+                    <div class="d-none d-lg-block">
                         <a href="#top" class="navbar-icon bi-person smoothscroll"></a>
                     </div>
-    
-                    <button class="navbar-toggler collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-    
-                    <div class="navbar-collapse collapse" id="navbarNav" style="">
-                        <ul class="navbar-nav ms-lg-5 me-lg-auto">
-                            <li class="nav-item">
-                                <a class="nav-link click-scroll" href="#" onclick="app.logout()">Wyloguj się</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link click-scroll" href="/reservation">Rezerwacje</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link click-scroll" href="/dashboard">Tabele rezerwacji</a>
-                            </li>
-                        </ul>
-
-                        <div class="d-none d-lg-block">
-                            <a href="#top" class="navbar-icon bi-person smoothscroll"></a>
-                        </div>
-                    </div>
                 </div>
-            </nav>
-        </div>
+            </div>
+        </nav>
 
         <section id="section_flash_top" class="flash-messages">
             <!-- here flash messages will be shown with js script -->
@@ -93,20 +94,36 @@ https://templatemo.com/tm-590-topic-listing
             {{ $section1 ?? '' }}
         </section>
 
-        {{ $section2 ?? '' }}
+        <section id="section_2">
+            {{ $section2 ?? '' }}
+        </section>
     </main>
 
     <!-- JAVASCRIPT FILES -->
     <script src="js/jquery.min.js"></script>
     <script src="js/bootstrap.bundle.min.js"></script>
     <script src="js/jquery.sticky.js"></script>
+    <script src="js/typeahead.bundle.js"></script>
     <script src="js/custom.js"></script>
-    <script src="js/app.js"></script>
+    <script src="js/app.js?ver=1.0"></script>
+    <script src="js/myreservations.js?ver=1.0"></script>
+    <script src="js/makereservation.js?ver=1.0"></script>
+    <script src="js/dashboard.js?ver=1.0"></script>
     <script type="text/javascript">
         let app = window.app;
         app.storage.init();
         app.initFlashMsg();
         app.showFlashMessages(app.flashMsgGetFirstVisibleContainer());
+
+        jQuery(document).ready(function(){
+            let jsAction = window.location.hash;
+            if (window.location.hash == '') {
+                jsAction = '#myreservations';
+            }
+            if (jsAction) {
+                setTimeout(function(){jQuery(jsAction).click();}, 10); // if I remove timeout custom.js lib returns error
+            }
+        });
     </script>
     {{ $customScript ?? ''}}
 
