@@ -89,7 +89,7 @@ class EloquentPlaneReservationRepositoryTest extends TestCase
         ]);
         // different plane
         PlaneReservation::create([
-            'id' => '01HNBQZ918VZ74DJ24F6R3JQNA',
+            'id' => '5c487bd8-7061-4984-bc9a-a07e9e9e067b',
             'user_id' => $user->id,
             'plane_id' => $plane2->id,
             'starts_at' => '2023-10-29 10:00:00',
@@ -149,7 +149,7 @@ class EloquentPlaneReservationRepositoryTest extends TestCase
         $this->assertEquals($admin->id, $result[1]->confirmed_by);
 
         // Assert the third reservation
-        $this->assertEquals('01HNBQZ918VZ74DJ24F6R3JQNA', $result[2]->id);
+        $this->assertEquals('5c487bd8-7061-4984-bc9a-a07e9e9e067b', $result[2]->id);
         $this->assertEquals($user->id, $result[2]->user_id);
         $this->assertEquals($plane2->id, $result[2]->plane_id);
         $this->assertEquals('2023-10-29 10:00:00', $result[2]->starts_at);
@@ -208,7 +208,7 @@ class EloquentPlaneReservationRepositoryTest extends TestCase
         ]);
         // different plane
         PlaneReservation::create([
-            'id' => '01HNBQZ918VZ74DJ24F6R3JQNA',
+            'id' => '5c487bd8-7061-4984-bc9a-a07e9e9e067b',
             'user_id' => $user->id,
             'plane_id' => $plane2->id,
             'starts_at' => '2023-10-29 10:00:00',
