@@ -43,7 +43,7 @@ class PlaneReservationControllerTest extends TestCase
         ]);
 
         PlaneReservation::create([
-            'id' => '01HEBWJJGFE9WXK4SPQ8XXWGPB',
+            'id' => '43950b1e-cabd-413c-bd1e-c6c10dd9fbab',
             'user_id' => $user->id,
             'plane_id' => $plane->id,
             'starts_at' => '2023-10-29 10:00:00',
@@ -53,7 +53,7 @@ class PlaneReservationControllerTest extends TestCase
             'confirmed_by' => $admin->id,
         ]);
         PlaneReservation::create([
-            'id' => '01HEBWPFCWB7FNHQTPM96QNEQJ',
+            'id' => '31ee2a45-7c99-4722-8194-e966fe24ac28',
             'user_id' => $admin->id,
             'plane_id' => $plane->id,
             'starts_at' => '2023-10-29 08:00:00',
@@ -101,7 +101,7 @@ class PlaneReservationControllerTest extends TestCase
         ]);
         $response->assertJson([
             [
-                'id' => '01HEBWPFCWB7FNHQTPM96QNEQJ',
+                'id' => '31ee2a45-7c99-4722-8194-e966fe24ac28',
                 'user_name' => 'Admin',
                 'starts_at' => '08:00',
                 'ends_at' => '10:00',
@@ -109,7 +109,7 @@ class PlaneReservationControllerTest extends TestCase
                 'can_remove' => false,
             ],
             [
-                'id' => '01HEBWJJGFE9WXK4SPQ8XXWGPB',
+                'id' => '43950b1e-cabd-413c-bd1e-c6c10dd9fbab',
                 'user_name' => 'John Doe',
                 'starts_at' => '10:00',
                 'ends_at' => '12:00',
