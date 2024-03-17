@@ -18,6 +18,7 @@ use App\Services\PlaneReservationCheck\EndsSameMonthCheck;
 use App\Services\PlaneReservationCheck\MonthAheadCheck;
 use App\Services\PlaneReservationCheck\MonthlyLimitCheck;
 use App\Services\PlaneReservationCheck\MultipleCheck;
+use App\Services\PlaneReservationCheck\MustEndAfterStartCheck;
 use App\Services\PlaneReservationCheck\OverlapsConfirmedReservationCheck;
 use App\Services\PlaneReservationCheck\OverlapsSameUserReservationCheck;
 use App\Services\PlaneReservationCheck\SecondPilotByAdminOnlyCheck;
@@ -60,6 +61,7 @@ class AppServiceProvider extends ServiceProvider
 
             return new PlaneReservationChecker(
                 new MultipleCheck(
+                    new MustEndAfterStartCheck(),
                     new SecondPilotByAdminOnlyCheck(),
                     new SunriseCheck($sunTimeService),
                     new SunsetCheck($sunTimeService),
