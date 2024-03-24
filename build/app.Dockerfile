@@ -1,4 +1,5 @@
-FROM planereservation:php8.3 as dev
+ARG SOURCE_SYSTEM_IMAGE
+FROM ${SOURCE_SYSTEM_IMAGE:-planereservation:php8.3} as dev
 
 # install composer
 RUN \
