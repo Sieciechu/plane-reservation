@@ -3,8 +3,8 @@ name: buildimage
 on:
   workflow_run:
     workflows: [codequality]
-      types:
-        - completed
+    types:
+      - completed
   push:
     branches:
       - 'master'
