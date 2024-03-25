@@ -20,7 +20,8 @@ RUN echo "[XDebug]" > /etc/php83/conf.d/50_xdebug.ini \
     && echo "xdebug.log=/tmp/xdebug.log" >> /etc/php83/conf.d/50_xdebug.ini \
     && echo "xdebug.start_with_request=yes ; so it turns on for every http request" >> /etc/php83/conf.d/50_xdebug.ini
 
-FROM planereservation:php8.3 as prod
+ARG SOURCE_SYSTEM_IMAGE
+FROM ${SOURCE_SYSTEM_IMAGE:-planereservation:php8.3} as prod
 
 COPY --link --chown=sail:sail . /var/www/html
 
