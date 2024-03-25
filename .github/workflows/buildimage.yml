@@ -32,7 +32,7 @@ jobs:
           cd build ;\
           docker buildx build --load -f Dockerfile  \
             -t registry.digitalocean.com/aeroklubostrowski/planereservation:app-1.0 \
-            --target prod ./.. ;\
+            --target prod-app ./.. ;\
 
       - name: Log in to DigitalOcean Container Registry
         run: doctl registry login --expiry-seconds 600
