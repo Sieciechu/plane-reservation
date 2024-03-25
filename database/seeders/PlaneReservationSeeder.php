@@ -2,11 +2,12 @@
 
 namespace Database\Seeders;
 
-use App\Models\Plane;
-use App\Models\PlaneReservation;
 use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\Plane;
 use Illuminate\Database\Seeder;
+use App\Models\PlaneReservation;
+use Illuminate\Support\Facades\App;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 
 class PlaneReservationSeeder extends Seeder
 {
@@ -15,6 +16,10 @@ class PlaneReservationSeeder extends Seeder
      */
     public function run(): void
     {
+        if (App::environment() === 'production') {
+            return;
+        }
+
         $users = User::where('role', '!=', 'admin')->take(3)->get();
         $admin = User::where('name', 'Admin')->first();
 

@@ -12,6 +12,10 @@ class PlaneSeeder extends Seeder
      */
     public function run(): void
     {
+        if (\App\Models\Plane::count() > 0) {
+            return;
+        }
+
         \App\Models\Plane::factory()->create([
             'name' => 'PZL Koliber 150',
             'registration' => 'SP-KYS',
@@ -23,6 +27,10 @@ class PlaneSeeder extends Seeder
         \App\Models\Plane::factory()->create([
             'name' => 'PZL Koliber 160',
             'registration' => 'SP-IGA',
+        ]);
+        \App\Models\Plane::factory()->create([
+            'name' => 'Viper SD-4 RTC',
+            'registration' => 'SP-AOD',
         ]);
     }
 }
