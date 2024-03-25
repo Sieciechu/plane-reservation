@@ -53,17 +53,17 @@ RUN apk --no-cache add \
 `# install usermod` \
     && echo http://dl-2.alpinelinux.org/alpine/edge/community/ >> /etc/apk/repositories \
     && apk add -U shadow
-COPY php.ini /etc/php/8.0/cli/conf.d/99-sail.ini
+COPY ./build/php.ini /etc/php/8.0/cli/conf.d/99-sail.ini
 
 # Configure supervisord
 RUN touch /var/run/supervisord.pid \
     && mkdir -p /etc/supervisor.d/conf.d \
     && mkdir -p /var/log/supervisor \
     && touch /var/log/supervisor/supervisord.log
-COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY ./build/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # Configure container startup script
-COPY start-container /usr/local/bin/start-container
+COPY ./build/start-container /usr/local/bin/start-container
 RUN chmod +x /usr/local/bin/start-container
 
 # Configure user for sail
