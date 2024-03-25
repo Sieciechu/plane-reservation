@@ -31,10 +31,10 @@ jobs:
       - name: Build image
         run: |
           cd build ;\
-          docker buildx build --load -f Dockerfile -t registry.digitalocean.com/aeroklubostrowski/planereservation:php8.3 . ;
+          docker buildx build --load -f Dockerfile -t registry.digitalocean.com/aeroklubostrowski/planereservation:app-1.0 . ;
 
       - name: Log in to DigitalOcean Container Registry
         run: doctl registry login --expiry-seconds 600
 
       - name: Push image to DigitalOcean Container Registry
-        run: docker push registry.digitalocean.com/aeroklubostrowski/planereservation:php8.3
+        run: docker push registry.digitalocean.com/aeroklubostrowski/planereservation:app-1.0
