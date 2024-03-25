@@ -31,8 +31,7 @@ jobs:
       - name: Build image
         run: |
           cd build ;\
-          docker buildx build --load -f Dockerfile -t registry.digitalocean.com/aeroklubostrowski/planereservation:php8.3 . ;\
-          docker buildx build --load -f app.Dockerfile -t registry.digitalocean.com/aeroklubostrowski/planereservation:php8.3 --build-arg SOURCE_SYSTEM_IMAGE="registry.digitalocean.com/aeroklubostrowski/planereservation:php8.3" --target prod ./.. ;\
+          docker buildx build --load -f Dockerfile -t registry.digitalocean.com/aeroklubostrowski/planereservation:php8.3 . ;
 
       - name: Log in to DigitalOcean Container Registry
         run: doctl registry login --expiry-seconds 600
