@@ -5,9 +5,6 @@ on:
     workflows: [codequality]
     types:
       - completed
-  push:
-    branches:
-      - 'master'
 
 env:
   IMAGE_TAG: latest
