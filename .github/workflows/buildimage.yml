@@ -71,18 +71,15 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
       - name: Build image
         run: |
           cd build ;\
-          docker build --load -f Dockerfile \
+          docker image build --load -f Dockerfile \
             --build-arg WWWUSER=501 --build-arg WWWGROUP=501 \
             -t local.system:latest 
             --target base . ;\
           docker image ls ;\
-          docker build --load -f app.Dockerfile  \
+          docker image build --load -f app.Dockerfile  \
             -t registry.digitalocean.com/aeroklubostrowski/planereservation:app-1.0 \
             --build-arg SOURCE_SYSTEM_IMAGE=local.system:latest \
             --build-arg WWWUSER=501 --build-arg WWWGROUP=501 \
