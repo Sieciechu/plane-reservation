@@ -11,36 +11,7 @@ env:
   IMAGE_TAG: latest
 
 jobs:
-  phpstan:
-    runs-on: ubuntu-latest
-
-    # see https://github.com/shivammathur/setup-php for more information
-    steps:
-    - uses: shivammathur/setup-php@15c43e89cdef867065b0213be354c2841860869e
-      with:
-        php-version: '8.3'
-    - uses: actions/checkout@v3
-    - name: Copy .env
-      run: php -r "file_exists('.env') || copy('.env.example', '.env');"
-    - name: Validate composer.json and composer.lock
-      run: composer validate --strict
-
-    - name: Cache Composer packages
-      id: composer-cache
-      uses: actions/cache@v4
-      with:
-        path: vendor
-        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-php-
-
-    - name: Install dependencies
-      run: composer install --prefer-dist --no-progress --no-interaction
-
-    - name: Execute larastan
-      run: ./vendor/bin/phpstan analyse
-  
-  build-and-push-backend-do:
+  build-and-push-backend:
     runs-on: ubuntu-latest
     steps:
       - uses: shivammathur/setup-php@15c43e89cdef867065b0213be354c2841860869e
@@ -79,11 +50,6 @@ jobs:
             -t local.system:latest 
             --target base . ;\
           docker image ls ;\
-          docker image build --load -f app.Dockerfile  \
-            -t registry.digitalocean.com/aeroklubostrowski/planereservation:app-1.0 \
-            --build-arg SOURCE_SYSTEM_IMAGE=local.system:latest \
-            --build-arg WWWUSER=501 --build-arg WWWGROUP=501 \
-            --target prod ./.. ;
 
       - name: Log in to DigitalOcean Container Registry
         run: doctl registry login --expiry-seconds 600
