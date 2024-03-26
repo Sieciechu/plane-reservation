@@ -104,3 +104,51 @@ jobs:
         DB_DATABASE: database/database.sqlite
       run: vendor/bin/phpunit  --exclude-testsuite Integration
     
+  build-and-push-backend:
+    needs: [laravel-tests, phpcs, phpstan]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Validate composer.json and composer.lock
+        run: composer validate --strict
+
+      - name: Cache Composer packages
+        id: composer-cache
+        uses: actions/cache@v4
+        with:
+          path: vendor
+          key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-php-
+
+      - name: Install dependencies
+        run: pwd; ls -a; cat composer.lock; composer install --prefer-dist --no-progress --no-interaction
+
+      - name: Install doctl
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Build image
+        run: |
+          cd build ;\
+          docker image build --load -f Dockerfile \
+            --build-arg WWWUSER=501 --build-arg WWWGROUP=501 \
+            -t local.system:latest \
+            --target base . ;\
+          docker image ls ;\
+          docker image build --load -f app.Dockerfile  \
+            -t registry.digitalocean.com/aeroklubostrowski/planereservation:app-1.0 \
+            --build-arg SOURCE_SYSTEM_IMAGE=local.system:latest \
+            --build-arg WWWUSER=501 --build-arg WWWGROUP=501 \
+            --target prod ./.. ;
+
+      - name: Log in to DigitalOcean Container Registry
+        run: doctl registry login --expiry-seconds 600
+
+      - name: Push image to DigitalOcean Container Registry
+        run: docker push registry.digitalocean.com/aeroklubostrowski/planereservation:app-1.0
