@@ -33,7 +33,7 @@ jobs:
             ${{ runner.os }}-php-
 
       - name: Install dependencies
-        run: composer install --prefer-dist --no-progress --no-interaction
+        run: pwd; ls -a; cat composer.lock; composer install --prefer-dist --no-progress --no-interaction
 
       - name: Install doctl
         uses: digitalocean/action-doctl@v2
