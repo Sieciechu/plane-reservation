@@ -104,7 +104,9 @@ jobs:
       env:
         DB_CONNECTION: sqlite
         DB_DATABASE: database/database.sqlite
-      run: vendor/bin/phpunit  --exclude-testsuite Integration
+      run: |
+        ls -lh .
+        vendor/bin/phpunit  --exclude-testsuite Integration
     
   build-and-push-backend:
     # needs: [laravel-tests, phpcs, phpstan]
@@ -128,7 +130,9 @@ jobs:
             ${{ runner.os }}-php-
 
       - name: Install dependencies
-        run: composer install --prefer-dist --no-progress --no-interaction
+        run: |
+          composer install --prefer-dist --no-progress --no-interaction
+          ls -lh .
 
       - name: Install doctl
         uses: digitalocean/action-doctl@v2
@@ -141,7 +145,7 @@ jobs:
       - name: Build image
         run: |
           pwd
-          ls -lah .
+          ls -lh .
 
           cd build
 
