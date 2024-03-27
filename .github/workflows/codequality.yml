@@ -140,11 +140,9 @@ jobs:
 
       - name: Build image
         run: |
-          cd build ;\
-          docker image build --load -f Dockerfile \
-            --build-arg WWWUSER=501 --build-arg WWWGROUP=501 \
-            -t planereservation:system \
-            --target base . ;\
+          sh build/build-php-image.sh
+          docker image ls ;
+          sh build/build-app-image.sh
           docker image ls ;
 
       - name: Log in to DigitalOcean Container Registry
