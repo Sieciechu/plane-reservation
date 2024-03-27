@@ -107,7 +107,7 @@ jobs:
       run: vendor/bin/phpunit  --exclude-testsuite Integration
     
   build-and-push-backend:
-    # needs: [laravel-tests, phpcs, phpstan]
+    needs: [laravel-tests, phpcs, phpstan]
     runs-on: ubuntu-latest
     steps:
       - uses: shivammathur/setup-php@v2
