@@ -73,7 +73,7 @@ RUN addgroup -g ${WWWGROUP} sail \
     && adduser -D -h /var/www/html -s /bin/bash -G sail -u ${WWWUSER} sail
 
 EXPOSE 80
-ENTRYPOINT ["start-container"]
+CMD ["start-container"]
 
 
 FROM base as dev
