@@ -1,10 +1,12 @@
-FROM alpine:edge as system
+FROM alpine:3.19 as base
 
 WORKDIR /var/www/html
 
 # Set environment variables
-ENV WWWUSER=sail \
-    WWWGROUP=sail
+ARG WWWGROUP
+ARG WWWUSER
+ENV WWWUSER=${WWWUSER:-sail} \
+    WWWGROUP=${WWWGROUP:-www-data}
 
 # Install basic packages
 RUN apk update \
@@ -53,29 +55,28 @@ RUN apk --no-cache add \
 `# install usermod` \
     && echo http://dl-2.alpinelinux.org/alpine/edge/community/ >> /etc/apk/repositories \
     && apk add -U shadow
-COPY ./build/php.ini /etc/php/8.0/cli/conf.d/99-sail.ini
+COPY ./php.ini /etc/php/8.0/cli/conf.d/99-sail.ini
 
 # Configure supervisord
 RUN touch /var/run/supervisord.pid \
     && mkdir -p /etc/supervisor.d/conf.d \
     && mkdir -p /var/log/supervisor \
     && touch /var/log/supervisor/supervisord.log
-COPY ./build/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY ./supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 
 # Configure container startup script
-COPY ./build/start-container /usr/local/bin/start-container
+COPY ./start-container /usr/local/bin/start-container
 RUN chmod +x /usr/local/bin/start-container
 
 # Configure user for sail
-RUN addgroup sail \
-    && adduser -h /var/www/html -s /bin/bash -G sail -D sail
+RUN addgroup -g ${WWWGROUP} sail \
+    && adduser -D -h /var/www/html -s /bin/bash -G sail -u ${WWWUSER} sail
 
 EXPOSE 80
 ENTRYPOINT ["start-container"]
 
 
-# ------------------------------------------------
-FROM system as dev
+FROM base as dev
 
 # install composer
 RUN \
@@ -95,12 +96,3 @@ RUN echo "[XDebug]" > /etc/php83/conf.d/50_xdebug.ini \
     && echo "xdebug.idekey=PHPSTORM" >> /etc/php83/conf.d/50_xdebug.ini \
     && echo "xdebug.log=/tmp/xdebug.log" >> /etc/php83/conf.d/50_xdebug.ini \
     && echo "xdebug.start_with_request=yes ; so it turns on for every http request" >> /etc/php83/conf.d/50_xdebug.ini
-
-# ------------------------------------------------
-FROM system as prod-app
-
-COPY --link --chown=sail:sail . /var/www/html
-
-RUN rm -Rf /var/www/html/storage/framework/cache/ \
-    && mkdir -p /var/www/html/storage/framework/cache/data \
-    && chown -R sail:sail /var/www/html/storage/framework/cache
