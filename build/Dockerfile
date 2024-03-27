@@ -1,4 +1,4 @@
-FROM alpine:edge as base
+FROM alpine:3.19 as base
 
 WORKDIR /var/www/html
 
