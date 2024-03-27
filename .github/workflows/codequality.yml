@@ -140,6 +140,9 @@ jobs:
 
       - name: Build image
         run: |
+          pwd
+          ls -lah .
+
           cd build
 
           docker image build --load -f Dockerfile --build-arg WWWUSER=501 --build-arg WWWGROUP=501 \
