@@ -151,8 +151,9 @@ jobs:
           
           docker image build -f app.Dockerfile --squash --compress \
             --build-arg SOURCE_SYSTEM_IMAGE="planereservation:php8.3" \
+            --build-arg WWWUSER=501 --build-arg WWWGROUP=501 \
             --target prod \
-            -t registry.digitalocean.com/aeroklubostrowski/planereservation:app-1.0 ../.
+            -t registry.digitalocean.com/aeroklubostrowski/planereservation:app-1.0 ./..
 
           docker image ls
 
