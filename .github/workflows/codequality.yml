@@ -142,10 +142,13 @@ jobs:
         run: |
           cd build ;\
           docker image build --load -f Dockerfile --build-arg WWWUSER=501 --build-arg WWWGROUP=501 \
-            -t planereservation:php8.3 --target base . ;\
+            --target base \
+            -t planereservation:php8.3 . ;\
+          docker image build -f app.Dockerfile --squash --compress \
+            --build-arg SOURCE_SYSTEM_IMAGE="planereservation:php8.3" \
+            --target prod \
+            -t registry.digitalocean.com/aeroklubostrowski/planereservation:app-1.0 ./. 
           docker image ls ; \
-          docker image build -f app.Dockerfile -t planereservation:app-1.0 --squash --compress \
-            --build-arg SOURCE_SYSTEM_IMAGE="planereservation:php8.3" --target prod ./. 
 
       - name: Log in to DigitalOcean Container Registry
         run: doctl registry login --expiry-seconds 600
