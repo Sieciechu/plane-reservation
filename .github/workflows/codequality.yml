@@ -104,9 +104,7 @@ jobs:
       env:
         DB_CONNECTION: sqlite
         DB_DATABASE: database/database.sqlite
-      run: |
-        ls -lh .
-        vendor/bin/phpunit  --exclude-testsuite Integration
+      run: vendor/bin/phpunit  --exclude-testsuite Integration
     
   build-and-push-backend:
     # needs: [laravel-tests, phpcs, phpstan]
@@ -130,14 +128,34 @@ jobs:
             ${{ runner.os }}-php-
 
       - name: Install dependencies
+        run: composer install --prefer-dist --no-progress --no-interaction
+
+      - name: Install doctl
+        uses: digitalocean/action-doctl@v2
+        with:
+          token: ${{ secrets.DIGITALOCEAN_ACCESS_TOKEN }}
+
+      - name: Build image
         run: |
-          composer install --prefer-dist --no-progress --no-interaction
+          pwd
           ls -lh .
 
-      - name: Execute tests (Unit and Feature tests) via PHPUnit
-        env:
-          DB_CONNECTION: sqlite
-          DB_DATABASE: database/database.sqlite
-        run: |
-          ls -lh .
-          vendor/bin/phpunit  --exclude-testsuite Integration
+          cd build
+
+          docker image build --load -f Dockerfile --build-arg WWWUSER=501 --build-arg WWWGROUP=501 \
+            --target base \
+            -t planereservation:php8.3 .
+          
+          docker image build -f app.Dockerfile --squash --compress \
+            --build-arg SOURCE_SYSTEM_IMAGE="planereservation:php8.3" \
+            --build-arg WWWUSER=501 --build-arg WWWGROUP=501 \
+            --target prod \
+            -t registry.digitalocean.com/aeroklubostrowski/planereservation:app-1.0 ./..
+
+          docker image ls
+
+      - name: Log in to DigitalOcean Container Registry
+        run: doctl registry login --expiry-seconds 600
+
+      - name: Push image to DigitalOcean Container Registry
+        run: docker push registry.digitalocean.com/aeroklubostrowski/planereservation:app-1.0
