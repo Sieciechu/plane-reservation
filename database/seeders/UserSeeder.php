@@ -24,9 +24,10 @@ class UserSeeder extends Seeder
             'password' => Hash::make(getenv('APP_ADMIN_PASSWORD')),
         ]);
         
-        if (App::environment() === 'production') {
-            return;
+        if (App::environment() !== 'production') {
+            \App\Models\User::factory(10)->create([
+                'role' => UserRole::User
+            ]);
         }
-        \App\Models\User::factory(10)->create();
     }
 }
