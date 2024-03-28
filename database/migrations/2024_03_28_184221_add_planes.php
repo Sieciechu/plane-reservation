@@ -12,7 +12,19 @@ return new class extends Migration
     public function up(): void
     {
         \App\Models\Plane::factory()->create([
-            'name' => 'VIPER SD-4 RTC',
+            'name' => 'PZL Koliber 150',
+            'registration' => 'SP-KYS',
+        ]);
+        \App\Models\Plane::factory()->create([
+            'name' => 'PZL Koliber 110',
+            'registration' => 'SP-ARR',
+        ]);
+        \App\Models\Plane::factory()->create([
+            'name' => 'PZL Koliber 160',
+            'registration' => 'SP-IGA',
+        ]);
+        \App\Models\Plane::factory()->create([
+            'name' => 'Viper SD-4 RTC',
             'registration' => 'SP-AOD',
         ]);
     }

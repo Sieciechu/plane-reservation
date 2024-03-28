@@ -17,13 +17,6 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        \App\Models\User::factory()->create([
-            'name' => 'Admin',
-            'email' => getenv('APP_ADMIN_EMAIL'),
-            'role' => UserRole::Admin,
-            'password' => Hash::make(getenv('APP_ADMIN_PASSWORD')),
-        ]);
-        
         if (App::environment() !== 'production') {
             \App\Models\User::factory(10)->create([
                 'role' => UserRole::User
