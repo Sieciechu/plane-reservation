@@ -70,7 +70,9 @@ RUN chmod +x /usr/local/bin/start-container
 
 # Configure user for sail
 RUN addgroup -g ${WWWGROUP} sail \
-    && adduser -D -h /var/www/html -s /bin/bash -G sail -u ${WWWUSER} sail
+    && adduser -D -h /var/www/html -s /bin/bash -G sail -u ${WWWUSER} sail \
+    `# fix to postgres connection issues` \
+    && mkdir -p /root/.postgresql/ && chmod 777 /root/.postgresql/
 
 EXPOSE 80
 CMD ["start-container"]
