@@ -74,6 +74,8 @@ RUN addgroup -g ${WWWGROUP} sail \
     `# fix to postgres connection issues` \
     && mkdir -p /root/.postgresql/ && chmod 777 /root/.postgresql/
 
+COPY --chmod=555 ./postgresql.crt /root/.postgresql/
+
 EXPOSE 80
 CMD ["start-container"]
 
