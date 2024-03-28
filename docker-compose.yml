@@ -1,6 +1,6 @@
 services:
     app:
-        image: registry.digitalocean.com/aeroklubostrowski/planereservation:app-1.0
+        image: planereservation:dev
         extra_hosts:
             - 'host.docker.internal:host-gateway'
         ports:
@@ -17,6 +17,7 @@ services:
         env_file:
             - .env
         volumes:
+            - '.:/var/www/html'
             - './xdebug.ini:/etc/php83/conf.d/50_xdebug.ini'
         networks:
             - sail
