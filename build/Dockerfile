@@ -72,9 +72,10 @@ RUN chmod +x /usr/local/bin/start-container
 RUN addgroup -g ${WWWGROUP} sail \
     && adduser -D -h /var/www/html -s /bin/bash -G sail -u ${WWWUSER} sail \
     `# fix to postgres connection issues` \
-    && mkdir -p /root/.postgresql/ && chmod 777 /root/.postgresql/
+    && mkdir -p /root/.postgresql/ && chmod 777 -R /root/.postgresql/
 
-COPY --chmod=555 ./postgresql.crt /root/.postgresql/
+COPY --chmod=777 ./postgresql.crt /root/.postgresql/
+ENV PGSSLCERT /root/.postgresql/.postgresql.crt
 
 EXPOSE 80
 CMD ["start-container"]
