@@ -16,6 +16,7 @@ class PlaneReservationSeeder extends Seeder
      */
     public function run(): void
     {
+        return;
         if (App::environment() === 'production') {
             return;
         }
